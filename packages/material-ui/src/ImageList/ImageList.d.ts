@@ -1,5 +1,7 @@
 import * as React from 'react';
+import { SxProps } from '@material-ui/system';
 import { OverridableStringUnion } from '@material-ui/types';
+import { Theme } from '..';
 import { OverridableComponent, OverrideProps } from '../OverridableComponent';
 
 export interface ImageListPropsVariantOverrides {}
@@ -7,7 +9,7 @@ export type ImageListVariantDefaults = Record<'masonry' | 'quilted' | 'standard'
 export interface ImageListTypeMap<P = {}, D extends React.ElementType = 'ul'> {
   props: P & {
     /**
-     * Items that will be in the image list.
+     * The content of the component, normally `ImageListItem`s.
      */
     children: NonNullable<React.ReactNode>;
     /**
@@ -40,6 +42,10 @@ export interface ImageListTypeMap<P = {}, D extends React.ElementType = 'ul'> {
      * @default 'auto'
      */
     rowHeight?: number | 'auto';
+    /**
+     * The system prop that allows defining system overrides as well as additional CSS styles.
+     */
+    sx?: SxProps<Theme>;
     /**
      * The variant to use.
      * @default 'standard'

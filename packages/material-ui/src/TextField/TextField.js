@@ -227,13 +227,16 @@ TextField.propTypes = {
    * The color of the component. It supports those theme colors that make sense for this component.
    * @default 'primary'
    */
-  color: PropTypes.oneOf(['primary', 'secondary']),
+  color: PropTypes /* @typescript-to-proptypes-ignore */.oneOfType([
+    PropTypes.oneOf(['primary', 'secondary']),
+    PropTypes.string,
+  ]),
   /**
-   * The default value of the `input` element.
+   * The default value. Use when the component is not controlled.
    */
   defaultValue: PropTypes.any,
   /**
-   * If `true`, the `input` element is disabled.
+   * If `true`, the component is disabled.
    * @default false
    */
   disabled: PropTypes.bool,
@@ -285,6 +288,7 @@ TextField.propTypes = {
   label: PropTypes.node,
   /**
    * If `dense` or `normal`, will adjust vertical spacing of this and contained components.
+   * @default 'none'
    */
   margin: PropTypes.oneOf(['dense', 'none', 'normal']),
   /**
@@ -296,7 +300,7 @@ TextField.propTypes = {
    */
   minRows: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   /**
-   * If `true`, a `textarea` element is rendered.instead of an input.
+   * If `true`, a `textarea` element is rendered instead of an input.
    * @default false
    */
   multiline: PropTypes.bool,
@@ -320,7 +324,7 @@ TextField.propTypes = {
    */
   onFocus: PropTypes.func,
   /**
-   * The short hint displayed in the input before the user enters a value.
+   * The short hint displayed in the `input` before the user enters a value.
    */
   placeholder: PropTypes.string,
   /**
@@ -343,9 +347,12 @@ TextField.propTypes = {
    */
   SelectProps: PropTypes.object,
   /**
-   * The size of the text field.
+   * The size of the component.
    */
-  size: PropTypes.oneOf(['medium', 'small']),
+  size: PropTypes /* @typescript-to-proptypes-ignore */.oneOfType([
+    PropTypes.oneOf(['medium', 'small']),
+    PropTypes.string,
+  ]),
   /**
    * Type of the `input` element. It should be [a valid HTML5 input type](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#Form_%3Cinput%3E_types).
    */

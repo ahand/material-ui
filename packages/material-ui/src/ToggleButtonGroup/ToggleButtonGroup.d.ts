@@ -1,10 +1,12 @@
 import * as React from 'react';
+import { SxProps } from '@material-ui/system';
 import { InternalStandardProps as StandardProps } from '..';
+import { Theme } from '../styles';
 
 export interface ToggleButtonGroupProps
   extends StandardProps<React.HTMLAttributes<HTMLDivElement>, 'onChange' | 'children'> {
   /**
-   * The content of the button.
+   * The content of the component.
    */
   children?: React.ReactNode;
   /**
@@ -37,15 +39,19 @@ export interface ToggleButtonGroupProps
    */
   onChange?: (event: React.MouseEvent<HTMLElement>, value: any) => void;
   /**
-   * The group orientation (layout flow direction).
+   * The component orientation (layout flow direction).
    * @default 'horizontal'
    */
   orientation?: 'horizontal' | 'vertical';
   /**
-   * The size of the buttons.
+   * The size of the component.
    * @default 'medium'
    */
   size?: 'small' | 'medium' | 'large';
+  /**
+   * The system prop that allows defining system overrides as well as additional CSS styles.
+   */
+  sx?: SxProps<Theme>;
   /**
    * The currently selected value within the group or an array of selected
    * values when `exclusive` is false.

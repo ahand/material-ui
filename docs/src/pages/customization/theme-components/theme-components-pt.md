@@ -82,6 +82,8 @@ const theme = createMuiTheme({
 
 If you're using TypeScript, you'll need to specify your new variants/colors, using [module augmentation](https://www.typescriptlang.org/docs/handbook/declaration-merging.html#module-augmentation).
 
+<!-- Tested with packages/material-ui/test/typescript/augmentation/themeComponents.spec.ts -->
+
 ```tsx
 declare module '@material-ui/core/Button/Button' {
   interface ButtonPropsVariantOverrides {
@@ -107,48 +109,3 @@ const theme = createMuiTheme({
 ```
 
 {{"demo": "pages/customization/theme-components/ThemeVariables.js"}}
-
-## Sobrescrita do CSS Global
-
-Components expose [global class names](/styles/advanced/#with-material-ui-core) to enable customization with CSS.
-
-```jsx
-const GlobalCss = withStyles({
-  // @global é manipulado pelo jss-plugin-global.
-  '@global': {
-    '.MuiButton-root': {
-      fontSize: '1rem',
-    },
-  },
-})(() => null);
-
-// …
-
-<GlobalCss />;
-```
-
-Se você estiver usando o componente [CssBaseline](/components/css-baseline/) para aplicar o reset global, ele pode também ser usado para aplicação de estilos globais. Por exemplo:
-
-```jsx
-const theme = createMuiTheme({
-  overrides: {
-    MuiCssBaseline: {
-      '@global': {
-        html: {
-          WebkitFontSmoothing: 'auto',
-        },
-      },
-    },
-  },
-});
-
-// ...
-return (
-  <ThemeProvider theme={theme}>
-    <CssBaseline />
-    {children}
-  </ThemeProvider>
-);
-```
-
-{{"demo": "pages/customization/theme-components/GlobalCssOverride.js", "iframe": true, "height": 100}}

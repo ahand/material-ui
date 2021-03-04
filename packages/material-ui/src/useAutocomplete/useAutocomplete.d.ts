@@ -217,7 +217,7 @@ export interface UseAutocompleteProps<
     reason: AutocompleteHighlightChangeReason
   ) => void;
   /**
-   * Control the popup` open state.
+   * If `true`, the component is shown.
    */
   open?: boolean;
   /**
@@ -228,7 +228,7 @@ export interface UseAutocompleteProps<
   /**
    * Array of options.
    */
-  options: T[];
+  options: ReadonlyArray<T>;
   /**
    * If `true`, the input's text is selected on focus.
    * It helps the user clear the selected value.
@@ -248,7 +248,7 @@ export interface UseAutocompleteProps<
    */
   value?: Value<T, Multiple, DisableClearable, FreeSolo>;
   /**
-   * The default input value. Use when the component is not controlled.
+   * The default value. Use when the component is not controlled.
    * @default props.multiple ? [] : null
    */
   defaultValue?: Value<T, Multiple, DisableClearable, FreeSolo>;
@@ -287,6 +287,17 @@ export type AutocompleteCloseReason =
   | 'blur';
 export type AutocompleteInputChangeReason = 'input' | 'reset' | 'clear';
 
+export type AutocompleteGetTagProps = ({
+  index,
+}: {
+  index: number;
+}) => {
+  key: number;
+  'data-tag-index': number;
+  tabIndex: -1;
+  onDelete: (event: any) => void;
+};
+
 export default function useAutocomplete<
   T,
   Multiple extends boolean | undefined = undefined,
@@ -301,7 +312,7 @@ export default function useAutocomplete<
   getInputLabelProps: () => Omit<React.HTMLAttributes<HTMLLabelElement>, 'color'>;
   getClearProps: () => React.HTMLAttributes<HTMLDivElement>;
   getPopupIndicatorProps: () => React.HTMLAttributes<HTMLDivElement>;
-  getTagProps: ({ index }: { index: number }) => React.HTMLAttributes<HTMLDivElement>;
+  getTagProps: AutocompleteGetTagProps;
   getListboxProps: () => React.HTMLAttributes<HTMLUListElement>;
   getOptionProps: ({
     option,

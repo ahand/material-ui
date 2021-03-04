@@ -1,40 +1,65 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
+import { deepmerge } from '@material-ui/utils';
+import { unstable_composeClasses as composeClasses } from '@material-ui/unstyled';
+import useThemeProps from '../styles/useThemeProps';
+import experimentalStyled from '../styles/experimentalStyled';
 import { isFilled, isAdornedStart } from '../InputBase/utils';
-import withStyles from '../styles/withStyles';
 import capitalize from '../utils/capitalize';
 import isMuiElement from '../utils/isMuiElement';
 import FormControlContext from './FormControlContext';
+import { getFormControlUtilityClasses } from './formControlClasses';
 
-export const styles = {
-  /* Styles applied to the root element. */
-  root: {
-    display: 'inline-flex',
-    flexDirection: 'column',
-    position: 'relative',
-    // Reset fieldset default style.
-    minWidth: 0,
-    padding: 0,
-    margin: 0,
-    border: 0,
-    verticalAlign: 'top', // Fix alignment issue on Safari.
+const overridesResolver = ({ styleProps }, styles) => {
+  return deepmerge(
+    {
+      ...styles[`margin${capitalize(styleProps.margin)}`],
+      ...(styleProps.fullWidth && styles.fullWidth),
+    },
+    styles.root || {},
+  );
+};
+
+const useUtilityClasses = (styleProps) => {
+  const { classes, margin, fullWidth } = styleProps;
+  const slots = {
+    root: ['root', `margin${capitalize(margin)}`, fullWidth && 'fullWidth'],
+  };
+
+  return composeClasses(slots, getFormControlUtilityClasses, classes);
+};
+
+const FormControlRoot = experimentalStyled(
+  'div',
+  {},
+  {
+    name: 'MuiFormControl',
+    slot: 'Root',
+    overridesResolver,
   },
-  /* Styles applied to the root element if `margin="normal"`. */
-  marginNormal: {
+)(({ styleProps }) => ({
+  display: 'inline-flex',
+  flexDirection: 'column',
+  position: 'relative',
+  // Reset fieldset default style.
+  minWidth: 0,
+  padding: 0,
+  margin: 0,
+  border: 0,
+  verticalAlign: 'top', // Fix alignment issue on Safari.
+  ...(styleProps.margin === 'normal' && {
     marginTop: 16,
     marginBottom: 8,
-  },
-  /* Styles applied to the root element if `margin="dense"`. */
-  marginDense: {
+  }),
+  ...(styleProps.margin === 'dense' && {
     marginTop: 8,
     marginBottom: 4,
-  },
-  /* Styles applied to the root element if `fullWidth={true}`. */
-  fullWidth: {
+  }),
+  ...(styleProps.fullWidth && {
     width: '100%',
-  },
-};
+  }),
+}));
 
 /**
  * Provides context such as filled/focused/error/required for form inputs.
@@ -60,13 +85,13 @@ export const styles = {
  * ⚠️ Only one `InputBase` can be used within a FormControl because it create visual inconsistencies.
  * For instance, only one input can be focused at the same time, the state shouldn't be shared.
  */
-const FormControl = React.forwardRef(function FormControl(props, ref) {
+const FormControl = React.forwardRef(function FormControl(inProps, ref) {
+  const props = useThemeProps({ props: inProps, name: 'MuiFormControl' });
   const {
     children,
-    classes,
     className,
     color = 'primary',
-    component: Component = 'div',
+    component = 'div',
     disabled = false,
     error = false,
     focused: visuallyFocused,
@@ -78,6 +103,22 @@ const FormControl = React.forwardRef(function FormControl(props, ref) {
     variant = 'standard',
     ...other
   } = props;
+
+  const styleProps = {
+    ...props,
+    color,
+    component,
+    disabled,
+    error,
+    fullWidth,
+    hiddenLabel,
+    margin,
+    required,
+    size,
+    variant,
+  };
+
+  const classes = useUtilityClasses(styleProps);
 
   const [adornedStart, setAdornedStart] = React.useState(() => {
     // We need to iterate through the children and find the Input in order
@@ -121,11 +162,11 @@ const FormControl = React.forwardRef(function FormControl(props, ref) {
   });
 
   const [focusedState, setFocused] = React.useState(false);
-  const focused = visuallyFocused !== undefined ? visuallyFocused : focusedState;
-
-  if (disabled && focused) {
+  if (disabled && focusedState) {
     setFocused(false);
   }
+
+  const focused = visuallyFocused !== undefined && !disabled ? visuallyFocused : focusedState;
 
   let registerEffect;
   if (process.env.NODE_ENV !== 'production') {
@@ -182,20 +223,15 @@ const FormControl = React.forwardRef(function FormControl(props, ref) {
 
   return (
     <FormControlContext.Provider value={childContext}>
-      <Component
-        className={clsx(
-          classes.root,
-          {
-            [classes[`margin${capitalize(margin)}`]]: margin !== 'none',
-            [classes.fullWidth]: fullWidth,
-          },
-          className,
-        )}
+      <FormControlRoot
+        as={component}
+        styleProps={styleProps}
+        className={clsx(classes.root, className)}
         ref={ref}
         {...other}
       >
         {children}
-      </Component>
+      </FormControlRoot>
     </FormControlContext.Provider>
   );
 });
@@ -206,7 +242,7 @@ FormControl.propTypes = {
   // |     To update them edit the d.ts file and run "yarn proptypes"     |
   // ----------------------------------------------------------------------
   /**
-   * The contents of the form control.
+   * The content of the component.
    */
   children: PropTypes.node,
   /**
@@ -221,7 +257,10 @@ FormControl.propTypes = {
    * The color of the component. It supports those theme colors that make sense for this component.
    * @default 'primary'
    */
-  color: PropTypes.oneOf(['primary', 'secondary']),
+  color: PropTypes /* @typescript-to-proptypes-ignore */.oneOfType([
+    PropTypes.oneOf(['primary', 'secondary']),
+    PropTypes.string,
+  ]),
   /**
    * The component used for the root node.
    * Either a string to use a HTML element or a component.
@@ -233,7 +272,7 @@ FormControl.propTypes = {
    */
   disabled: PropTypes.bool,
   /**
-   * If `true`, the label should be displayed in an error state.
+   * If `true`, the label is displayed in an error state.
    * @default false
    */
   error: PropTypes.bool,
@@ -264,10 +303,17 @@ FormControl.propTypes = {
    */
   required: PropTypes.bool,
   /**
-   * The size of the text field.
+   * The size of the component.
    * @default 'medium'
    */
-  size: PropTypes.oneOf(['medium', 'small']),
+  size: PropTypes /* @typescript-to-proptypes-ignore */.oneOfType([
+    PropTypes.oneOf(['medium', 'small']),
+    PropTypes.string,
+  ]),
+  /**
+   * The system prop that allows defining system overrides as well as additional CSS styles.
+   */
+  sx: PropTypes.object,
   /**
    * The variant to use.
    * @default 'standard'
@@ -275,4 +321,4 @@ FormControl.propTypes = {
   variant: PropTypes.oneOf(['filled', 'outlined', 'standard']),
 };
 
-export default withStyles(styles, { name: 'MuiFormControl' })(FormControl);
+export default FormControl;

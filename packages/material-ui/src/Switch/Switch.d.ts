@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { InternalStandardProps as StandardProps } from '..';
+import { SxProps } from '@material-ui/system';
+import { InternalStandardProps as StandardProps, Theme } from '..';
 import { SwitchBaseProps } from '../internal/SwitchBase';
 
 export interface SwitchProps
@@ -26,6 +27,8 @@ export interface SwitchProps
     colorSecondary?: string;
     /** Styles applied to the root element if `size="small"`. */
     sizeSmall?: string;
+    /** Styles applied to the root element if `size="medium"`. */
+    sizeMedium?: string;
     /** Pseudo-class applied to the internal `SwitchBase` component's `checked` class. */
     checked?: string;
     /** Pseudo-class applied to the internal SwitchBase component's disabled class. */
@@ -43,7 +46,7 @@ export interface SwitchProps
    */
   color?: 'primary' | 'secondary' | 'default';
   /**
-   * If `true`, the switch is disabled.
+   * If `true`, the component is disabled.
    */
   disabled?: boolean;
   /**
@@ -51,11 +54,15 @@ export interface SwitchProps
    */
   icon?: React.ReactNode;
   /**
-   * The size of the switch.
+   * The size of the component.
    * `small` is equivalent to the dense switch styling.
    * @default 'medium'
    */
   size?: 'small' | 'medium';
+  /**
+   * The system prop that allows defining system overrides as well as additional CSS styles.
+   */
+  sx?: SxProps<Theme>;
   /**
    * The value of the component. The DOM API casts this to a string.
    * The browser uses "on" as the default value.

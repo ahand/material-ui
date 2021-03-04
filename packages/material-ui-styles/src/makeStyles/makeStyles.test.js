@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import React from 'react';
+import * as React from 'react';
 import PropTypes from 'prop-types';
 import { SheetsRegistry } from 'jss';
 import { act } from 'react-dom/test-utils';
@@ -171,7 +171,7 @@ describe('makeStyles', () => {
         classes: { root: 'bar' },
       });
       const classes2 = output.classes;
-      expect(classes1).to.not.equal(classes2);
+      expect(classes1).not.to.equal(classes2);
       expect(classes2).to.deep.equal({
         root: `${classes.root} bar`,
       });

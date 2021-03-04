@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { InternalStandardProps as StandardProps } from '..';
+import { SxProps } from '@material-ui/system';
+import { InternalStandardProps as StandardProps, Theme } from '..';
 
 export interface FormGroupProps extends StandardProps<React.HTMLAttributes<HTMLDivElement>> {
   /**
@@ -20,6 +21,10 @@ export interface FormGroupProps extends StandardProps<React.HTMLAttributes<HTMLD
    * @default false
    */
   row?: boolean;
+  /**
+   * The system prop that allows defining system overrides as well as additional CSS styles.
+   */
+  sx?: SxProps<Theme>;
 }
 
 export type FormGroupClassKey = keyof NonNullable<FormGroupProps['classes']>;
@@ -28,6 +33,7 @@ export type FormGroupClassKey = keyof NonNullable<FormGroupProps['classes']>;
  * `FormGroup` wraps controls such as `Checkbox` and `Switch`.
  * It provides compact row layout.
  * For the `Radio`, you should be using the `RadioGroup` component instead of this one.
+ *
  * Demos:
  *
  * - [Checkboxes](https://material-ui.com/components/checkboxes/)

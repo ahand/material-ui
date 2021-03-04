@@ -1,11 +1,10 @@
 import * as React from 'react';
+import { unstable_useThemeProps as useThemeProps } from '@material-ui/core/styles';
 import { useUtils } from '../internal/pickers/hooks/useUtils';
-import { withDefaultProps } from '../internal/pickers/withDefaultProps';
 import { useParsedDate } from '../internal/pickers/hooks/date-helpers-hooks';
-import { withDateAdapterProp } from '../internal/pickers/withDateAdapterProp';
 import { makeWrapperComponent } from '../internal/pickers/wrappers/makeWrapperComponent';
 import { defaultMinDate, defaultMaxDate } from '../internal/pickers/constants/prop-types';
-import { SomeWrapper, ExtendWrapper } from '../internal/pickers/wrappers/Wrapper';
+import { SomeWrapper, PublicWrapperProps } from '../internal/pickers/wrappers/Wrapper';
 import { RangeInput, AllSharedDateRangePickerProps, DateRange } from './RangeTypes';
 import { makeValidationHook, ValidationProps } from '../internal/pickers/hooks/useValidation';
 import { usePickerState, PickerStateValueManager } from '../internal/pickers/hooks/usePickerState';
@@ -34,20 +33,19 @@ export interface BaseDateRangePickerProps<TDate>
   endText?: React.ReactNode;
 }
 
-export type DateRangePickerComponent<TWrapper extends SomeWrapper> = <TDate>(
+export type DateRangePickerComponent<TWrapper extends SomeWrapper> = (<TDate>(
   props: BaseDateRangePickerProps<TDate> &
-    ExtendWrapper<TWrapper> &
+    PublicWrapperProps<TWrapper> &
     AllSharedDateRangePickerProps<TDate> &
     React.RefAttributes<HTMLDivElement>,
-) => JSX.Element;
+) => JSX.Element) & { propTypes: unknown };
 
 export const useDateRangeValidation = makeValidationHook<
   DateRangeValidationError,
   RangeInput<unknown>,
   BaseDateRangePickerProps<any>
 >(validateDateRange, {
-  defaultValidationError: [null, null],
-  isSameError: (a, b) => a[1] === b[1] && a[0] === b[0],
+  isSameError: (a, b) => b !== null && a[1] === b[1] && a[0] === b[0],
 });
 
 export function makeDateRangePicker<TWrapper extends SomeWrapper>(
@@ -65,23 +63,29 @@ export function makeDateRangePicker<TWrapper extends SomeWrapper>(
     areValuesEqual: (utils, a, b) => utils.isEqual(a[0], b[0]) && utils.isEqual(a[1], b[1]),
   };
 
-  function RangePickerWithStateAndWrapper<TDate>({
-    calendars,
-    value,
-    onChange,
-    mask = '__/__/____',
-    startText = 'Start',
-    endText = 'End',
-    inputFormat: passedInputFormat,
-    minDate: __minDate = defaultMinDate as TDate,
-    maxDate: __maxDate = defaultMaxDate as TDate,
-    ...other
-  }: BaseDateRangePickerProps<TDate> &
-    AllSharedDateRangePickerProps<TDate> &
-    ExtendWrapper<TWrapper>) {
+  function RangePickerWithStateAndWrapper<TDate>(
+    inProps: BaseDateRangePickerProps<TDate> &
+      AllSharedDateRangePickerProps<TDate> &
+      PublicWrapperProps<TWrapper>,
+  ) {
+    const props = useThemeProps({ props: inProps, name });
+
+    const {
+      calendars,
+      value,
+      onChange,
+      mask = '__/__/____',
+      startText = 'Start',
+      endText = 'End',
+      inputFormat: passedInputFormat,
+      minDate: minDateProp = defaultMinDate as TDate,
+      maxDate: maxDateProp = defaultMaxDate as TDate,
+      ...other
+    } = props;
+
     const utils = useUtils();
-    const minDate = useParsedDate(__minDate);
-    const maxDate = useParsedDate(__maxDate);
+    const minDate = useParsedDate(minDateProp);
+    const maxDate = useParsedDate(maxDateProp);
     const [currentlySelectingRangeEnd, setCurrentlySelectingRangeEnd] = React.useState<
       'start' | 'end'
     >('start');
@@ -134,14 +138,9 @@ export function makeDateRangePicker<TWrapper extends SomeWrapper>(
     );
   }
 
-  const FinalPickerComponent = withDefaultProps(
-    { name },
-    withDateAdapterProp(RangePickerWithStateAndWrapper),
-  );
-
   // @ts-expect-error Impossible to save component generics when wrapping with HOC
   return React.forwardRef<
     HTMLDivElement,
     React.ComponentProps<typeof RangePickerWithStateAndWrapper>
-  >((props, ref) => <FinalPickerComponent {...(props as any)} forwardedRef={ref} />);
+  >((props, ref) => <RangePickerWithStateAndWrapper {...(props as any)} forwardedRef={ref} />);
 }

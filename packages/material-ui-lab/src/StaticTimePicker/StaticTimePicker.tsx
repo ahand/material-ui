@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { makePickerWithStateAndWrapper } from '../internal/pickers/Picker/makePickerWithState';
+import { makePickerWithState } from '../internal/pickers/Picker/makePickerWithState';
 import {
   BaseTimePickerProps,
   timePickerConfig,
@@ -7,16 +7,23 @@ import {
 } from '../TimePicker/TimePicker';
 import { StaticWrapper } from '../internal/pickers/wrappers/Wrapper';
 
+// @typescript-to-proptypes-generate
 /**
- * @ignore - do not document.
+ *
+ * API:
+ *
+ * - [StaticTimePicker API](https://material-ui.com/api/static-time-picker/)
  */
-/* @typescript-to-proptypes-generate */
-const StaticTimePicker = makePickerWithStateAndWrapper<BaseTimePickerProps>(StaticWrapper, {
+const StaticTimePicker = makePickerWithState<BaseTimePickerProps>(StaticWrapper, {
   name: 'MuiStaticTimePicker',
   ...timePickerConfig,
 }) as TimePickerGenericComponent<typeof StaticWrapper>;
 
-(StaticTimePicker as any).propTypes = {
+if (process.env.NODE_ENV !== 'production') {
+  (StaticTimePicker as any).displayName = 'StaticTimePicker';
+}
+
+StaticTimePicker.propTypes = {
   // ----------------------------- Warning --------------------------------
   // | These PropTypes are generated from the TypeScript type definitions |
   // |     To update them edit TypeScript types and run "yarn proptypes"  |
@@ -28,12 +35,12 @@ const StaticTimePicker = makePickerWithStateAndWrapper<BaseTimePickerProps>(Stat
   acceptRegex: PropTypes.instanceOf(RegExp),
   /**
    * Enables keyboard listener for moving between days in calendar.
-   * @default currentWrapper !== 'static'
+   * Defaults to `true` unless the `ClockPicker` is used inside a `Static*` picker component.
    */
   allowKeyboardControl: PropTypes.bool,
   /**
    * 12h/24h view for hour selection clock.
-   * @default true
+   * @default false
    */
   ampm: PropTypes.bool,
   /**
@@ -42,16 +49,13 @@ const StaticTimePicker = makePickerWithStateAndWrapper<BaseTimePickerProps>(Stat
    */
   ampmInClock: PropTypes.bool,
   /**
+   * @ignore
+   */
+  children: PropTypes.node,
+  /**
    * className applied to the root component.
    */
   className: PropTypes.string,
-  /**
-   * Allows to pass configured date-io adapter directly. More info [here](https://next.material-ui-pickers.dev/guides/date-adapter-passing)
-   * ```jsx
-   * dateAdapter={new AdapterDateFns({ locale: ruLocale })}
-   * ```
-   */
-  dateAdapter: PropTypes.object,
   /**
    * If `true` the popup or dialog will immediately close after submitting full date.
    * @default `true` for Desktop, `false` for Mobile (based on the chosen wrapper and `desktopModeMediaQuery` prop).
@@ -77,13 +81,17 @@ const StaticTimePicker = makePickerWithStateAndWrapper<BaseTimePickerProps>(Stat
    */
   disableOpenPicker: PropTypes.bool,
   /**
-   * Force static wrapper inner components to be rendered in mobile or desktop mode
+   * Force static wrapper inner components to be rendered in mobile or desktop mode.
    * @default "static"
    */
   displayStaticWrapperAs: PropTypes.oneOf(['desktop', 'mobile']),
   /**
    * Accessible text that helps user to understand which time and view is selected.
-   * @default (view, time) => `Select ${view}. Selected time is ${format(time, 'fullTime')}`
+   * @default <TDate extends any>(
+   *   view: 'hours' | 'minutes' | 'seconds',
+   *   time: TDate,
+   *   adapter: MuiPickersAdapter<TDate>,
+   * ) => `Select ${view}. Selected time is ${adapter.format(time, 'fullTime')}`
    */
   getClockLabelText: PropTypes.func,
   /**
@@ -116,7 +124,7 @@ const StaticTimePicker = makePickerWithStateAndWrapper<BaseTimePickerProps>(Stat
    */
   label: PropTypes.node,
   /**
-   * Custom mask. Can be used to override generate from format. (e.g. __/__/____ __:__ or __/__/____ __:__ _M)
+   * Custom mask. Can be used to override generate from format. (e.g. `__/__/____ __:__` or `__/__/____ __:__ _M`).
    */
   mask: PropTypes.string,
   /**
@@ -147,7 +155,7 @@ const StaticTimePicker = makePickerWithStateAndWrapper<BaseTimePickerProps>(Stat
    */
   onAccept: PropTypes.func,
   /**
-   * Callback fired when the value (the selected date) changes. @DateIOType.
+   * Callback fired when the value (the selected date) changes @DateIOType.
    */
   onChange: PropTypes.func.isRequired,
   /**
@@ -246,7 +254,7 @@ const StaticTimePicker = makePickerWithStateAndWrapper<BaseTimePickerProps>(Stat
    * Array of views to show.
    */
   views: PropTypes.arrayOf(PropTypes.oneOf(['hours', 'minutes', 'seconds']).isRequired),
-};
+} as any;
 
 export type StaticTimePickerProps = React.ComponentProps<typeof StaticTimePicker>;
 

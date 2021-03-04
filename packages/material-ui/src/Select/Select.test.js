@@ -352,29 +352,19 @@ describe('<Select />', () => {
     });
 
     describe('warnings', () => {
-      let consoleWarnContainer = null;
-
-      beforeEach(() => {
-        consoleWarnContainer = console.warn;
-        console.warn = spy();
-      });
-
-      afterEach(() => {
-        console.warn = consoleWarnContainer;
-        consoleWarnContainer = null;
-      });
-
       it('warns when the value is not present in any option', () => {
-        render(
-          <Select value={20}>
-            <MenuItem value={10}>Ten</MenuItem>
-            <MenuItem value={30}>Thirty</MenuItem>
-          </Select>,
-        );
-        expect(console.warn.callCount).to.equal(2); // strict mode renders twice
-        expect(console.warn.args[0][0]).to.include(
+        expect(() =>
+          render(
+            <Select value={20}>
+              <MenuItem value={10}>Ten</MenuItem>
+              <MenuItem value={30}>Thirty</MenuItem>
+            </Select>,
+          ),
+        ).toWarnDev([
           'Material-UI: You have provided an out-of-range value `20` for the select component.',
-        );
+          // strict mode renders twice
+          'Material-UI: You have provided an out-of-range value `20` for the select component.',
+        ]);
       });
     });
   });
@@ -484,7 +474,7 @@ describe('<Select />', () => {
       const { getByRole } = render(<Select value="" />);
 
       // TODO what is the accessible name actually?
-      expect(getByRole('button')).to.not.have.attribute('aria-labelledby');
+      expect(getByRole('button')).not.to.have.attribute('aria-labelledby');
     });
 
     it('is labelled by itself when it has a name', () => {
@@ -1121,5 +1111,24 @@ describe('<Select />', () => {
       </Select>,
     );
     expect(document.activeElement).to.equal(getByRole('button'));
+  });
+
+  it('should not override the event.target on mouse events', () => {
+    const handleChange = spy();
+    const handleEvent = spy((event) => event.target);
+    render(
+      <div onClick={handleEvent}>
+        <Select open onChange={handleChange} value="second">
+          <MenuItem value="first" />
+          <MenuItem value="second" />
+        </Select>
+      </div>,
+    );
+
+    const options = screen.getAllByRole('option');
+    options[0].click();
+
+    expect(handleChange.callCount).to.equal(1);
+    expect(handleEvent.returnValues).to.have.members([options[0]]);
   });
 });

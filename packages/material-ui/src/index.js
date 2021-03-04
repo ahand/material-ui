@@ -104,6 +104,9 @@ export * from './Container';
 export { default as CssBaseline } from './CssBaseline';
 export * from './CssBaseline';
 
+export { default as darkScrollbar } from './darkScrollbar';
+export * from './darkScrollbar';
+
 export { default as Dialog } from './Dialog';
 export * from './Dialog';
 
@@ -251,9 +254,6 @@ export * from './Popover';
 export { default as Popper } from './Popper';
 export * from './Popper';
 
-export { default as Portal } from './Portal';
-export * from './Portal';
-
 export { default as Radio } from './Radio';
 export * from './Radio';
 
@@ -380,9 +380,6 @@ export * from './Tooltip';
 export { default as Typography } from './Typography';
 export * from './Typography';
 
-export { default as Unstable_TrapFocus } from './Unstable_TrapFocus';
-export * from './Unstable_TrapFocus';
-
 export { default as useMediaQuery } from './useMediaQuery';
 export * from './useMediaQuery';
 
@@ -401,4 +398,11 @@ export * from './Zoom';
 // createFilterOptions is exported from Autocomplete
 export { default as useAutocomplete } from './useAutocomplete';
 
-export { StylesProvider } from '@material-ui/styled-engine';
+export { default as GlobalStyles } from './GlobalStyles';
+export * from './GlobalStyles';
+
+/**
+ * @deprecated will be removed in v5 beta, please use StyledEngineProvider instead
+ */
+export { default as StylesProvider } from './StyledEngineProvider';
+export { default as StyledEngineProvider } from './StyledEngineProvider';

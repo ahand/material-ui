@@ -2,32 +2,36 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { deepmerge } from '@material-ui/utils';
+import { unstable_composeClasses as composeClasses } from '@material-ui/unstyled';
 import experimentalStyled from '../styles/experimentalStyled';
 import useThemeProps from '../styles/useThemeProps';
 import Person from '../internal/svg-icons/Person';
 import avatarClasses, { getAvatarUtilityClass } from './avatarClasses';
 
 const overridesResolver = (props, styles) => {
-  const { variant = 'circular' } = props;
+  const { styleProps } = props;
 
-  return deepmerge(styles.root || {}, {
-    ...styles[variant],
-    [`&.${avatarClasses.colorDefault}`]: styles.colorDefault,
-    [`& .${avatarClasses.img}`]: styles.img,
-    [`& .${avatarClasses.fallback}`]: styles.fallback,
-  });
+  return deepmerge(
+    {
+      ...styles[styleProps.variant],
+      ...(styleProps.colorDefault && styles.colorDefault),
+      [`& .${avatarClasses.img}`]: styles.img,
+      [`& .${avatarClasses.fallback}`]: styles.fallback,
+    },
+    styles.root || {},
+  );
 };
 
 const useUtilityClasses = (styleProps) => {
-  const { classes = {}, variant, colorDefault } = styleProps;
+  const { classes, variant, colorDefault } = styleProps;
 
-  return {
-    root: clsx(avatarClasses.root, classes.root, getAvatarUtilityClass(variant), {
-      [avatarClasses.colorDefault]: colorDefault,
-    }),
-    img: clsx(avatarClasses.img, classes.img),
-    fallback: clsx(avatarClasses.fallback, classes.fallback),
+  const slots = {
+    root: ['root', variant, colorDefault && 'colorDefault'],
+    img: ['img'],
+    fallback: ['fallback'],
   };
+
+  return composeClasses(slots, getAvatarUtilityClass, classes);
 };
 
 const AvatarRoot = experimentalStyled(
@@ -135,12 +139,11 @@ function useLoaded({ src, srcSet }) {
 
 const Avatar = React.forwardRef(function Avatar(inProps, ref) {
   const props = useThemeProps({ props: inProps, name: 'MuiAvatar' });
-
   const {
     alt,
     children: childrenProp,
     className,
-    component: Component = 'div',
+    component = 'div',
     imgProps,
     sizes,
     src,
@@ -158,8 +161,9 @@ const Avatar = React.forwardRef(function Avatar(inProps, ref) {
 
   const styleProps = {
     ...props,
-    variant,
     colorDefault: !hasImgNotFailing,
+    component,
+    variant,
   };
 
   const classes = useUtilityClasses(styleProps);
@@ -171,6 +175,7 @@ const Avatar = React.forwardRef(function Avatar(inProps, ref) {
         src={src}
         srcSet={srcSet}
         sizes={sizes}
+        styleProps={styleProps}
         className={classes.img}
         {...imgProps}
       />
@@ -185,7 +190,7 @@ const Avatar = React.forwardRef(function Avatar(inProps, ref) {
 
   return (
     <AvatarRoot
-      as={Component}
+      as={component}
       styleProps={styleProps}
       className={clsx(classes.root, className)}
       ref={ref}
@@ -225,7 +230,7 @@ Avatar.propTypes = {
    */
   component: PropTypes.elementType,
   /**
-   * Attributes applied to the `img` element if the component is used to display an image.
+   * <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#Attributes">Attributes</a> applied to the `img` element if the component is used to display an image.
    * It can be used to listen for the loading error event.
    */
   imgProps: PropTypes.object,
@@ -242,6 +247,10 @@ Avatar.propTypes = {
    * Use this attribute for responsive image display.
    */
   srcSet: PropTypes.string,
+  /**
+   * The system prop that allows defining system overrides as well as additional CSS styles.
+   */
+  sx: PropTypes.object,
   /**
    * The shape of the avatar.
    * @default 'circular'

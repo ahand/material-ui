@@ -1,66 +1,103 @@
 // @inheritedComponent ButtonBase
-
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
-import { alpha, withStyles } from '../styles';
+import { deepmerge } from '@material-ui/utils';
+import { unstable_composeClasses as composeClasses } from '@material-ui/unstyled';
+import { alpha } from '../styles';
 import ButtonBase from '../ButtonBase';
-import { capitalize } from '../utils';
+import capitalize from '../utils/capitalize';
+import useThemeProps from '../styles/useThemeProps';
+import experimentalStyled from '../styles/experimentalStyled';
+import toggleButtonClasses, { getToggleButtonUtilityClass } from './toggleButtonClasses';
 
-export const styles = (theme) => ({
+const overridesResolver = (props, styles) => {
+  const { styleProps } = props;
+
+  return deepmerge(
+    {
+      ...styles[`size${capitalize(styleProps.size)}`],
+      [`& .${toggleButtonClasses.label}`]: styles.label,
+    },
+    styles.root || {},
+  );
+};
+
+const useUtilityClasses = (styleProps) => {
+  const { classes, selected, disabled, size } = styleProps;
+
+  const slots = {
+    root: ['root', selected && 'selected', disabled && 'disabled', `size${capitalize(size)}`],
+    label: ['label'],
+  };
+
+  return composeClasses(slots, getToggleButtonUtilityClass, classes);
+};
+
+const ToggleButtonRoot = experimentalStyled(
+  ButtonBase,
+  {},
+  {
+    name: 'MuiToggleButton',
+    slot: 'Root',
+    overridesResolver,
+  },
+)(({ theme, styleProps }) => ({
   /* Styles applied to the root element. */
-  root: {
-    ...theme.typography.button,
-    borderRadius: theme.shape.borderRadius,
-    padding: 11,
-    border: `1px solid ${alpha(theme.palette.action.active, 0.12)}`,
-    color: alpha(theme.palette.action.active, 0.38),
-    '&$selected': {
-      color: theme.palette.action.active,
-      backgroundColor: alpha(theme.palette.action.active, 0.12),
-      '&:hover': {
-        backgroundColor: alpha(theme.palette.action.active, 0.15),
-      },
-    },
-    '&$disabled': {
-      color: alpha(theme.palette.action.disabled, 0.12),
-    },
+  ...theme.typography.button,
+  borderRadius: theme.shape.borderRadius,
+  padding: 11,
+  border: `1px solid ${alpha(theme.palette.action.active, 0.12)}`,
+  color: alpha(theme.palette.action.active, 0.38),
+  '&.Mui-selected': {
+    color: theme.palette.action.active,
+    backgroundColor: alpha(theme.palette.action.active, 0.12),
     '&:hover': {
-      textDecoration: 'none',
-      // Reset on mouse devices
-      backgroundColor: alpha(theme.palette.text.primary, 0.05),
-      '@media (hover: none)': {
-        backgroundColor: 'transparent',
-      },
+      backgroundColor: alpha(theme.palette.action.active, 0.15),
     },
   },
-  /* Pseudo-class applied to the root element if `disabled={true}`. */
-  disabled: {},
-  /* Pseudo-class applied to the root element if `selected={true}`. */
-  selected: {},
-  /* Styles applied to the `label` wrapper element. */
-  label: {
-    width: '100%', // Ensure the correct width for iOS Safari
-    display: 'inherit',
-    alignItems: 'inherit',
-    justifyContent: 'inherit',
+  '&.Mui-disabled': {
+    color: alpha(theme.palette.action.disabled, 0.12),
+  },
+  '&:hover': {
+    textDecoration: 'none',
+    // Reset on mouse devices
+    backgroundColor: alpha(theme.palette.text.primary, 0.05),
+    '@media (hover: none)': {
+      backgroundColor: 'transparent',
+    },
   },
   /* Styles applied to the root element if `size="small"`. */
-  sizeSmall: {
+  ...(styleProps.size === 'small' && {
     padding: 7,
     fontSize: theme.typography.pxToRem(13),
-  },
+  }),
   /* Styles applied to the root element if `size="large"`. */
-  sizeLarge: {
+  ...(styleProps.size === 'large' && {
     padding: 15,
     fontSize: theme.typography.pxToRem(15),
+  }),
+}));
+
+const ToggleButtonLabel = experimentalStyled(
+  'span',
+  {},
+  {
+    name: 'MuiToggleButton',
+    slot: 'Label',
   },
+)({
+  /* Styles applied to the label wrapper element. */
+  width: '100%', // Ensure the correct width for iOS Safari
+  display: 'inherit',
+  alignItems: 'inherit',
+  justifyContent: 'inherit',
 });
 
-const ToggleButton = React.forwardRef(function ToggleButton(props, ref) {
+const ToggleButton = React.forwardRef(function ToggleButton(inProps, ref) {
+  const props = useThemeProps({ props: inProps, name: 'MuiToggleButton' });
   const {
     children,
-    classes,
     className,
     disabled = false,
     disableFocusRipple = false,
@@ -72,10 +109,19 @@ const ToggleButton = React.forwardRef(function ToggleButton(props, ref) {
     ...other
   } = props;
 
+  const styleProps = {
+    ...props,
+    disabled,
+    disableFocusRipple,
+    size,
+  };
+
+  const classes = useUtilityClasses(styleProps);
+
   const handleChange = (event) => {
     if (onClick) {
       onClick(event, value);
-      if (event.isDefaultPrevented()) {
+      if (event.defaultPrevented) {
         return;
       }
     }
@@ -86,27 +132,22 @@ const ToggleButton = React.forwardRef(function ToggleButton(props, ref) {
   };
 
   return (
-    <ButtonBase
-      className={clsx(
-        classes.root,
-        {
-          [classes.disabled]: disabled,
-          [classes.selected]: selected,
-          [classes[`size${capitalize(size)}`]]: size !== 'medium',
-        },
-        className,
-      )}
+    <ToggleButtonRoot
+      className={clsx(classes.root, className)}
       disabled={disabled}
       focusRipple={!disableFocusRipple}
       ref={ref}
       onClick={handleChange}
       onChange={onChange}
       value={value}
+      styleProps={styleProps}
       aria-pressed={selected}
       {...other}
     >
-      <span className={classes.label}>{children}</span>
-    </ButtonBase>
+      <ToggleButtonLabel className={classes.label} styleProps={styleProps}>
+        {children}
+      </ToggleButtonLabel>
+    </ToggleButtonRoot>
   );
 });
 
@@ -116,7 +157,7 @@ ToggleButton.propTypes = {
   // |     To update them edit the d.ts file and run "yarn proptypes"     |
   // ----------------------------------------------------------------------
   /**
-   * The content of the button.
+   * The content of the component.
    */
   children: PropTypes.node,
   /**
@@ -128,7 +169,7 @@ ToggleButton.propTypes = {
    */
   className: PropTypes.string,
   /**
-   * If `true`, the button is disabled.
+   * If `true`, the component is disabled.
    * @default false
    */
   disabled: PropTypes.bool,
@@ -141,7 +182,7 @@ ToggleButton.propTypes = {
    * If `true`, the ripple effect is disabled.
    *
    * ⚠️ Without a ripple there is no styling for :focus-visible by default. Be sure
-   * to highlight the element by applying separate styles with the `focusVisibleClassName`.
+   * to highlight the element by applying separate styles with the `.Mui-focusedVisible` class.
    * @default false
    */
   disableRipple: PropTypes.bool,
@@ -158,11 +199,15 @@ ToggleButton.propTypes = {
    */
   selected: PropTypes.bool,
   /**
-   * The size of the button.
+   * The size of the component.
    * The prop defaults to the value inherited from the parent ToggleButtonGroup component.
    * @default 'medium'
    */
   size: PropTypes.oneOf(['large', 'medium', 'small']),
+  /**
+   * The system prop that allows defining system overrides as well as additional CSS styles.
+   */
+  sx: PropTypes.object,
   /**
    * The value to associate with the button when selected in a
    * ToggleButtonGroup.
@@ -170,4 +215,4 @@ ToggleButton.propTypes = {
   value: PropTypes.any.isRequired,
 };
 
-export default withStyles(styles, { name: 'MuiToggleButton' })(ToggleButton);
+export default ToggleButton;

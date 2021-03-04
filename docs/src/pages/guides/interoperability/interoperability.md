@@ -55,13 +55,13 @@ export default function PlainCssSlider() {
 
 ```jsx
 import * as React from 'react';
-import { StylesProvider } from '@material-ui/core';
+import StyledEngineProvider from '@material-ui/core/StyledEngineProvider';
 
 export default function GlobalCssPriority() {
   return (
-    <StylesProvider injectFirst>
+    <StyledEngineProvider injectFirst>
       {/* Your component tree. Now you can override Material-UI's styles. */}
-    </StylesProvider>
+    </StyledEngineProvider>
   );
 }
 ```
@@ -208,13 +208,13 @@ export default function GlobalCssSlider() {
 
 ```jsx
 import * as React from 'react';
-import { StylesProvider } from '@material-ui/core';
+import StyledEngineProvider from '@material-ui/core/StyledEngineProvider';
 
 export default function GlobalCssPriority() {
   return (
-    <StylesProvider injectFirst>
+    <StyledEngineProvider injectFirst>
       {/* Your component tree. Now you can override Material-UI's styles. */}
-    </StylesProvider>
+    </StyledEngineProvider>
   );
 }
 ```
@@ -283,7 +283,7 @@ export default function GlobalCssSliderDeep() {
 ## Styled Components
 
 ![stars](https://img.shields.io/github/stars/styled-components/styled-components.svg?style=social&label=Star)
-![npm](https://img.shields.io/npm/dm/styled-components.svg?)
+![npm](https://img.shields.io/npm/dm/styled-components.svg)
 
 ### Change the default styled engine
 
@@ -441,7 +441,7 @@ bundling solution people are using.
 **CssModulesSlider.js**
 
 ```jsx
-import React from 'react';
+import * as React from 'react';
 import Slider from '@material-ui/core/Slider';
 // webpack, parcel or else will inject the CSS into the page
 import styles from './CssModulesSlider.module.css';
@@ -462,13 +462,13 @@ export default function CssModulesSlider() {
 
 ```jsx
 import * as React from 'react';
-import { StylesProvider } from '@material-ui/core';
+import StyledEngineProvider from '@material-ui/core/StyledEngineProvider';
 
 export default function GlobalCssPriority() {
   return (
-    <StylesProvider injectFirst>
+    <StyledEngineProvider injectFirst>
       {/* Your component tree. Now you can override Material-UI's styles. */}
-    </StylesProvider>
+    </StyledEngineProvider>
   );
 }
 ```
@@ -525,7 +525,7 @@ The following examples override the slider's `thumb` style in addition to the cu
 **CssModulesSliderDeep1.js**
 
 ```jsx
-import React from 'react';
+import * as React from 'react';
 // webpack, parcel or else will inject the CSS into the page
 import styles from './CssModulesSliderDeep1.module.css';
 import Slider from '@material-ui/core/Slider';
@@ -561,7 +561,7 @@ The above demo relies on the [default `className` values](/styles/advanced/#with
 **CssModulesSliderDeep2.js**
 
 ```jsx
-import React from 'react';
+import * as React from 'react';
 // webpack, parcel or else will inject the CSS into the page
 import styles from './CssModulesSliderDeep2.module.css';
 import Slider from '@material-ui/core/Slider';
@@ -583,7 +583,7 @@ export default function CssModulesSliderDeep2() {
 ## Emotion
 
 ![stars](https://img.shields.io/github/stars/emotion-js/emotion.svg?style=social&label=Star)
-![npm](https://img.shields.io/npm/dm/emotion.svg?)
+![npm](https://img.shields.io/npm/dm/@emotion/react.svg)
 
 ### The `css` prop
 

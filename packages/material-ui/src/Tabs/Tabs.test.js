@@ -92,10 +92,13 @@ describe('<Tabs />', () => {
         render(<Tabs value={0} centered variant="scrollable" />);
       }).toErrorDev([
         'Material-UI: You can not use the `centered={true}` and `variant="scrollable"`',
-        // StrictMode renders twice
+        React.version.startsWith('16') &&
+          // StrictMode renders twice
+          'Material-UI: You can not use the `centered={true}` and `variant="scrollable"`',
         'Material-UI: You can not use the `centered={true}` and `variant="scrollable"`',
-        'Material-UI: You can not use the `centered={true}` and `variant="scrollable"`',
-        'Material-UI: You can not use the `centered={true}` and `variant="scrollable"`',
+        React.version.startsWith('16') &&
+          // StrictMode renders twice
+          'Material-UI: You can not use the `centered={true}` and `variant="scrollable"`',
       ]);
     });
   });
@@ -182,7 +185,7 @@ describe('<Tabs />', () => {
     it('should accept any value as selected tab value', () => {
       const tab0 = {};
       const tab1 = {};
-      expect(tab0).to.not.equal(tab1);
+      expect(tab0).not.to.equal(tab1);
 
       const { getAllByRole } = render(
         <Tabs value={tab0}>

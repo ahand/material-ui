@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { OverridableStringUnion } from '@material-ui/types';
 import { OverridableComponent, OverrideProps } from '@material-ui/core/OverridableComponent';
+import { SxProps } from '@material-ui/system';
+import { Theme } from '../styles';
 import { UsePaginationItem } from '../usePagination/usePagination';
 
 export interface PaginationItemPropsVariantOverrides {}
@@ -16,9 +18,9 @@ export interface PaginationItemTypeMap<P = {}, D extends React.ElementType = 'di
       root?: string;
       /** Styles applied to the root element if `type="page"`. */
       page?: string;
-      /** Styles applied applied to the root element if `size="small"`. */
+      /** Styles applied to the root element if `size="small"`. */
       sizeSmall?: string;
-      /** Styles applied applied to the root element if `size="large"`. */
+      /** Styles applied to the root element if `size="large"`. */
       sizeLarge?: string;
       /** Styles applied to the root element if `variant="text"`. */
       text?: string;
@@ -42,7 +44,7 @@ export interface PaginationItemTypeMap<P = {}, D extends React.ElementType = 'di
       disabled?: string;
       /** Pseudo-class applied to the root element if `selected={true}`. */
       selected?: string;
-      /** Styles applied to the icon element. */
+      /** Styles applied to tThe icon to display. */
       icon?: string;
     };
     /**
@@ -51,7 +53,7 @@ export interface PaginationItemTypeMap<P = {}, D extends React.ElementType = 'di
      */
     color?: 'standard' | 'primary' | 'secondary';
     /**
-     * If `true`, the item is disabled.
+     * If `true`, the component is disabled.
      * @default false
      */
     disabled?: boolean;
@@ -70,17 +72,21 @@ export interface PaginationItemTypeMap<P = {}, D extends React.ElementType = 'di
      */
     shape?: 'circular' | 'rounded';
     /**
-     * The size of the pagination item.
+     * The size of the component.
      * @default 'medium'
      */
     size?: 'small' | 'medium' | 'large';
+    /**
+     * The system prop that allows defining system overrides as well as additional CSS styles.
+     */
+    sx?: SxProps<Theme>;
     /**
      * The type of pagination item.
      * @default 'page'
      */
     type?: UsePaginationItem['type'];
     /**
-     * The pagination item variant.
+     * The variant to use.
      * @default 'text'
      */
     variant?: OverridableStringUnion<

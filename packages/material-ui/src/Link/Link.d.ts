@@ -1,13 +1,15 @@
 import * as React from 'react';
-import { Omit } from '@material-ui/types';
+import { DistributiveOmit } from '@material-ui/types';
+import { SxProps } from '@material-ui/system';
 import { OverridableComponent, OverrideProps } from '../OverridableComponent';
+import { Theme } from '../styles';
 import { TypographyProps } from '../Typography';
 
 export interface LinkTypeMap<P = {}, D extends React.ElementType = 'a'> {
   props: P &
     LinkBaseProps & {
       /**
-       * The content of the link.
+       * The content of the component.
        */
       children?: React.ReactNode;
       /**
@@ -32,6 +34,10 @@ export interface LinkTypeMap<P = {}, D extends React.ElementType = 'a'> {
        * @default 'primary'
        */
       color?: TypographyProps['color'];
+      /**
+       * The system prop that allows defining system overrides as well as additional CSS styles.
+       */
+      sx?: SxProps<Theme>;
       /**
        * `classes` prop applied to the [`Typography`](/api/typography/) element.
        */
@@ -67,7 +73,7 @@ declare const Link: OverridableComponent<LinkTypeMap>;
 export type LinkClassKey = keyof NonNullable<LinkTypeMap['props']['classes']>;
 
 export type LinkBaseProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'color'> &
-  Omit<TypographyProps, 'children' | 'component' | 'color' | 'variant'>;
+  DistributiveOmit<TypographyProps, 'children' | 'component' | 'color' | 'variant'>;
 
 export type LinkProps<
   D extends React.ElementType = LinkTypeMap['defaultComponent'],

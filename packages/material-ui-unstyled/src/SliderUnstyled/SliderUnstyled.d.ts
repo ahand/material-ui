@@ -28,7 +28,6 @@ export interface SliderUnstyledTypeMap<P = {}, D extends React.ElementType = 'sp
     'aria-valuetext'?: string;
     /**
      * Override or extend the styles applied to the component.
-     * @default {}
      */
     classes?: {
       /** Class name applied to the root element. */
@@ -39,6 +38,8 @@ export interface SliderUnstyledTypeMap<P = {}, D extends React.ElementType = 'sp
       vertical?: string;
       /** Pseudo-class applied to the root and thumb element if `disabled={true}`. */
       disabled?: string;
+      /** Pseudo-class applied to the root if a thumb is being dragged. */
+      dragging?: string;
       /** Class name applied to the rail element. */
       rail?: string;
       /** Class name applied to the track element. */
@@ -55,6 +56,12 @@ export interface SliderUnstyledTypeMap<P = {}, D extends React.ElementType = 'sp
       focusVisible?: string;
       /** Class name applied to the thumb label element. */
       valueLabel?: string;
+      /** Class name applied to the thumb label element if it's open. */
+      valueLabelOpen?: string;
+      /** Class name applied to the thumb label's circle element. */
+      valueLabelCircle?: string;
+      /** Class name applied to the thumb label's label element. */
+      valueLabelLabel?: string;
       /** Class name applied to the mark element. */
       mark?: string;
       /** Class name applied to the mark element if active (depending on the value). */
@@ -119,11 +126,11 @@ export interface SliderUnstyledTypeMap<P = {}, D extends React.ElementType = 'sp
       };
     };
     /**
-     * The default element value. Use when the component is not controlled.
+     * The default value. Use when the component is not controlled.
      */
     defaultValue?: number | number[];
     /**
-     * If `true`, the slider is disabled.
+     * If `true`, the component is disabled.
      * @default false
      */
     disabled?: boolean;
@@ -173,19 +180,21 @@ export interface SliderUnstyledTypeMap<P = {}, D extends React.ElementType = 'sp
     /**
      * Callback function that is fired when the slider's value changed.
      *
-     * @param {object} event The event source of the callback. **Warning**: This is a generic event not a change event.
+     * @param {object} event The event source of the callback.
+     * You can pull out the new value by accessing `event.target.value` (any).
+     * **Warning**: This is a generic event not a change event.
      * @param {number | number[]} value The new value.
      */
-    onChange?: (event: React.SyntheticEvent, value: number | number[]) => void;
+    onChange?: (event: Event, value: number | number[]) => void;
     /**
      * Callback function that is fired when the `mouseup` is triggered.
      *
      * @param {object} event The event source of the callback. **Warning**: This is a generic event not a change event.
      * @param {number | number[]} value The new value.
      */
-    onChangeCommitted?: (event: React.SyntheticEvent, value: number | number[]) => void;
+    onChangeCommitted?: (event: React.SyntheticEvent | Event, value: number | number[]) => void;
     /**
-     * The slider orientation.
+     * The component orientation.
      * @default 'horizontal'
      */
     orientation?: 'horizontal' | 'vertical';

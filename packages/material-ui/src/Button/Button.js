@@ -2,7 +2,8 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { deepmerge } from '@material-ui/utils';
-import experimentalStyled from '../styles/experimentalStyled';
+import { unstable_composeClasses as composeClasses } from '@material-ui/unstyled';
+import experimentalStyled, { shouldForwardProp } from '../styles/experimentalStyled';
 import useThemeProps from '../styles/useThemeProps';
 import { alpha } from '../styles/colorManipulator';
 import ButtonBase from '../ButtonBase';
@@ -10,69 +11,55 @@ import capitalize from '../utils/capitalize';
 import buttonClasses, { getButtonUtilityClass } from './buttonClasses';
 
 const overridesResolver = (props, styles) => {
-  const {
-    color = 'primary',
-    disableElevation = false,
-    fullWidth = false,
-    size = 'medium',
-    variant = 'text',
-  } = props;
+  const { styleProps } = props;
 
-  return deepmerge(styles.root || {}, {
-    ...styles[variant],
-    ...styles[`${variant}${capitalize(color)}`],
-    ...styles[`size${capitalize(size)}`],
-    ...styles[`${variant}Size${capitalize(size)}`],
-    ...(color === 'inherit' && styles.colorInherit),
-    ...(disableElevation && styles.disableElevation),
-    ...(fullWidth && styles.fullWidth),
-    [`& .${buttonClasses.label}`]: styles.label,
-    [`& .${buttonClasses.startIcon}`]: {
-      ...styles.startIcon,
-      ...styles[`iconSize${capitalize(size)}`],
+  return deepmerge(
+    {
+      ...styles[styleProps.variant],
+      ...styles[`${styleProps.variant}${capitalize(styleProps.color)}`],
+      ...styles[`size${capitalize(styleProps.size)}`],
+      ...styles[`${styleProps.variant}Size${capitalize(styleProps.size)}`],
+      ...(styleProps.color === 'inherit' && styles.colorInherit),
+      ...(styleProps.disableElevation && styles.disableElevation),
+      ...(styleProps.fullWidth && styles.fullWidth),
+      [`& .${buttonClasses.label}`]: styles.label,
+      [`& .${buttonClasses.startIcon}`]: {
+        ...styles.startIcon,
+        ...styles[`iconSize${capitalize(styleProps.size)}`],
+      },
+      [`& .${buttonClasses.endIcon}`]: {
+        ...styles.endIcon,
+        ...styles[`iconSize${capitalize(styleProps.size)}`],
+      },
     },
-    [`& .${buttonClasses.endIcon}`]: {
-      ...styles.endIcon,
-      ...styles[`iconSize${capitalize(size)}`],
-    },
-  });
+    styles.root || {},
+  );
 };
 
 const useUtilityClasses = (styleProps) => {
-  const { color, disableElevation, fullWidth, size, variant, classes = {} } = styleProps;
+  const { color, disableElevation, fullWidth, size, variant, classes } = styleProps;
+
+  const slots = {
+    root: [
+      'root',
+      variant,
+      `${variant}${capitalize(color)}`,
+      `size${capitalize(size)}`,
+      `${variant}Size${capitalize(size)}`,
+      color === 'inherit' && 'colorInherit',
+      disableElevation && 'disableElevation',
+      fullWidth && 'fullWidth',
+    ],
+    label: ['label'],
+    startIcon: ['startIcon', `iconSize${capitalize(size)}`],
+    endIcon: ['endIcon', `iconSize${capitalize(size)}`],
+  };
+
+  const composedClasses = composeClasses(slots, getButtonUtilityClass, classes);
 
   return {
-    root: clsx(
-      buttonClasses.root,
-      classes.root,
-      getButtonUtilityClass(variant),
-      classes[variant],
-      getButtonUtilityClass(`${variant}${capitalize(color)}`),
-      classes[[`${variant}${capitalize(color)}`]],
-      getButtonUtilityClass(`size${capitalize(size)}`),
-      classes[`size${capitalize(size)}`],
-      getButtonUtilityClass(`${variant}Size${capitalize(size)}`),
-      classes[`${variant}Size${capitalize(size)}`],
-      {
-        [buttonClasses.colorInherit]: color === 'inherit',
-        [classes.colorInherit]: color === 'inherit',
-        [buttonClasses.disableElevation]: disableElevation,
-        [classes.disableElevation]: disableElevation,
-        [buttonClasses.fullWidth]: fullWidth,
-        [classes.fullWidth]: fullWidth,
-      },
-    ),
-    label: clsx(buttonClasses.label, classes.label),
-    startIcon: clsx(
-      buttonClasses.startIcon,
-      classes.startIcon,
-      getButtonUtilityClass(`iconSize${capitalize(size)}`),
-    ),
-    endIcon: clsx(
-      buttonClasses.endIcon,
-      classes.endIcon,
-      getButtonUtilityClass(`iconSize${capitalize(size)}`),
-    ),
+    ...classes, // forward the focused, disabled, etc. classes to the ButtonBase
+    ...composedClasses,
   };
 };
 
@@ -92,6 +79,197 @@ const commonIconStyles = (styleProps) => ({
       fontSize: 22,
     },
   }),
+});
+
+const ButtonRoot = experimentalStyled(
+  ButtonBase,
+  { shouldForwardProp: (prop) => shouldForwardProp(prop) || prop === 'classes' },
+  {
+    name: 'MuiButton',
+    slot: 'Root',
+    overridesResolver,
+  },
+)(
+  ({ theme, styleProps }) => ({
+    ...theme.typography.button,
+    minWidth: 64,
+    padding: '6px 16px',
+    borderRadius: theme.shape.borderRadius,
+    transition: theme.transitions.create(
+      ['background-color', 'box-shadow', 'border-color', 'color'],
+      {
+        duration: theme.transitions.duration.short,
+      },
+    ),
+    '&:hover': {
+      textDecoration: 'none',
+      backgroundColor: alpha(theme.palette.text.primary, theme.palette.action.hoverOpacity),
+      // Reset on touch devices, it doesn't add specificity
+      '@media (hover: none)': {
+        backgroundColor: 'transparent',
+      },
+      ...(styleProps.variant === 'text' &&
+        styleProps.color !== 'inherit' && {
+          backgroundColor: alpha(
+            theme.palette[styleProps.color].main,
+            theme.palette.action.hoverOpacity,
+          ),
+          // Reset on touch devices, it doesn't add specificity
+          '@media (hover: none)': {
+            backgroundColor: 'transparent',
+          },
+        }),
+      ...(styleProps.variant === 'outlined' &&
+        styleProps.color !== 'inherit' && {
+          border: `1px solid ${theme.palette[styleProps.color].main}`,
+          backgroundColor: alpha(
+            theme.palette[styleProps.color].main,
+            theme.palette.action.hoverOpacity,
+          ),
+          // Reset on touch devices, it doesn't add specificity
+          '@media (hover: none)': {
+            backgroundColor: 'transparent',
+          },
+        }),
+      ...(styleProps.variant === 'contained' && {
+        backgroundColor: theme.palette.grey.A100,
+        boxShadow: theme.shadows[4],
+        // Reset on touch devices, it doesn't add specificity
+        '@media (hover: none)': {
+          boxShadow: theme.shadows[2],
+          backgroundColor: theme.palette.grey[300],
+        },
+      }),
+      ...(styleProps.variant === 'contained' &&
+        styleProps.color !== 'inherit' && {
+          backgroundColor: theme.palette[styleProps.color].dark,
+          // Reset on touch devices, it doesn't add specificity
+          '@media (hover: none)': {
+            backgroundColor: theme.palette[styleProps.color].main,
+          },
+        }),
+    },
+    '&:active': {
+      ...(styleProps.variant === 'contained' && {
+        boxShadow: theme.shadows[8],
+      }),
+    },
+    '&.Mui-focusVisible': {
+      ...(styleProps.variant === 'contained' && {
+        boxShadow: theme.shadows[6],
+      }),
+    },
+    '&.Mui-disabled': {
+      color: theme.palette.action.disabled,
+      ...(styleProps.variant === 'outlined' && {
+        border: `1px solid ${theme.palette.action.disabledBackground}`,
+      }),
+      ...(styleProps.variant === 'outlined' &&
+        styleProps.color === 'secondary' && {
+          border: `1px solid ${theme.palette.action.disabled}`,
+        }),
+      ...(styleProps.variant === 'contained' && {
+        color: theme.palette.action.disabled,
+        boxShadow: theme.shadows[0],
+        backgroundColor: theme.palette.action.disabledBackground,
+      }),
+    },
+    ...(styleProps.variant === 'text' && {
+      padding: '6px 8px',
+    }),
+    ...(styleProps.variant === 'text' &&
+      styleProps.color !== 'inherit' && {
+        color: theme.palette[styleProps.color].main,
+      }),
+    ...(styleProps.variant === 'outlined' && {
+      padding: '5px 15px',
+      border: `1px solid ${
+        theme.palette.mode === 'light' ? 'rgba(0, 0, 0, 0.23)' : 'rgba(255, 255, 255, 0.23)'
+      }`,
+    }),
+    ...(styleProps.variant === 'outlined' &&
+      styleProps.color !== 'inherit' && {
+        color: theme.palette[styleProps.color].main,
+        border: `1px solid ${alpha(theme.palette[styleProps.color].main, 0.5)}`,
+      }),
+    ...(styleProps.variant === 'contained' && {
+      color: theme.palette.getContrastText(theme.palette.grey[300]),
+      backgroundColor: theme.palette.grey[300],
+      boxShadow: theme.shadows[2],
+    }),
+    ...(styleProps.variant === 'contained' &&
+      styleProps.color !== 'inherit' && {
+        color: theme.palette[styleProps.color].contrastText,
+        backgroundColor: theme.palette[styleProps.color].main,
+      }),
+    ...(styleProps.color === 'inherit' && {
+      color: 'inherit',
+      borderColor: 'currentColor',
+    }),
+    ...(styleProps.size === 'small' &&
+      styleProps.variant === 'text' && {
+        padding: '4px 5px',
+        fontSize: theme.typography.pxToRem(13),
+      }),
+    ...(styleProps.size === 'large' &&
+      styleProps.variant === 'text' && {
+        padding: '8px 11px',
+        fontSize: theme.typography.pxToRem(15),
+      }),
+    ...(styleProps.size === 'small' &&
+      styleProps.variant === 'outlined' && {
+        padding: '3px 9px',
+        fontSize: theme.typography.pxToRem(13),
+      }),
+    ...(styleProps.size === 'large' &&
+      styleProps.variant === 'outlined' && {
+        padding: '7px 21px',
+        fontSize: theme.typography.pxToRem(15),
+      }),
+    ...(styleProps.size === 'small' &&
+      styleProps.variant === 'contained' && {
+        padding: '4px 10px',
+        fontSize: theme.typography.pxToRem(13),
+      }),
+    ...(styleProps.size === 'large' &&
+      styleProps.variant === 'contained' && {
+        padding: '8px 22px',
+        fontSize: theme.typography.pxToRem(15),
+      }),
+    ...(styleProps.fullWidth && {
+      width: '100%',
+    }),
+  }),
+  ({ styleProps }) =>
+    styleProps.disableElevation && {
+      boxShadow: 'none',
+      '&:hover': {
+        boxShadow: 'none',
+      },
+      '&.Mui-focusVisible': {
+        boxShadow: 'none',
+      },
+      '&:active': {
+        boxShadow: 'none',
+      },
+      '&.Mui-disabled': {
+        boxShadow: 'none',
+      },
+    },
+);
+
+const ButtonLabel = experimentalStyled(
+  'span',
+  {},
+  {
+    name: 'MuiButton',
+    slot: 'Label',
+  },
+)({
+  width: '100%', // Ensure the correct width for iOS Safari
+  display: 'inherit',
+  alignItems: 'inherit',
+  justifyContent: 'inherit',
 });
 
 const ButtonStartIcon = experimentalStyled(
@@ -128,200 +306,10 @@ const ButtonEndIcon = experimentalStyled(
   ...commonIconStyles(styleProps),
 }));
 
-const ButtonLabel = experimentalStyled(
-  'span',
-  {},
-  {
-    name: 'MuiButton',
-    slot: 'Label',
-  },
-)({
-  width: '100%', // Ensure the correct width for iOS Safari
-  display: 'inherit',
-  alignItems: 'inherit',
-  justifyContent: 'inherit',
-});
-
-const ButtonRoot = experimentalStyled(
-  ButtonBase,
-  {},
-  {
-    name: 'MuiButton',
-    slot: 'Root',
-    overridesResolver,
-  },
-)(({ theme, styleProps }) => ({
-  ...theme.typography.button,
-  minWidth: 64,
-  padding: '6px 16px',
-  borderRadius: theme.shape.borderRadius,
-  transition: theme.transitions.create(
-    ['background-color', 'box-shadow', 'border-color', 'color'],
-    {
-      duration: theme.transitions.duration.short,
-    },
-  ),
-  '&:hover': {
-    textDecoration: 'none',
-    backgroundColor: alpha(theme.palette.text.primary, theme.palette.action.hoverOpacity),
-    // Reset on touch devices, it doesn't add specificity
-    '@media (hover: none)': {
-      backgroundColor: 'transparent',
-    },
-    ...(styleProps.variant === 'text' &&
-      styleProps.color !== 'inherit' && {
-        backgroundColor: alpha(
-          theme.palette[styleProps.color].main,
-          theme.palette.action.hoverOpacity,
-        ),
-        // Reset on touch devices, it doesn't add specificity
-        '@media (hover: none)': {
-          backgroundColor: 'transparent',
-        },
-      }),
-    ...(styleProps.variant === 'outlined' &&
-      styleProps.color !== 'inherit' && {
-        border: `1px solid ${theme.palette[styleProps.color].main}`,
-        backgroundColor: alpha(
-          theme.palette[styleProps.color].main,
-          theme.palette.action.hoverOpacity,
-        ),
-        // Reset on touch devices, it doesn't add specificity
-        '@media (hover: none)': {
-          backgroundColor: 'transparent',
-        },
-      }),
-    ...(styleProps.variant === 'contained' && {
-      backgroundColor: theme.palette.grey.A100,
-      boxShadow: theme.shadows[4],
-      // Reset on touch devices, it doesn't add specificity
-      '@media (hover: none)': {
-        boxShadow: theme.shadows[2],
-        backgroundColor: theme.palette.grey[300],
-      },
-    }),
-    ...(styleProps.variant === 'contained' &&
-      styleProps.color !== 'inherit' && {
-        backgroundColor: theme.palette[styleProps.color].dark,
-        // Reset on touch devices, it doesn't add specificity
-        '@media (hover: none)': {
-          backgroundColor: theme.palette[styleProps.color].main,
-        },
-      }),
-    ...(styleProps.disableElevation && {
-      boxShadow: 'none',
-    }),
-  },
-  '&:active': {
-    ...(styleProps.variant === 'contained' && {
-      boxShadow: theme.shadows[8],
-    }),
-    ...(styleProps.disableElevation && {
-      boxShadow: 'none',
-    }),
-  },
-  '&.Mui-focusVisible': {
-    ...(styleProps.variant === 'contained' && {
-      boxShadow: theme.shadows[6],
-    }),
-    ...(styleProps.disableElevation && {
-      boxShadow: 'none',
-    }),
-  },
-  '&.Mui-disabled': {
-    color: theme.palette.action.disabled,
-    ...(styleProps.variant === 'outlined' && {
-      border: `1px solid ${theme.palette.action.disabledBackground}`,
-    }),
-    ...(styleProps.variant === 'outlined' &&
-      styleProps.color === 'secondary' && {
-        border: `1px solid ${theme.palette.action.disabled}`,
-      }),
-    ...(styleProps.variant === 'contained' && {
-      color: theme.palette.action.disabled,
-      boxShadow: theme.shadows[0],
-      backgroundColor: theme.palette.action.disabledBackground,
-    }),
-    ...(styleProps.disableElevation && {
-      boxShadow: 'none',
-    }),
-  },
-  ...(styleProps.variant === 'text' && {
-    padding: '6px 8px',
-  }),
-  ...(styleProps.variant === 'text' &&
-    styleProps.color !== 'inherit' && {
-      color: theme.palette[styleProps.color].main,
-    }),
-  ...(styleProps.variant === 'outlined' && {
-    padding: '5px 15px',
-    border: `1px solid ${
-      theme.palette.mode === 'light' ? 'rgba(0, 0, 0, 0.23)' : 'rgba(255, 255, 255, 0.23)'
-    }`,
-  }),
-  ...(styleProps.variant === 'outlined' &&
-    styleProps.color !== 'inherit' && {
-      color: theme.palette[styleProps.color].main,
-      border: `1px solid ${alpha(theme.palette[styleProps.color].main, 0.5)}`,
-    }),
-  ...(styleProps.variant === 'contained' && {
-    color: theme.palette.getContrastText(theme.palette.grey[300]),
-    backgroundColor: theme.palette.grey[300],
-    boxShadow: theme.shadows[2],
-  }),
-  ...(styleProps.variant === 'contained' &&
-    styleProps.color !== 'inherit' && {
-      color: theme.palette[styleProps.color].contrastText,
-      backgroundColor: theme.palette[styleProps.color].main,
-    }),
-  ...(styleProps.disableElevation && {
-    boxShadow: 'none',
-  }),
-  ...(styleProps.color === 'inherit' && {
-    color: 'inherit',
-    borderColor: 'currentColor',
-  }),
-  ...(styleProps.size === 'small' &&
-    styleProps.variant === 'text' && {
-      padding: '4px 5px',
-      fontSize: theme.typography.pxToRem(13),
-    }),
-  ...(styleProps.size === 'large' &&
-    styleProps.variant === 'text' && {
-      padding: '8px 11px',
-      fontSize: theme.typography.pxToRem(15),
-    }),
-  ...(styleProps.size === 'small' &&
-    styleProps.variant === 'outlined' && {
-      padding: '3px 9px',
-      fontSize: theme.typography.pxToRem(13),
-    }),
-  ...(styleProps.size === 'large' &&
-    styleProps.variant === 'outlined' && {
-      padding: '7px 21px',
-      fontSize: theme.typography.pxToRem(15),
-    }),
-  ...(styleProps.size === 'small' &&
-    styleProps.variant === 'contained' && {
-      padding: '4px 10px',
-      fontSize: theme.typography.pxToRem(13),
-    }),
-  ...(styleProps.size === 'large' &&
-    styleProps.variant === 'contained' && {
-      padding: '8px 22px',
-      fontSize: theme.typography.pxToRem(15),
-    }),
-  ...(styleProps.fullWidth && {
-    width: '100%',
-  }),
-}));
-
 const Button = React.forwardRef(function Button(inProps, ref) {
   const props = useThemeProps({ props: inProps, name: 'MuiButton' });
-
   const {
     children,
-    className,
     color = 'primary',
     component = 'button',
     disabled = false,
@@ -366,7 +354,6 @@ const Button = React.forwardRef(function Button(inProps, ref) {
 
   return (
     <ButtonRoot
-      className={clsx(classes.root, className)}
       styleProps={styleProps}
       component={component}
       disabled={disabled}
@@ -375,6 +362,7 @@ const Button = React.forwardRef(function Button(inProps, ref) {
       ref={ref}
       type={type}
       {...other}
+      classes={classes}
     >
       {/*
        * The inner <span> is required to vertically align the children.
@@ -382,7 +370,7 @@ const Button = React.forwardRef(function Button(inProps, ref) {
        * https://github.com/philipwalton/flexbugs/blob/master/README.md#flexbug-9
        * TODO v5: evaluate if still required for the supported browsers.
        */}
-      <ButtonLabel className={classes.label}>
+      <ButtonLabel className={classes.label} styleProps={styleProps}>
         {startIcon}
         {children}
         {endIcon}
@@ -397,7 +385,7 @@ Button.propTypes = {
   // |     To update them edit the d.ts file and run "yarn proptypes"     |
   // ----------------------------------------------------------------------
   /**
-   * The content of the button.
+   * The content of the component.
    */
   children: PropTypes.node,
   /**
@@ -405,21 +393,20 @@ Button.propTypes = {
    */
   classes: PropTypes.object,
   /**
-   * @ignore
-   */
-  className: PropTypes.string,
-  /**
    * The color of the component. It supports those theme colors that make sense for this component.
    * @default 'primary'
    */
-  color: PropTypes.oneOf(['inherit', 'primary', 'secondary']),
+  color: PropTypes /* @typescript-to-proptypes-ignore */.oneOfType([
+    PropTypes.oneOf(['inherit', 'primary', 'secondary']),
+    PropTypes.string,
+  ]),
   /**
    * The component used for the root node.
    * Either a string to use a HTML element or a component.
    */
   component: PropTypes.elementType,
   /**
-   * If `true`, the button is disabled.
+   * If `true`, the component is disabled.
    * @default false
    */
   disabled: PropTypes.bool,
@@ -437,7 +424,7 @@ Button.propTypes = {
    * If `true`, the ripple effect is disabled.
    *
    * ⚠️ Without a ripple there is no styling for :focus-visible by default. Be sure
-   * to highlight the element by applying separate styles with the `focusVisibleClassName`.
+   * to highlight the element by applying separate styles with the `.Mui-focusedVisible` class.
    * @default false
    */
   disableRipple: PropTypes.bool,
@@ -460,15 +447,22 @@ Button.propTypes = {
    */
   href: PropTypes.string,
   /**
-   * The size of the button.
+   * The size of the component.
    * `small` is equivalent to the dense button styling.
    * @default 'medium'
    */
-  size: PropTypes.oneOf(['large', 'medium', 'small']),
+  size: PropTypes /* @typescript-to-proptypes-ignore */.oneOfType([
+    PropTypes.oneOf(['small', 'medium', 'large']),
+    PropTypes.string,
+  ]),
   /**
    * Element placed before the children.
    */
   startIcon: PropTypes.node,
+  /**
+   * The system prop that allows defining system overrides as well as additional CSS styles.
+   */
+  sx: PropTypes.object,
   /**
    * @ignore
    */

@@ -1,5 +1,10 @@
 import * as React from 'react';
+import { SxProps } from '@material-ui/system';
+import { OverridableStringUnion } from '@material-ui/types';
+import { Theme } from '../styles';
 import { InternalStandardProps as StandardProps } from '..';
+
+export interface InputBasePropsSizeOverrides {}
 
 export interface InputBaseProps
   extends StandardProps<
@@ -40,7 +45,7 @@ export interface InputBaseProps
     adornedEnd?: string;
     /** Pseudo-class applied to the root element if `error={true}`. */
     error?: string;
-    /** Styles applied to the `input` element if `size="small"`. */
+    /** Styles applied to the input element if `size="small"`. */
     sizeSmall?: string;
     /** Styles applied to the root element if `multiline={true}`. */
     multiline?: string;
@@ -50,19 +55,19 @@ export interface InputBaseProps
     fullWidth?: string;
     /** Styles applied to the root element if `hiddenLabel={true}`. */
     hiddenLabel?: string;
-    /** Styles applied to the `input` element. */
+    /** Styles applied to the input element. */
     input?: string;
-    /** Styles applied to the `input` element if `size="small"`. */
+    /** Styles applied to the input element if `size="small"`. */
     inputSizeSmall?: string;
-    /** Styles applied to the `input` element if `multiline={true}`. */
+    /** Styles applied to the input element if `multiline={true}`. */
     inputMultiline?: string;
-    /** Styles applied to the `input` element if `type="search"`. */
+    /** Styles applied to the input element if `type="search"`. */
     inputTypeSearch?: string;
-    /** Styles applied to the `input` element if `startAdornment` is provided. */
+    /** Styles applied to the input element if `startAdornment` is provided. */
     inputAdornedStart?: string;
-    /** Styles applied to the `input` element if `endAdornment` is provided. */
+    /** Styles applied to the input element if `endAdornment` is provided. */
     inputAdornedEnd?: string;
-    /** Styles applied to the `input` element if `hiddenLabel={true}`. */
+    /** Styles applied to the input element if `hiddenLabel={true}`. */
     inputHiddenLabel?: string;
   };
   /**
@@ -71,11 +76,41 @@ export interface InputBaseProps
    */
   color?: 'primary' | 'secondary';
   /**
-   * The default `input` element value. Use when the component is not controlled.
+   * The components used for each slot inside the InputBase.
+   * Either a string to use a HTML element or a component.
+   * @default {}
+   */
+  components?: {
+    Root?: React.ElementType;
+    Input?: React.ElementType;
+  };
+
+  /**
+   * The props used for each slot inside the Input.
+   * @default {}
+   */
+  componentsProps?: {
+    root?: {
+      as: React.ElementType;
+      styleProps?: Omit<InputBaseProps, 'components' | 'componentsProps'> & {
+        hiddenLabel?: boolean;
+        focused?: boolean;
+      };
+    };
+    input?: {
+      as?: React.ElementType;
+      styleProps?: Omit<InputBaseProps, 'components' | 'componentsProps'> & {
+        hiddenLabel?: boolean;
+        focused?: boolean;
+      };
+    };
+  };
+  /**
+   * The default value. Use when the component is not controlled.
    */
   defaultValue?: unknown;
   /**
-   * If `true`, the `input` element is disabled.
+   * If `true`, the component is disabled.
    * The prop defaults to the value (`false`) inherited from the parent FormControl component.
    */
   disabled?: boolean;
@@ -179,13 +214,17 @@ export interface InputBaseProps
    */
   minRows?: string | number;
   /**
-   * The size of the text field.
+   * The size of the component.
    */
-  size?: 'small' | 'medium';
+  size?: OverridableStringUnion<Record<'small' | 'medium', true>, InputBasePropsSizeOverrides>;
   /**
    * Start `InputAdornment` for this component.
    */
   startAdornment?: React.ReactNode;
+  /**
+   * The system prop that allows defining system overrides as well as additional CSS styles.
+   */
+  sx?: SxProps<Theme>;
   /**
    * Type of the `input` element. It should be [a valid HTML5 input type](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#Form_%3Cinput%3E_types).
    * @default 'text'
@@ -209,6 +248,7 @@ export type InputBaseClassKey = keyof NonNullable<InputBaseProps['classes']>;
  * `InputBase` contains as few styles as possible.
  * It aims to be a simple building block for creating an input.
  * It contains a load of style reset and some state logic.
+ *
  * Demos:
  *
  * - [Text Fields](https://material-ui.com/components/text-fields/)

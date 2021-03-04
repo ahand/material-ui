@@ -52,13 +52,13 @@ export default function PlainCssSlider() {
 **Note:** Most CSS-in-JS solutions inject their styles at the bottom of the HTML `<head>`, which gives Material-UI precedence over your custom styles. To remove the need for **!important**, you need to change the CSS injection order. Here's a demo of how it can be done in Material-UI:
 
 ```jsx
-import * as React from 'react';
+Now you can override Material-UI's styles. import * as React from 'react';
 import { StylesProvider } from '@material-ui/core';
 
 export default function GlobalCssPriority() {
   return (
     <StylesProvider injectFirst>
-      {/* Your component tree. Now you can override Material-UI's styles. */}
+      {/* Your component tree. */}
     </StylesProvider>
   );
 }
@@ -79,7 +79,13 @@ const cache = createCache({
 export default function PlainCssPriority() {
   return (
     <CacheProvider value={cache}>
-      {/* Your component tree. Now you can override Material-UI's styles. */}
+      {/* Your component tree. import * as React from 'react';
+import { StylesProvider } from '@material-ui/core';
+
+export default function GlobalCssPriority() {
+  return (
+    <StylesProvider injectFirst>
+      {/* Your component tree. */}
     </CacheProvider>
   );
 }
@@ -202,13 +208,13 @@ export default function GlobalCssSlider() {
 **Note:** Most CSS-in-JS solutions inject their styles at the bottom of the HTML `<head>`, which gives Material-UI precedence over your custom styles. To remove the need for **!important**, you need to change the CSS injection order. Here's a demo of how it can be done in Material-UI:
 
 ```jsx
-import * as React from 'react';
+Now you can override Material-UI's styles. import * as React from 'react';
 import { StylesProvider } from '@material-ui/core';
 
 export default function GlobalCssPriority() {
   return (
     <StylesProvider injectFirst>
-      {/* Your component tree. Now you can override Material-UI's styles. */}
+      {/* Your component tree. */}
     </StylesProvider>
   );
 }
@@ -229,7 +235,13 @@ const cache = createCache({
 export default function GlobalCssPriority() {
   return (
     <CacheProvider value={cache}>
-      {/* Your component tree. Now you can override Material-UI's styles. */}
+      {/* Your component tree. import * as React from 'react';
+import { StylesProvider } from '@material-ui/core';
+
+export default function GlobalCssPriority() {
+  return (
+    <StylesProvider injectFirst>
+      {/* Your component tree. */}
     </CacheProvider>
   );
 }
@@ -422,7 +434,7 @@ It's hard to know the market share of [this styling solution](https://github.com
 **CssModulesSlider.js**
 
 ```jsx
-import React from 'react';
+import * as React from 'react';
 import Slider from '@material-ui/core/Slider';
 // webpack, parcel or else will inject the CSS into the page
 import styles from './CssModulesSlider.module.css';
@@ -442,13 +454,13 @@ export default function CssModulesSlider() {
 **Note:** Most CSS-in-JS solutions inject their styles at the bottom of the HTML `<head>`, which gives Material-UI precedence over your custom styles. To remove the need for **!important**, you need to change the CSS injection order. Here's a demo of how it can be done in Material-UI:
 
 ```jsx
-import * as React from 'react';
+Now you can override Material-UI's styles. import * as React from 'react';
 import { StylesProvider } from '@material-ui/core';
 
 export default function GlobalCssPriority() {
   return (
     <StylesProvider injectFirst>
-      {/* Your component tree. Now you can override Material-UI's styles. */}
+      {/* Your component tree. */}
     </StylesProvider>
   );
 }
@@ -469,7 +481,13 @@ const cache = createCache({
 export default function CssModulesPriority() {
   return (
     <CacheProvider value={cache}>
-      {/* Your component tree. Now you can override Material-UI's styles. */}
+      {/* Your component tree. import * as React from 'react';
+import { StylesProvider } from '@material-ui/core';
+
+export default function GlobalCssPriority() {
+  return (
+    <StylesProvider injectFirst>
+      {/* Your component tree. */}
     </CacheProvider>
   );
 }
@@ -504,7 +522,7 @@ The following examples override the slider's `thumb` style in addition to the cu
 **CssModulesSliderDeep1.js**
 
 ```jsx
-import React from 'react';
+import * as React from 'react';
 // webpack, parcel or else will inject the CSS into the page
 import styles from './CssModulesSliderDeep1.module.css';
 import Slider from '@material-ui/core/Slider';
@@ -540,7 +558,7 @@ The above demo relies on the [default `className` values](/styles/advanced/#with
 **CssModulesSliderDeep2.js**
 
 ```jsx
-import React from 'react';
+import * as React from 'react';
 // webpack, parcel or else will inject the CSS into the page
 import styles from './CssModulesSliderDeep2.module.css';
 import Slider from '@material-ui/core/Slider';

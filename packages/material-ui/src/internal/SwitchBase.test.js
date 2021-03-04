@@ -1,28 +1,27 @@
 import * as React from 'react';
 import { expect } from 'chai';
 import { spy } from 'sinon';
-import { getClasses, createMount, describeConformance, act, createClientRender } from 'test/utils';
+import { createMount, describeConformanceV5, act, createClientRender } from 'test/utils';
 import SwitchBase from './SwitchBase';
 import FormControl, { useFormControl } from '../FormControl';
 import IconButton from '../IconButton';
+import classes from './switchBaseClasses';
 
 describe('<SwitchBase />', () => {
   const render = createClientRender();
   const mount = createMount();
-  let classes;
 
-  before(() => {
-    classes = getClasses(<SwitchBase icon="unchecked" checkedIcon="checked" type="checkbox" />);
-  });
-
-  describeConformance(
+  describeConformanceV5(
     <SwitchBase checkedIcon="checked" icon="unchecked" type="checkbox" />,
     () => ({
       classes,
       inheritComponent: IconButton,
+      render,
       mount,
       refInstanceof: window.HTMLSpanElement,
       testComponentPropWith: 'div',
+      testVariantProps: { disabled: true },
+      skip: ['componentsProp', 'themeDefaultProps', 'themeStyleOverrides', 'themeVariants'],
     }),
   );
 
@@ -378,7 +377,7 @@ describe('<SwitchBase />', () => {
 
   describe('check transitioning between controlled states throws errors', () => {
     it('should error when uncontrolled and changed to controlled', function test() {
-      if (global['didWarnControlledToUncontrolled']) {
+      if (global.didWarnControlledToUncontrolled) {
         this.skip();
       }
 
@@ -391,15 +390,17 @@ describe('<SwitchBase />', () => {
 
       expect(() => {
         setProps({ checked: true });
-        global['didWarnControlledToUncontrolled'] = true;
+        global.didWarnControlledToUncontrolled = true;
       }).toErrorDev([
-        'Warning: A component is changing an uncontrolled input of type checkbox to be controlled.',
+        React.version.startsWith('16')
+          ? 'Warning: A component is changing an uncontrolled input of type checkbox to be controlled.'
+          : 'Warning: A component is changing an uncontrolled input to be controlled.',
         'Material-UI: A component is changing the uncontrolled checked state of SwitchBase to be controlled.',
       ]);
     });
 
     it('should error when controlled and changed to uncontrolled', function test() {
-      if (global['didWarnControlledToUncontrolled']) {
+      if (global.didWarnControlledToUncontrolled) {
         this.skip();
       }
 
@@ -412,9 +413,11 @@ describe('<SwitchBase />', () => {
 
       expect(() => {
         setProps({ checked: undefined });
-        global['didWarnControlledToUncontrolled'] = true;
+        global.didWarnControlledToUncontrolled = true;
       }).toErrorDev([
-        'Warning: A component is changing a controlled input of type checkbox to be uncontrolled.',
+        React.version.startsWith('16')
+          ? 'Warning: A component is changing an uncontrolled input of type checkbox to be controlled.'
+          : 'Warning: A component is changing an uncontrolled input to be controlled.',
         'Material-UI: A component is changing the controlled checked state of SwitchBase to be uncontrolled.',
       ]);
     });

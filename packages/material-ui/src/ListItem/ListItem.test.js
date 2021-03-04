@@ -2,9 +2,8 @@ import * as React from 'react';
 import { expect } from 'chai';
 import PropTypes from 'prop-types';
 import {
-  getClasses,
   createMount,
-  describeConformance,
+  describeConformanceV5,
   act,
   createClientRender,
   fireEvent,
@@ -14,25 +13,25 @@ import ListItemText from '../ListItemText';
 import ListItemSecondaryAction from '../ListItemSecondaryAction';
 import ListItem from './ListItem';
 import ListContext from '../List/ListContext';
+import classes from './listItemClasses';
 
 const NoContent = React.forwardRef(() => {
   return null;
 });
 
 describe('<ListItem />', () => {
-  const mount = createMount({ strict: true });
   const render = createClientRender();
-  let classes;
+  const mount = createMount({ strict: true });
 
-  before(() => {
-    classes = getClasses(<ListItem />);
-  });
-
-  describeConformance(<ListItem />, () => ({
+  describeConformanceV5(<ListItem />, () => ({
     classes,
     inheritComponent: 'li',
+    render,
     mount,
     refInstanceof: window.HTMLLIElement,
+    muiName: 'MuiListItem',
+    testVariantProps: { dense: true },
+    skip: ['componentsProp'],
   }));
 
   it('should render with gutters classes', () => {
@@ -165,7 +164,7 @@ describe('<ListItem />', () => {
       it('warns if it cant detect the secondary action properly', () => {
         expect(() => {
           PropTypes.checkPropTypes(
-            ListItem.Naked.propTypes,
+            ListItem.propTypes,
             {
               classes: {},
               children: [

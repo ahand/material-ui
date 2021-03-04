@@ -3,12 +3,23 @@ import { makeDateRangePicker } from '../DateRangePicker/makeDateRangePicker';
 import StaticWrapper from '../internal/pickers/wrappers/StaticWrapper';
 
 /**
- * @ignore - do not document.
+ *
+ * Demos:
+ *
+ * - [Date Range Picker](https://material-ui.com/components/date-range-picker/)
+ *
+ * API:
+ *
+ * - [StaticDateRangePicker API](https://material-ui.com/api/static-date-range-picker/)
  */
-/* @typescript-to-proptypes-generate */
+// @typescript-to-proptypes-generate
 const StaticDateRangePicker = makeDateRangePicker('MuiPickersDateRangePicker', StaticWrapper);
 
-(StaticDateRangePicker as any).propTypes = {
+if (process.env.NODE_ENV !== 'production') {
+  (StaticDateRangePicker as any).displayName = 'StaticDateRangePicker';
+}
+
+StaticDateRangePicker.propTypes = {
   // ----------------------------- Warning --------------------------------
   // | These PropTypes are generated from the TypeScript type definitions |
   // |     To update them edit TypeScript types and run "yarn proptypes"  |
@@ -20,7 +31,7 @@ const StaticDateRangePicker = makeDateRangePicker('MuiPickersDateRangePicker', S
   acceptRegex: PropTypes.instanceOf(RegExp),
   /**
    * Enables keyboard listener for moving between days in calendar.
-   * @default currentWrapper !== 'static'
+   * Defaults to `true` unless the `ClockPicker` is used inside a `Static*` picker component.
    */
   allowKeyboardControl: PropTypes.bool,
   /**
@@ -33,6 +44,10 @@ const StaticDateRangePicker = makeDateRangePicker('MuiPickersDateRangePicker', S
    * @default 2
    */
   calendars: PropTypes.oneOf([1, 2, 3]),
+  /**
+   * @ignore
+   */
+  children: PropTypes.node,
   /**
    * className applied to the root component.
    */
@@ -56,19 +71,11 @@ const StaticDateRangePicker = makeDateRangePicker('MuiPickersDateRangePicker', S
    */
   componentsProps: PropTypes.object,
   /**
-   * Allows to pass configured date-io adapter directly. More info [here](https://next.material-ui-pickers.dev/guides/date-adapter-passing)
-   * ```jsx
-   * dateAdapter={new AdapterDateFns({ locale: ruLocale })}
-   * ```
-   */
-  dateAdapter: PropTypes.object,
-  /**
    * Default calendar month displayed when `value={null}`.
-   * @default `new Date()`
    */
   defaultCalendarMonth: PropTypes.any,
   /**
-   * if `true` after selecting `start` date  calendar will not automatically switch to the month of `end` date
+   * If `true`, after selecting `start` date calendar will not automatically switch to the month of `end` date.
    * @default false
    */
   disableAutoMonthSwitching: PropTypes.bool,
@@ -82,7 +89,6 @@ const StaticDateRangePicker = makeDateRangePicker('MuiPickersDateRangePicker', S
    */
   disabled: PropTypes.bool,
   /**
-   * Disable future dates.
    * @default false
    */
   disableFuture: PropTypes.bool,
@@ -102,12 +108,11 @@ const StaticDateRangePicker = makeDateRangePicker('MuiPickersDateRangePicker', S
    */
   disableOpenPicker: PropTypes.bool,
   /**
-   * Disable past dates.
    * @default false
    */
   disablePast: PropTypes.bool,
   /**
-   * Force static wrapper inner components to be rendered in mobile or desktop mode
+   * Force static wrapper inner components to be rendered in mobile or desktop mode.
    * @default "static"
    */
   displayStaticWrapperAs: PropTypes.oneOf(['desktop', 'mobile']),
@@ -160,17 +165,15 @@ const StaticDateRangePicker = makeDateRangePicker('MuiPickersDateRangePicker', S
    */
   loading: PropTypes.bool,
   /**
-   * Custom mask. Can be used to override generate from format. (e.g. __/__/____ __:__ or __/__/____ __:__ _M)
+   * Custom mask. Can be used to override generate from format. (e.g. `__/__/____ __:__` or `__/__/____ __:__ _M`).
    */
   mask: PropTypes.string,
   /**
    * Max selectable date. @DateIOType
-   * @default Date(2099-31-12)
    */
   maxDate: PropTypes.any,
   /**
    * Min selectable date. @DateIOType
-   * @default Date(1900-01-01)
    */
   minDate: PropTypes.any,
   /**
@@ -178,7 +181,7 @@ const StaticDateRangePicker = makeDateRangePicker('MuiPickersDateRangePicker', S
    */
   onAccept: PropTypes.func,
   /**
-   * Callback fired when the value (the selected date) changes. @DateIOType.
+   * Callback fired when the value (the selected date) changes @DateIOType.
    */
   onChange: PropTypes.func.isRequired,
   /**
@@ -230,12 +233,12 @@ const StaticDateRangePicker = makeDateRangePicker('MuiPickersDateRangePicker', S
   readOnly: PropTypes.bool,
   /**
    * Disable heavy animations.
-   * @default /(android)/i.test(window.navigator.userAgent).
+   * @default typeof navigator !== 'undefined' && /(android)/i.test(navigator.userAgent)
    */
   reduceAnimations: PropTypes.bool,
   /**
    * Custom renderer for `<DateRangePicker />` days. @DateIOType
-   * @example (date, DateRangeDayProps) => <DateRangePickerDay {...DateRangeDayProps} />
+   * @example (date, DateRangePickerDayProps) => <DateRangePickerDay {...DateRangePickerDayProps} />
    */
   renderDay: PropTypes.func,
   /**
@@ -249,7 +252,7 @@ const StaticDateRangePicker = makeDateRangePicker('MuiPickersDateRangePicker', S
    *  renderInput={(startProps, endProps) => (
    *   <React.Fragment>
    *     <TextField {...startProps} />
-   *     <DateRangeDelimiter> to <DateRangeDelimiter>
+   *     <Box sx={{ mx: 2 }}> to </Box>
    *     <TextField {...endProps} />
    *   </React.Fragment>;
    *  )}
@@ -259,7 +262,7 @@ const StaticDateRangePicker = makeDateRangePicker('MuiPickersDateRangePicker', S
   renderInput: PropTypes.func.isRequired,
   /**
    * Component displaying when passed `loading` true.
-   * @default () => "..."
+   * @default () => <span data-mui-test="loading-progress">...</span>
    */
   renderLoading: PropTypes.func,
   /**
@@ -276,7 +279,7 @@ const StaticDateRangePicker = makeDateRangePicker('MuiPickersDateRangePicker', S
   shouldDisableDate: PropTypes.func,
   /**
    * Disable specific years dynamically.
-   * Works like `shouldDisableDate` but for year selection view. @DateIOType.
+   * Works like `shouldDisableDate` but for year selection view @DateIOType.
    */
   shouldDisableYear: PropTypes.func,
   /**
@@ -322,7 +325,7 @@ const StaticDateRangePicker = makeDateRangePicker('MuiPickersDateRangePicker', S
       PropTypes.string,
     ]),
   ).isRequired,
-};
+} as any;
 
 export type StaticDateRangePickerProps = React.ComponentProps<typeof StaticDateRangePicker>;
 

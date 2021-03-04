@@ -1,50 +1,69 @@
 import * as React from 'react';
+import { deepmerge, refType } from '@material-ui/utils';
 import PropTypes from 'prop-types';
-import clsx from 'clsx';
-import { refType } from '@material-ui/utils';
+import { unstable_composeClasses as composeClasses } from '@material-ui/unstyled';
 import InputBase from '../InputBase';
-import withStyles from '../styles/withStyles';
+import experimentalStyled, { shouldForwardProp } from '../styles/experimentalStyled';
+import useThemeProps from '../styles/useThemeProps';
+import { getFilledInputUtilityClass } from './filledInputClasses';
+import {
+  overridesResolver as inputBaseOverridesResolver,
+  InputBaseRoot,
+  InputBaseComponent as InputBaseInput,
+} from '../InputBase/InputBase';
 
-export const styles = (theme) => {
+const overridesResolver = (props, styles) => {
+  const { styleProps } = props;
+  return deepmerge(inputBaseOverridesResolver(props, styles), {
+    ...(!styleProps.disableUnderline && styles.underline),
+  });
+};
+
+const useUtilityClasses = (styleProps) => {
+  const { classes, disableUnderline } = styleProps;
+
+  const slots = {
+    root: ['root', !disableUnderline && 'underline'],
+    input: ['input'],
+  };
+
+  return composeClasses(slots, getFilledInputUtilityClass, classes);
+};
+
+const FilledInputRoot = experimentalStyled(
+  InputBaseRoot,
+  { shouldForwardProp: (prop) => shouldForwardProp(prop) || prop === 'classes' },
+  { name: 'MuiFilledInput', slot: 'Root', overridesResolver },
+)(({ theme, styleProps }) => {
   const light = theme.palette.mode === 'light';
   const bottomLineColor = light ? 'rgba(0, 0, 0, 0.42)' : 'rgba(255, 255, 255, 0.7)';
-  const backgroundColor = light ? 'rgba(0, 0, 0, 0.09)' : 'rgba(255, 255, 255, 0.09)';
-
+  const backgroundColor = light ? 'rgba(0, 0, 0, 0.06)' : 'rgba(255, 255, 255, 0.09)';
   return {
     /* Styles applied to the root element. */
-    root: {
-      position: 'relative',
+    position: 'relative',
+    backgroundColor,
+    borderTopLeftRadius: theme.shape.borderRadius,
+    borderTopRightRadius: theme.shape.borderRadius,
+    transition: theme.transitions.create('background-color', {
+      duration: theme.transitions.duration.shorter,
+      easing: theme.transitions.easing.easeOut,
+    }),
+    '&:hover': {
+      backgroundColor: light ? 'rgba(0, 0, 0, 0.09)' : 'rgba(255, 255, 255, 0.13)',
+      // Reset on touch devices, it doesn't add specificity
+      '@media (hover: none)': {
+        backgroundColor,
+      },
+    },
+    '&.Mui-focused': {
       backgroundColor,
-      borderTopLeftRadius: theme.shape.borderRadius,
-      borderTopRightRadius: theme.shape.borderRadius,
-      transition: theme.transitions.create('background-color', {
-        duration: theme.transitions.duration.shorter,
-        easing: theme.transitions.easing.easeOut,
-      }),
-      '&:hover': {
-        backgroundColor: light ? 'rgba(0, 0, 0, 0.13)' : 'rgba(255, 255, 255, 0.13)',
-        // Reset on touch devices, it doesn't add specificity
-        '@media (hover: none)': {
-          backgroundColor,
-        },
-      },
-      '&$focused': {
-        backgroundColor: light ? 'rgba(0, 0, 0, 0.09)' : 'rgba(255, 255, 255, 0.09)',
-      },
-      '&$disabled': {
-        backgroundColor: light ? 'rgba(0, 0, 0, 0.12)' : 'rgba(255, 255, 255, 0.12)',
-      },
     },
-    /* Styles applied to the root element if color secondary. */
-    colorSecondary: {
-      '&$underline:after': {
-        borderBottomColor: theme.palette.secondary.main,
-      },
+    '&.Mui-disabled': {
+      backgroundColor: light ? 'rgba(0, 0, 0, 0.12)' : 'rgba(255, 255, 255, 0.12)',
     },
-    /* Styles applied to the root element unless `disableUnderline={true}`. */
-    underline: {
+    ...(!styleProps.disableUnderline && {
       '&:after': {
-        borderBottom: `2px solid ${theme.palette.primary.main}`,
+        borderBottom: `2px solid ${theme.palette[styleProps.color].main}`,
         left: 0,
         bottom: 0,
         // Doing the other way around crash on IE11 "''" https://github.com/cssinjs/jss/issues/242
@@ -58,10 +77,10 @@ export const styles = (theme) => {
         }),
         pointerEvents: 'none', // Transparent to the hover style.
       },
-      '&$focused:after': {
+      '&.Mui-focused:after': {
         transform: 'scaleX(1)',
       },
-      '&$error:after': {
+      '&.Mui-error:after': {
         borderBottomColor: theme.palette.error.main,
         transform: 'scaleX(1)', // error is always underlined in red
       },
@@ -78,87 +97,84 @@ export const styles = (theme) => {
         }),
         pointerEvents: 'none', // Transparent to the hover style.
       },
-      '&:hover:not($disabled):before': {
+      '&:hover:not(.Mui-disabled):before': {
         borderBottom: `1px solid ${theme.palette.text.primary}`,
       },
-      '&$disabled:before': {
+      '&.Mui-disabled:before': {
         borderBottomStyle: 'dotted',
       },
-    },
-    /* Pseudo-class applied to the root element if the component is focused. */
-    focused: {},
-    /* Pseudo-class applied to the root element if `disabled={true}`. */
-    disabled: {},
-    /* Styles applied to the root element if `startAdornment` is provided. */
-    adornedStart: {
+    }),
+    ...(styleProps.startAdornment && {
       paddingLeft: 12,
-    },
-    /* Styles applied to the root element if `endAdornment` is provided. */
-    adornedEnd: {
+    }),
+    ...(styleProps.endAdornment && {
       paddingRight: 12,
-    },
-    /* Pseudo-class applied to the root element if `error={true}`. */
-    error: {},
-    /* Styles applied to the `input` element if `size="small"`. */
-    sizeSmall: {},
-    /* Styles applied to the root element if `multiline={true}`. */
-    multiline: {
+    }),
+    ...(styleProps.multiline && {
       padding: '25px 12px 8px',
-      '&$sizeSmall': {
+      ...(styleProps.size === 'small' && {
         paddingTop: 21,
         paddingBottom: 4,
-      },
-      '&$hiddenLabel': {
+      }),
+      ...(styleProps.hiddenLabel && {
         paddingTop: 16,
         paddingBottom: 17,
-      },
-    },
-    /* Styles applied to the root element if `hiddenLabel={true}`. */
-    hiddenLabel: {},
-    /* Styles applied to the `input` element. */
-    input: {
-      padding: '25px 12px 8px',
-      '&:-webkit-autofill': {
-        WebkitBoxShadow: theme.palette.mode === 'light' ? null : '0 0 0 100px #266798 inset',
-        WebkitTextFillColor: theme.palette.mode === 'light' ? null : '#fff',
-        caretColor: theme.palette.mode === 'light' ? null : '#fff',
-        borderTopLeftRadius: 'inherit',
-        borderTopRightRadius: 'inherit',
-      },
-    },
-    /* Styles applied to the `input` element if `size="small"`. */
-    inputSizeSmall: {
-      paddingTop: 21,
-      paddingBottom: 4,
-    },
-    /* Styles applied to the `input` if in `<FormControl hiddenLabel />`. */
-    inputHiddenLabel: {
-      paddingTop: 16,
-      paddingBottom: 17,
-      '&$inputSizeSmall': {
-        paddingTop: 8,
-        paddingBottom: 9,
-      },
-    },
-    /* Styles applied to the `input` element if `multiline={true}`. */
-    inputMultiline: {
-      padding: 0,
-    },
-    /* Styles applied to the `input` element if `startAdornment` is provided. */
-    inputAdornedStart: {
-      paddingLeft: 0,
-    },
-    /* Styles applied to the `input` element if `endAdornment` is provided. */
-    inputAdornedEnd: {
-      paddingRight: 0,
-    },
+      }),
+    }),
   };
-};
+});
 
-const FilledInput = React.forwardRef(function FilledInput(props, ref) {
+const FilledInputInput = experimentalStyled(
+  InputBaseInput,
+  { shouldForwardProp: (prop) => shouldForwardProp(prop) || prop === 'classes' },
+  { name: 'MuiFilledInput', slot: 'Input' },
+)(({ theme, styleProps }) => ({
+  paddingTop: 25,
+  paddingRight: 12,
+  paddingBottom: 8,
+  paddingLeft: 12,
+  '&:-webkit-autofill': {
+    WebkitBoxShadow: theme.palette.mode === 'light' ? null : '0 0 0 100px #266798 inset',
+    WebkitTextFillColor: theme.palette.mode === 'light' ? null : '#fff',
+    caretColor: theme.palette.mode === 'light' ? null : '#fff',
+    borderTopLeftRadius: 'inherit',
+    borderTopRightRadius: 'inherit',
+  },
+  ...(styleProps.size === 'small' && {
+    paddingTop: 21,
+    paddingBottom: 4,
+  }),
+  ...(styleProps.hiddenLabel && {
+    paddingTop: 16,
+    paddingBottom: 17,
+  }),
+  /* Styles applied to the input element if `multiline={true}`. */
+  ...(styleProps.multiline && {
+    paddingTop: 0,
+    paddingBottom: 0,
+    paddingLeft: 0,
+    paddingRight: 0,
+  }),
+  /* Styles applied to the input element if `startAdornment` is provided. */
+  ...(styleProps.startAdornment && {
+    paddingLeft: 0,
+  }),
+  /* Styles applied to the input element if `endAdornment` is provided. */
+  ...(styleProps.endAdornment && {
+    paddingRight: 0,
+  }),
+  ...(styleProps.hiddenLabel &&
+    styleProps.size === 'small' && {
+      paddingTop: 8,
+      paddingBottom: 9,
+    }),
+}));
+
+const FilledInput = React.forwardRef(function FilledInput(inProps, ref) {
+  const props = useThemeProps({ props: inProps, name: 'MuiFilledInput' });
+
   const {
     disableUnderline,
-    classes,
     fullWidth = false,
     inputComponent = 'input',
     multiline = false,
@@ -166,21 +182,27 @@ const FilledInput = React.forwardRef(function FilledInput(props, ref) {
     ...other
   } = props;
 
+  const styleProps = {
+    ...props,
+    fullWidth,
+    inputComponent,
+    multiline,
+    type,
+  };
+
+  const classes = useUtilityClasses(props);
+
   return (
     <InputBase
-      classes={{
-        ...classes,
-        root: clsx(classes.root, {
-          [classes.underline]: !disableUnderline,
-        }),
-        underline: null,
-      }}
+      components={{ Root: FilledInputRoot, Input: FilledInputInput }}
+      componentsProps={{ root: { styleProps }, input: { styleProps } }}
       fullWidth={fullWidth}
       inputComponent={inputComponent}
       multiline={multiline}
       ref={ref}
       type={type}
       {...other}
+      classes={classes}
     />
   );
 });
@@ -210,11 +232,11 @@ FilledInput.propTypes = {
    */
   color: PropTypes.oneOf(['primary', 'secondary']),
   /**
-   * The default `input` element value. Use when the component is not controlled.
+   * The default value. Use when the component is not controlled.
    */
   defaultValue: PropTypes.any,
   /**
-   * If `true`, the `input` element is disabled.
+   * If `true`, the component is disabled.
    * The prop defaults to the value (`false`) inherited from the parent FormControl component.
    */
   disabled: PropTypes.bool,
@@ -308,6 +330,10 @@ FilledInput.propTypes = {
    */
   startAdornment: PropTypes.node,
   /**
+   * The system prop that allows defining system overrides as well as additional CSS styles.
+   */
+  sx: PropTypes.object,
+  /**
    * Type of the `input` element. It should be [a valid HTML5 input type](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#Form_%3Cinput%3E_types).
    * @default 'text'
    */
@@ -320,4 +346,4 @@ FilledInput.propTypes = {
 
 FilledInput.muiName = 'Input';
 
-export default withStyles(styles, { name: 'MuiFilledInput' })(FilledInput);
+export default FilledInput;

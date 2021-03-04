@@ -610,7 +610,7 @@ describe('<Popover />', () => {
         left: element.style.left,
         transformOrigin: element.style.transformOrigin,
       };
-      expect(JSON.stringify(beforeStyle)).to.not.equal(JSON.stringify(afterStyle));
+      expect(JSON.stringify(beforeStyle)).not.to.equal(JSON.stringify(afterStyle));
     });
 
     it('should not recalculate position if the popover is closed', () => {
@@ -653,7 +653,7 @@ describe('<Popover />', () => {
         left: element.style.left,
         transformOrigin: element.style.transformOrigin,
       };
-      expect(JSON.stringify(beforeStyle)).to.not.equal(JSON.stringify(afterStyle));
+      expect(JSON.stringify(beforeStyle)).not.to.equal(JSON.stringify(afterStyle));
     });
   });
 
@@ -813,7 +813,7 @@ describe('<Popover />', () => {
     });
 
     it('should not apply the auto prop if not supported', () => {
-      const TransitionComponent = React.forwardRef((_, ref) => <div ref={ref} tabIndex="-1" />);
+      const TransitionComponent = React.forwardRef((_, ref) => <div ref={ref} tabIndex={-1} />);
       const wrapper = mount(
         <Popover {...defaultProps} open TransitionComponent={TransitionComponent}>
           <div />

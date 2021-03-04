@@ -26,7 +26,7 @@ export const styles = (theme) => ({
     textAlign: 'left',
     padding: '8px 0',
   },
-  /* Styles applied to the `Typography` component which wraps `children`. */
+  /* Styles applied to the Typography component that wraps `children`. */
   label: {
     transition: theme.transitions.create('color', {
       duration: theme.transitions.duration.shortest,
@@ -166,7 +166,7 @@ StepLabel.propTypes = {
    */
   className: PropTypes.string,
   /**
-   * Mark the step as failed.
+   * If `true`, the step is marked as failed.
    * @default false
    */
   error: PropTypes.bool,

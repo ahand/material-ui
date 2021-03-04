@@ -1,4 +1,4 @@
-# Personalizando componentes
+# How to customize
 
 <p class="description">Los componentes Material-UI pueden ser personalizados de forma sencilla. </p>
 
@@ -8,6 +8,7 @@ As components can be used in different contexts, there are several approaches to
 1. [Reusable style overrides](#2-reusable-style-overrides)
 1. [Dynamic variation](#3-dynamic-variation)
 1. [Variación global del tema](#4-global-theme-variation)
+1. [Global CSS override](#5-global-css-override)
 
 ## 1. One-off customization
 
@@ -83,7 +84,7 @@ Sometimes, you can't use a **pseudo-class**, as the state doesn't exist in the w
 
 #### Why do I need to increase specificity to override one component state?
 
-By design, the CSS specification makes the pseudo-classes increase the specificity. For consistency with native elements, Material-UI increases the specificity of its custom pseudo-classes. This has one important advantage, it allows you to cherry-pick the state you want to customize.
+By design, the CSS specification makes the pseudo-classes increase the specificity. By design, the CSS specification makes the pseudo-classes increase the specificity. This has one important advantage, it allows you to cherry-pick the state you want to customize.
 
 #### What custom pseudo-classes are available in Material-UI?
 
@@ -91,6 +92,7 @@ You can rely on the following [global class names](/styles/advanced/#with-materi
 
 | State         | Global class name   |
 |:------------- |:------------------- |
+| active        | `.Mui-active`       |
 | checked       | `.Mui-checked`      |
 | disabled      | `.Mui-disabled`     |
 | error         | `.Mui-error`        |
@@ -147,3 +149,23 @@ In the previous section, we learned how to override the style of a Material-UI c
 In order to promote consistency between components, and manage the user interface appearance as a whole, Material-UI provides a mechanism to apply global changes.
 
 Please take a look at the theme's [global overrides page](/customization/theme-components/) for more details.
+
+## 5. Global CSS override
+
+Components expose [global class names](/styles/advanced/#with-material-ui-core) to enable customization with CSS.
+
+```css
+.MuiButton-root {
+  fontsize: '1rem';
+}
+```
+
+You can reference the [Styles library interoperability guide](/guides/interoperability/) to find examples of this using different styles libraries or plain CSS.
+
+If you just want to add some global baseline styles for some of the HTML elements, you can use the `GlobalStyles` component. Here is an example of how you can override styles for the `h1` elements.
+
+{{"demo": "pages/customization/how-to-customize/GlobalCssOverride.js", "iframe": true, "height": 100}}
+
+If you are already using the [CssBaseline](/components/css-baseline/) component for setting baseline styles, you can also add these global styles as overrides for this component. Here is how you can achieve the same by using this approach.
+
+{{"demo": "pages/customization/how-to-customize/OverrideCssBaseline.js", "iframe": true, "height": 100}}

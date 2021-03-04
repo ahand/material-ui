@@ -2,14 +2,12 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { chainPropTypes, deepmerge } from '@material-ui/utils';
-import {
-  SliderUnstyled,
+import { generateUtilityClasses, isHostComponent } from '@material-ui/unstyled';
+import SliderUnstyled, {
   SliderValueLabelUnstyled,
   sliderUnstyledClasses,
   getSliderUtilityClass,
-  generateUtilityClasses,
-  isHostComponent,
-} from '@material-ui/unstyled';
+} from '@material-ui/unstyled/SliderUnstyled';
 import useThemeProps from '../styles/useThemeProps';
 import experimentalStyled from '../styles/experimentalStyled';
 import { alpha, lighten, darken } from '../styles/colorManipulator';
@@ -26,43 +24,40 @@ export const sliderClasses = {
 };
 
 const overridesResolver = (props, styles) => {
-  const {
-    color = 'primary',
-    marks: marksProp = false,
-    max = 100,
-    min = 0,
-    orientation = 'horizontal',
-    step = 1,
-    track = 'normal',
-  } = props;
+  const { styleProps } = props;
 
   const marks =
-    marksProp === true && step !== null
-      ? [...Array(Math.floor((max - min) / step) + 1)].map((_, index) => ({
-          value: min + step * index,
-        }))
-      : marksProp || [];
+    styleProps.marksProp === true && styleProps.step !== null
+      ? [...Array(Math.floor((styleProps.max - styleProps.min) / styleProps.step) + 1)].map(
+          (_, index) => ({
+            value: styleProps.min + styleProps.step * index,
+          }),
+        )
+      : styleProps.marksProp || [];
 
   const marked = marks.length > 0 && marks.some((mark) => mark.label);
 
-  return deepmerge(styles.root || {}, {
-    ...styles[`color${capitalize(color)}`],
-    [`&.${sliderClasses.disabled}`]: styles.disabled,
-    ...(marked && styles.marked),
-    ...(orientation === 'vertical' && styles.vertical),
-    ...(track === 'inverted' && styles.trackInverted),
-    ...(track === false && styles.trackFalse),
-    [`& .${sliderClasses.rail}`]: styles.rail,
-    [`& .${sliderClasses.track}`]: styles.track,
-    [`& .${sliderClasses.mark}`]: styles.mark,
-    [`& .${sliderClasses.markLabel}`]: styles.markLabel,
-    [`& .${sliderClasses.valueLabel}`]: styles.valueLabel,
-    [`& .${sliderClasses.thumb}`]: {
-      ...styles.thumb,
-      ...styles[`thumbColor${capitalize(color)}`],
+  return deepmerge(
+    {
+      ...styles[`color${capitalize(styleProps.color)}`],
       [`&.${sliderClasses.disabled}`]: styles.disabled,
+      ...(marked && styles.marked),
+      ...(styleProps.orientation === 'vertical' && styles.vertical),
+      ...(styleProps.track === 'inverted' && styles.trackInverted),
+      ...(styleProps.track === false && styles.trackFalse),
+      [`& .${sliderClasses.rail}`]: styles.rail,
+      [`& .${sliderClasses.track}`]: styles.track,
+      [`& .${sliderClasses.mark}`]: styles.mark,
+      [`& .${sliderClasses.markLabel}`]: styles.markLabel,
+      [`& .${sliderClasses.valueLabel}`]: styles.valueLabel,
+      [`& .${sliderClasses.thumb}`]: {
+        ...styles.thumb,
+        ...styles[`thumbColor${capitalize(styleProps.color)}`],
+        [`&.${sliderClasses.disabled}`]: styles.disabled,
+      },
     },
-  });
+    styles.root || {},
+  );
 };
 
 export const SliderRoot = experimentalStyled(
@@ -130,6 +125,11 @@ export const SliderRoot = experimentalStyled(
     transform: 'rotate(45deg)',
     textAlign: 'center',
   },
+  [`&.${sliderClasses.dragging}`]: {
+    [`& .${sliderClasses.thumb}, & .${sliderClasses.track}`]: {
+      transition: 'none',
+    },
+  },
 }));
 
 export const SliderRail = experimentalStyled(
@@ -163,6 +163,9 @@ export const SliderTrack = experimentalStyled(
   height: 2,
   borderRadius: 1,
   backgroundColor: 'currentColor',
+  transition: theme.transitions.create(['left', 'width'], {
+    duration: theme.transitions.duration.shortest,
+  }),
   ...(styleProps.orientation === 'vertical' && {
     width: 2,
   }),
@@ -195,7 +198,7 @@ export const SliderThumb = experimentalStyled(
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  transition: theme.transitions.create(['box-shadow'], {
+  transition: theme.transitions.create(['box-shadow', 'left'], {
     duration: theme.transitions.duration.shortest,
   }),
   '&::after': {
@@ -464,7 +467,6 @@ Slider.propTypes = {
   children: PropTypes.node,
   /**
    * Override or extend the styles applied to the component.
-   * @default {}
    */
   classes: PropTypes.object,
   /**
@@ -492,11 +494,11 @@ Slider.propTypes = {
    */
   componentsProps: PropTypes.object,
   /**
-   * The default element value. Use when the component is not controlled.
+   * The default value. Use when the component is not controlled.
    */
   defaultValue: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.number), PropTypes.number]),
   /**
-   * If `true`, the slider is disabled.
+   * If `true`, the component is disabled.
    * @default false
    */
   disabled: PropTypes.bool,
@@ -554,7 +556,9 @@ Slider.propTypes = {
   /**
    * Callback function that is fired when the slider's value changed.
    *
-   * @param {object} event The event source of the callback. **Warning**: This is a generic event not a change event.
+   * @param {object} event The event source of the callback.
+   * You can pull out the new value by accessing `event.target.value` (any).
+   * **Warning**: This is a generic event not a change event.
    * @param {number | number[]} value The new value.
    */
   onChange: PropTypes.func,
@@ -566,7 +570,7 @@ Slider.propTypes = {
    */
   onChangeCommitted: PropTypes.func,
   /**
-   * The slider orientation.
+   * The component orientation.
    * @default 'horizontal'
    */
   orientation: PropTypes.oneOf(['horizontal', 'vertical']),

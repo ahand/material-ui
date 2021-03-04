@@ -1,16 +1,9 @@
 import * as React from 'react';
-import { experimentalStyled as styled, Theme } from '@material-ui/core/styles';
-import { SxProps } from '@material-ui/system';
-import BadgeUnstyled, {
-  BadgeUnstyledProps,
-} from '@material-ui/unstyled/BadgeUnstyled';
+import { experimentalStyled as styled } from '@material-ui/core/styles';
+import BadgeUnstyled from '@material-ui/unstyled/BadgeUnstyled';
 import Box from '@material-ui/core/Box';
 
-interface StyledBadgeProps extends BadgeUnstyledProps {
-  sx?: SxProps<Theme>;
-}
-
-const StyledBadge: React.FC<StyledBadgeProps> = styled(BadgeUnstyled)`
+const StyledBadge = styled(BadgeUnstyled)`
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -19,6 +12,9 @@ const StyledBadge: React.FC<StyledBadgeProps> = styled(BadgeUnstyled)`
   font-variant: tabular-nums;
   list-style: none;
   font-feature-settings: 'tnum';
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol';
   position: relative;
   display: inline-block;
   line-height: 1;

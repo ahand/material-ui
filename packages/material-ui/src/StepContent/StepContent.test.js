@@ -1,20 +1,18 @@
 import * as React from 'react';
 import { expect } from 'chai';
 import { getClasses, createClientRender, createMount, describeConformance } from 'test/utils';
-import Collapse from '../Collapse';
+import { collapseClasses } from '../Collapse';
 import Stepper from '../Stepper';
 import Step from '../Step';
 import StepContent from './StepContent';
 
 describe('<StepContent />', () => {
   let classes;
-  let collapseClasses;
   const mount = createMount({ strict: true });
   const render = createClientRender();
 
   before(() => {
     classes = getClasses(<StepContent />);
-    collapseClasses = getClasses(<Collapse />);
   });
 
   describeConformance(<StepContent />, () => ({
@@ -46,8 +44,8 @@ describe('<StepContent />', () => {
     const collapse = container.querySelector(`.${collapseClasses.root}`);
     const innerDiv = container.querySelector(`.test-content`);
 
-    expect(collapse).to.not.equal(null);
-    expect(innerDiv).to.not.equal(null);
+    expect(collapse).not.to.equal(null);
+    expect(innerDiv).not.to.equal(null);
     getByText('This is my content!');
   });
 
@@ -64,7 +62,7 @@ describe('<StepContent />', () => {
       );
 
       const collapse = container.querySelector(`.${collapseClasses.root}`);
-      expect(collapse).to.not.equal(null);
+      expect(collapse).not.to.equal(null);
     });
 
     it('should use custom TransitionComponent', () => {

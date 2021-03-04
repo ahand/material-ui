@@ -61,7 +61,7 @@ import '@fontsource/roboto/700.css';
 
 ## 改变语义元素
 
-文字铸排组件通过 `variantMapping` 属性关联了一种 UI 变体和某一种语义元素。 请注意，文字的样式是和最底层的语义元素分开的。
+文字铸排组件通过 `variantMapping` 属性关联了一种 UI 变体和某一种语义元素。 It's important to realize that the style of a typography component is independent from the semantic underlying element.
 
 - 使用 `component` 属性，您可以一次性改变底层元素的样式：
 
@@ -101,7 +101,7 @@ const theme = createMuiTheme({
 
 ## Adding & disabling variants
 
-In addition to using the default typography variants, you can add custom ones, or disable any you don't need. See the [Adding & disabling variants](/customization/typography/#adding-amp-disabling-variants) example for more info.
+In addition to using the default typography variants, you can add custom ones, or disable any you don't need. In addition to using the default typography variants, you can add custom ones, or disable any you don't need. See the [Adding & disabling variants](/customization/typography/#adding-amp-disabling-variants) example for more info.
 
 ## 无障碍设计
 

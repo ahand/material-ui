@@ -16,17 +16,17 @@ waiAria: 'https://www.w3.org/TR/wai-aria-practices/#tooltip'
 
 ## Simple Tooltips
 
-{{"demo": "pages/components/tooltips/SimpleTooltips.js"}}
+{{"demo": "pages/components/tooltips/BasicTooltip.js"}}
 
 ## Positioned tooltips
 
-`ツールチップ` は、12 **配置** 選択肢があります。 矢印はありません。その代わりに、方向を伝達するためにソースから発生するモーションに依存します。
+`ツールチップ` は、12 **配置** 選択肢があります。 They don't have directional arrows; instead, they rely on motion emanating from the source to convey direction.
 
 {{"demo": "pages/components/tooltips/PositionedTooltips.js"}}
 
 ## Customized tooltips
 
-コンポーネントのカスタマイズの例を次に示します。 コンポーネントのカスタマイズ例を次に示します。 コンポーネントのカスタマイズ例を次に示します。 詳細については、 [overrides documentation page](/customization/how-to-customize/)を参照してください。
+コンポーネントのカスタマイズの例を次に示します。 詳細については、 [overrides documentation page](/customization/how-to-customize/)を参照してください。
 
 {{"demo": "pages/components/tooltips/CustomizedTooltips.js"}}
 
@@ -92,11 +92,9 @@ Tooltips are interactive by default (to pass [WCAG 2.1 success criterion 1.4.13]
 ```jsx
 <Tooltip title="You don't have permission to do this">
   <span>
-    <button disabled={disabled} style={disabled ? { pointerEvents: 'none' } : {}}>
-      A disabled button
-    </button>
-  </span>
-</Tooltip>
+    <button disabled={disabled} style={disabled ? <Tooltip title="You don't have permission to do this">
+  <span>
+    <button disabled={disabled} style={disabled ?
 ```
 
 ## Transitions

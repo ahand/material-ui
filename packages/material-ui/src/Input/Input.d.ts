@@ -1,4 +1,5 @@
-import { InternalStandardProps as StandardProps } from '..';
+import { SxProps } from '@material-ui/system';
+import { InternalStandardProps as StandardProps, Theme } from '..';
 import { InputBaseProps } from '../InputBase';
 
 export interface InputProps extends StandardProps<InputBaseProps> {
@@ -20,25 +21,29 @@ export interface InputProps extends StandardProps<InputBaseProps> {
     underline?: string;
     /** Pseudo-class applied to the root element if `error={true}`. */
     error?: string;
-    /** Styles applied to the `input` element if `size="small"`. */
+    /** Styles applied to the input element if `size="small"`. */
     sizeSmall?: string;
     /** Styles applied to the root element if `multiline={true}`. */
     multiline?: string;
     /** Styles applied to the root element if `fullWidth={true}`. */
     fullWidth?: string;
-    /** Styles applied to the `input` element. */
+    /** Styles applied to the input element. */
     input?: string;
-    /** Styles applied to the `input` element if `size="small"`. */
+    /** Styles applied to the input element if `size="small"`. */
     inputSizeSmall?: string;
-    /** Styles applied to the `input` element if `multiline={true}`. */
+    /** Styles applied to the input element if `multiline={true}`. */
     inputMultiline?: string;
-    /** Styles applied to the `input` element if `type="search"`. */
+    /** Styles applied to the input element if `type="search"`. */
     inputTypeSearch?: string;
   };
   /**
    * If `true`, the `input` will not have an underline.
    */
   disableUnderline?: boolean;
+  /**
+   * The system prop that allows defining system overrides as well as additional CSS styles.
+   */
+  sx?: SxProps<Theme>;
 }
 
 export type InputClassKey = keyof NonNullable<InputProps['classes']>;

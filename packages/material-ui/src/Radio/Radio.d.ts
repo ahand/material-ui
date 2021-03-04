@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { InternalStandardProps as StandardProps } from '..';
+import { SxProps } from '@material-ui/system';
+import { InternalStandardProps as StandardProps, Theme } from '..';
 import { SwitchBaseProps } from '../internal/SwitchBase';
 
 export interface RadioProps
@@ -29,7 +30,7 @@ export interface RadioProps
    */
   color?: 'primary' | 'secondary' | 'default';
   /**
-   * If `true`, the radio is disabled.
+   * If `true`, the component is disabled.
    */
   disabled?: boolean;
   /**
@@ -37,11 +38,15 @@ export interface RadioProps
    */
   icon?: React.ReactNode;
   /**
-   * The size of the radio.
+   * The size of the component.
    * `small` is equivalent to the dense radio styling.
    * @default 'medium'
    */
   size?: 'small' | 'medium';
+  /**
+   * The system prop that allows defining system overrides as well as additional CSS styles.
+   */
+  sx?: SxProps<Theme>;
 }
 
 export type RadioClassKey = keyof NonNullable<RadioProps['classes']>;

@@ -54,7 +54,6 @@ export interface BadgeUnstyledTypeMap<P = {}, D extends React.ElementType = 'div
     children?: React.ReactNode;
     /**
      * Override or extend the styles applied to the component.
-     * @default {}
      */
     classes?: {
       /** Class name applied to the root element. */
@@ -81,7 +80,7 @@ export interface BadgeUnstyledTypeMap<P = {}, D extends React.ElementType = 'div
       anchorOriginTopLeftCircular?: string;
       /** Class name applied to the badge `span` element if `anchorOrigin={{ 'bottom', 'left' }} overlap="circular"`. */
       anchorOriginBottomLeftCircular?: string;
-      /** Pseudo-class to the badge `span` element if `invisible={true}`. */
+      /** Pseudo-class applied to the badge `span` element if `invisible={true}`. */
       invisible?: string;
     };
     /**
@@ -102,7 +101,7 @@ export interface BadgeUnstyledTypeMap<P = {}, D extends React.ElementType = 'div
      * The variant to use.
      * @default 'standard'
      */
-    variant?: 'standard' | 'dot';
+    variant?: string;
   };
   defaultComponent: D;
 }

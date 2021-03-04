@@ -1,23 +1,24 @@
 import * as React from 'react';
 import { expect } from 'chai';
-import { getClasses, createMount, createClientRender, describeConformance } from 'test/utils';
+import { createMount, createClientRender, describeConformanceV5 } from 'test/utils';
 import AppBar from './AppBar';
+import classes from './appBarClasses';
 import Paper from '../Paper';
 
 describe('<AppBar />', () => {
-  const mount = createMount();
-  let classes;
   const render = createClientRender();
-  before(() => {
-    classes = getClasses(<AppBar>Hello World</AppBar>);
-  });
+  const mount = createMount();
 
-  describeConformance(<AppBar>Conformance?</AppBar>, () => ({
+  describeConformanceV5(<AppBar>Conformance?</AppBar>, () => ({
     classes,
     inheritComponent: Paper,
+    render,
     mount,
+    muiName: 'MuiAppBar',
     refInstanceof: window.HTMLElement,
-    skip: ['componentProp'],
+    testVariantProps: { position: 'relative' },
+    testStateOverrides: { prop: 'color', value: 'secondary', styleKey: 'colorSecondary' },
+    skip: ['componentsProp'],
   }));
 
   it('should render with the root class and primary', () => {
@@ -25,7 +26,7 @@ describe('<AppBar />', () => {
     const appBar = container.firstChild;
     expect(appBar).to.have.class(classes.root);
     expect(appBar).to.have.class(classes.colorPrimary);
-    expect(appBar).to.not.have.class(classes.colorSecondary);
+    expect(appBar).not.to.have.class(classes.colorSecondary);
   });
 
   it('should render a primary app bar', () => {
@@ -33,14 +34,14 @@ describe('<AppBar />', () => {
     const appBar = container.firstChild;
     expect(appBar).to.have.class(classes.root);
     expect(appBar).to.have.class(classes.colorPrimary);
-    expect(appBar).to.not.have.class(classes.colorSecondary);
+    expect(appBar).not.to.have.class(classes.colorSecondary);
   });
 
   it('should render an secondary app bar', () => {
     const { container } = render(<AppBar color="secondary">Hello World</AppBar>);
     const appBar = container.firstChild;
     expect(appBar).to.have.class(classes.root);
-    expect(appBar).to.not.have.class(classes.colorPrimary);
+    expect(appBar).not.to.have.class(classes.colorPrimary);
     expect(appBar).to.have.class(classes.colorSecondary);
   });
 

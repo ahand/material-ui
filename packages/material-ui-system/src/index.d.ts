@@ -1,6 +1,11 @@
 import * as React from 'react';
 import * as CSS from 'csstype';
 import { CSSProperties } from './CSSProperties';
+import {
+  OverwriteCSSProperties,
+  AliasesCSSProperties,
+  StandardCSSProperties,
+} from './styleFunctionSx';
 // disable automatic export
 export {};
 
@@ -32,7 +37,7 @@ export type BordersProps = PropsFor<typeof borders>;
 // breakpoints.js
 type DefaultBreakPoints = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
-export function handleBreakpoints<Props, Breakpoints extends string = DefaultBreakPoints>(
+export function handleBreakpoints<Props>(
   props: Props,
   propValue: any,
   styleFromPropValue: (value: any) => any
@@ -226,7 +231,7 @@ export const padding: SimpleStyleFunction<
 export type PaddingProps = PropsFor<typeof padding>;
 
 // style.js
-export interface StyleOptions<PropKey, Theme extends object> {
+export interface StyleOptions<PropKey> {
   cssProperty?: PropKey | keyof React.CSSProperties | false;
   prop: PropKey;
   /**
@@ -236,7 +241,7 @@ export interface StyleOptions<PropKey, Theme extends object> {
   transform?: (cssValue: unknown) => number | string | React.CSSProperties | CSSObject;
 }
 export function style<PropKey extends string, Theme extends object>(
-  options: StyleOptions<PropKey, Theme>
+  options: StyleOptions<PropKey>
 ): StyleFunction<{ [K in PropKey]?: unknown } & { theme: Theme }>;
 
 // typography.js
@@ -288,5 +293,39 @@ export interface CSSOthersObjectForCSSObject {
   [propertiesName: string]: CSSInterpolation;
 }
 
-export { default as unstable_styleFunctionSx } from './styleFunctionSx';
+export type CustomSystemProps = OverwriteCSSProperties & AliasesCSSProperties;
+
+export type SimpleSystemKeys = keyof Omit<
+  PropsFor<
+    ComposedStyleFunction<
+      [
+        typeof borders,
+        typeof display,
+        typeof flexbox,
+        typeof grid,
+        typeof palette,
+        typeof positions,
+        typeof shadows,
+        typeof sizing,
+        typeof spacing,
+        typeof typography
+      ]
+    >
+  >,
+  keyof CustomSystemProps
+>;
+
+// The SimpleSystemKeys are subset of the StandardCSSProperties, so this should be ok
+// This is needed as these are used as keys inside StandardCSSProperties
+type StandardSystemKeys = Extract<SimpleSystemKeys, keyof StandardCSSProperties>;
+
+export type SystemProps = {
+  [K in StandardSystemKeys]?: ResponsiveStyleValue<StandardCSSProperties[K]>;
+} &
+  CustomSystemProps;
+
+export {
+  default as unstable_styleFunctionSx,
+  extendSxProp as unstable_extendSxProp,
+} from './styleFunctionSx';
 export * from './styleFunctionSx';

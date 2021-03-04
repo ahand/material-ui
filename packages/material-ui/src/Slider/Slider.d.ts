@@ -1,12 +1,11 @@
 import * as React from 'react';
-import { SxProps } from '@material-ui/system';
 import {
   ExtendSliderUnstyledTypeMap,
   ExtendSliderUnstyled,
   SliderUnstyledTypeMap,
-  SliderUnstyledClasses,
-} from '@material-ui/unstyled';
-import { Theme } from '@material-ui/core/styles';
+} from '@material-ui/unstyled/SliderUnstyled';
+import { SxProps } from '@material-ui/system';
+import { Theme } from '../styles';
 import { OverrideProps } from '../OverridableComponent';
 
 export type SliderTypeMap<
@@ -21,7 +20,6 @@ export type SliderTypeMap<
     color?: 'primary' | 'secondary';
     /**
      * Override or extend the styles applied to the component.
-     * @default {}
      */
     classes?: SliderUnstyledTypeMap['props']['classes'] & {
       /** Class name applied to the root element if `color="primary"`. */
@@ -47,7 +45,7 @@ type SliderMarkLabelProps = NonNullable<SliderTypeMap['props']['componentsProps'
 type SliderRailProps = NonNullable<SliderTypeMap['props']['componentsProps']>['rail'];
 type SliderTrackProps = NonNullable<SliderTypeMap['props']['componentsProps']>['track'];
 type SliderThumbProps = NonNullable<SliderTypeMap['props']['componentsProps']>['thumb'];
-type SliderValueLabel = NonNullable<SliderTypeMap['props']['componentsProps']>['valueLabel'];
+type SliderValueLabelProps = NonNullable<SliderTypeMap['props']['componentsProps']>['valueLabel'];
 
 export const SliderRoot: React.FC<SliderRootProps>;
 export const SliderMark: React.FC<SliderMarkProps>;
@@ -55,7 +53,7 @@ export const SliderMarkLabel: React.FC<SliderMarkLabelProps>;
 export const SliderRail: React.FC<SliderRailProps>;
 export const SliderTrack: React.FC<SliderTrackProps>;
 export const SliderThumb: React.FC<SliderThumbProps>;
-export const SliderValueLabel: React.FC<SliderValueLabel>;
+export const SliderValueLabel: React.FC<SliderValueLabelProps>;
 
 /**
  *
@@ -77,12 +75,7 @@ export type SliderProps<
   P = {}
 > = OverrideProps<SliderTypeMap<D, P>, D>;
 
-export interface SliderClasses extends SliderUnstyledClasses {
-  colorPrimary: string;
-  colorSecondary: string;
-  thumbPrimary: string;
-  thumbSecondary: string;
-}
+export type SliderClasses = Record<SliderClassKey, string>;
 
 export const sliderClasses: SliderClasses;
 

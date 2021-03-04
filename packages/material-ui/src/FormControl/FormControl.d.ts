@@ -1,10 +1,16 @@
 import * as React from 'react';
+import { SxProps } from '@material-ui/system';
+import { OverridableStringUnion } from '@material-ui/types';
 import { OverridableComponent, OverrideProps } from '../OverridableComponent';
+import { Theme } from '../styles';
+
+export interface FormControlPropsSizeOverrides {}
+export interface FormControlPropsColorOverrides {}
 
 export interface FormControlTypeMap<P = {}, D extends React.ElementType = 'div'> {
   props: P & {
     /**
-     * The contents of the form control.
+     * The content of the component.
      */
     children?: React.ReactNode;
     /**
@@ -24,14 +30,17 @@ export interface FormControlTypeMap<P = {}, D extends React.ElementType = 'div'>
      * The color of the component. It supports those theme colors that make sense for this component.
      * @default 'primary'
      */
-    color?: 'primary' | 'secondary';
+    color?: OverridableStringUnion<
+      Record<'primary' | 'secondary', true>,
+      FormControlPropsColorOverrides
+    >;
     /**
      * If `true`, the label, input and helper text should be displayed in a disabled state.
      * @default false
      */
     disabled?: boolean;
     /**
-     * If `true`, the label should be displayed in an error state.
+     * If `true`, the label is displayed in an error state.
      * @default false
      */
     error?: boolean;
@@ -62,10 +71,14 @@ export interface FormControlTypeMap<P = {}, D extends React.ElementType = 'div'>
      */
     required?: boolean;
     /**
-     * The size of the text field.
+     * The size of the component.
      * @default 'medium'
      */
-    size?: 'small' | 'medium';
+    size?: OverridableStringUnion<Record<'small' | 'medium', true>, FormControlPropsSizeOverrides>;
+    /**
+     * The system prop that allows defining system overrides as well as additional CSS styles.
+     */
+    sx?: SxProps<Theme>;
     /**
      * The variant to use.
      * @default 'standard'
@@ -98,6 +111,7 @@ export interface FormControlTypeMap<P = {}, D extends React.ElementType = 'div'>
  *
  * ⚠️ Only one `InputBase` can be used within a FormControl because it create visual inconsistencies.
  * For instance, only one input can be focused at the same time, the state shouldn't be shared.
+ *
  * Demos:
  *
  * - [Checkboxes](https://material-ui.com/components/checkboxes/)

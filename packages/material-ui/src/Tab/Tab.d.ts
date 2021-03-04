@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { SxProps } from '@material-ui/system';
+import { Theme } from '..';
 import { ExtendButtonBase, ExtendButtonBaseTypeMap } from '../ButtonBase';
 import { OverrideProps } from '../OverridableComponent';
 
@@ -35,7 +37,7 @@ export type TabTypeMap<P = {}, D extends React.ElementType = 'div'> = ExtendButt
       wrapper?: string;
     };
     /**
-     * If `true`, the tab is disabled.
+     * If `true`, the component is disabled.
      * @default false
      */
     disabled?: boolean;
@@ -45,13 +47,17 @@ export type TabTypeMap<P = {}, D extends React.ElementType = 'div'> = ExtendButt
      */
     disableFocusRipple?: boolean;
     /**
-     * The icon element.
+     * The icon to display.
      */
     icon?: string | React.ReactElement;
     /**
      * The label element.
      */
     label?: React.ReactNode;
+    /**
+     * The system prop that allows defining system overrides as well as additional CSS styles.
+     */
+    sx?: SxProps<Theme>;
     /**
      * You can provide your own value. Otherwise, we fallback to the child position index.
      */

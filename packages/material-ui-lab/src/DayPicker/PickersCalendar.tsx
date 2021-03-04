@@ -1,13 +1,12 @@
 import * as React from 'react';
 import clsx from 'clsx';
 import Typography from '@material-ui/core/Typography';
-import { createStyles, WithStyles, withStyles, Theme, useTheme } from '@material-ui/core/styles';
+import { StyleRules, WithStyles, withStyles, Theme } from '@material-ui/core/styles';
 import PickersDay, { PickersDayProps } from '../PickersDay/PickersDay';
 import { useUtils, useNow } from '../internal/pickers/hooks/useUtils';
 import { PickerOnChangeFn } from '../internal/pickers/hooks/useViews';
 import { DAY_SIZE, DAY_MARGIN } from '../internal/pickers/constants/dimensions';
 import { PickerSelectionState } from '../internal/pickers/hooks/usePickerState';
-import { useGlobalKeyDown, keycode } from '../internal/pickers/hooks/useKeyDown';
 import SlideTransition, { SlideDirection, SlideTransitionProps } from './PickersSlideTransition';
 
 export interface ExportedCalendarProps<TDate>
@@ -20,7 +19,7 @@ export interface ExportedCalendarProps<TDate>
    */
   onChange: PickerOnChangeFn<TDate>;
   /**
-   * Custom renderer for day. Check [DayComponentProps api](https://material-ui-pickers.dev/api/Day) @DateIOType.
+   * Custom renderer for day. Check the [PickersDay](https://material-ui.com/api/pickers-day/) component.
    */
   renderDay?: (
     day: TDate,
@@ -29,7 +28,7 @@ export interface ExportedCalendarProps<TDate>
   ) => JSX.Element;
   /**
    * Enables keyboard listener for moving between days in calendar.
-   * @default currentWrapper !== 'static'
+   * Defaults to `true` unless the `ClockPicker` is used inside a `Static*` picker component.
    */
   allowKeyboardControl?: boolean;
   /**
@@ -46,7 +45,7 @@ export interface ExportedCalendarProps<TDate>
 }
 
 export interface PickersCalendarProps<TDate> extends ExportedCalendarProps<TDate> {
-  date: TDate | null | Array<TDate | null>;
+  date: TDate | [TDate | null, TDate | null] | null;
   isDateDisabled: (day: TDate) => boolean;
   slideDirection: SlideDirection;
   currentMonth: TDate;
@@ -59,44 +58,49 @@ export interface PickersCalendarProps<TDate> extends ExportedCalendarProps<TDate
   className?: string;
 }
 
-const weeksContainerHeight = (DAY_SIZE + DAY_MARGIN * 4) * 6;
-export const styles = (theme: Theme) =>
-  createStyles({
-    root: {
-      minHeight: weeksContainerHeight,
-    },
-    loadingContainer: {
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      minHeight: weeksContainerHeight,
-    },
-    weekContainer: {
-      overflow: 'hidden',
-    },
-    week: {
-      margin: `${DAY_MARGIN}px 0`,
-      display: 'flex',
-      justifyContent: 'center',
-    },
-    daysHeader: {
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    weekDayLabel: {
-      width: 36,
-      height: 40,
-      margin: '0 2px',
-      textAlign: 'center',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      color: theme.palette.text.secondary,
-    },
-  });
+export type PickersCalendarClassKey =
+  | 'root'
+  | 'loadingContainer'
+  | 'weekContainer'
+  | 'week'
+  | 'daysHeader'
+  | 'weekDayLabel';
 
-export type PickersCalendarClassKey = keyof WithStyles<typeof styles>['classes'];
+const weeksContainerHeight = (DAY_SIZE + DAY_MARGIN * 4) * 6;
+export const styles = (theme: Theme): StyleRules<PickersCalendarClassKey> => ({
+  root: {
+    minHeight: weeksContainerHeight,
+  },
+  loadingContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    minHeight: weeksContainerHeight,
+  },
+  weekContainer: {
+    overflow: 'hidden',
+  },
+  week: {
+    margin: `${DAY_MARGIN}px 0`,
+    display: 'flex',
+    justifyContent: 'center',
+  },
+  daysHeader: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  weekDayLabel: {
+    width: 36,
+    height: 40,
+    margin: '0 2px',
+    textAlign: 'center',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    color: theme.palette.text.secondary,
+  },
+});
 
 /**
  * @ignore - do not document.
@@ -127,8 +131,6 @@ function PickersCalendar<TDate>(props: PickersCalendarProps<TDate> & WithStyles<
 
   const now = useNow<TDate>();
   const utils = useUtils<TDate>();
-  const theme = useTheme();
-
   const handleDaySelect = React.useCallback(
     (day: TDate, isFinish: PickerSelectionState = 'finish') => {
       // TODO possibly buggy line figure out and add tests
@@ -138,22 +140,6 @@ function PickersCalendar<TDate>(props: PickersCalendarProps<TDate> & WithStyles<
     },
     [date, now, onChange, utils],
   );
-
-  const initialDate = Array.isArray(date) ? date[0] : date;
-
-  const nowFocusedDay = focusedDay || initialDate || now;
-  useGlobalKeyDown(Boolean(allowKeyboardControl), {
-    [keycode.ArrowUp]: () => changeFocusedDay(utils.addDays(nowFocusedDay, -7)),
-    [keycode.ArrowDown]: () => changeFocusedDay(utils.addDays(nowFocusedDay, 7)),
-    [keycode.ArrowLeft]: () =>
-      changeFocusedDay(utils.addDays(nowFocusedDay, theme.direction === 'ltr' ? -1 : 1)),
-    [keycode.ArrowRight]: () =>
-      changeFocusedDay(utils.addDays(nowFocusedDay, theme.direction === 'ltr' ? 1 : -1)),
-    [keycode.Home]: () => changeFocusedDay(utils.startOfWeek(nowFocusedDay)),
-    [keycode.End]: () => changeFocusedDay(utils.endOfWeek(nowFocusedDay)),
-    [keycode.PageUp]: () => changeFocusedDay(utils.getNextMonth(nowFocusedDay)),
-    [keycode.PageDown]: () => changeFocusedDay(utils.getPreviousMonth(nowFocusedDay)),
-  });
 
   const currentMonthNumber = utils.getMonth(currentMonth);
   const selectedDates = (Array.isArray(date) ? date : [date])
@@ -193,15 +179,14 @@ function PickersCalendar<TDate>(props: PickersCalendarProps<TDate> & WithStyles<
                   const dayProps: PickersDayProps<TDate> = {
                     key: (day as any)?.toString(),
                     day,
-                    role: 'cell',
                     isAnimating: isMonthSwitchingAnimating,
                     disabled: isDateDisabled(day),
                     allowKeyboardControl,
                     allowSameDateSelection,
-                    focused:
+                    autoFocus:
                       allowKeyboardControl &&
-                      Boolean(focusedDay) &&
-                      utils.isSameDay(day, nowFocusedDay),
+                      focusedDay !== null &&
+                      utils.isSameDay(day, focusedDay),
                     today: utils.isSameDay(day, now),
                     outsideCurrentMonth: utils.getMonth(day) !== currentMonthNumber,
                     selected: selectedDates.some(
@@ -209,10 +194,6 @@ function PickersCalendar<TDate>(props: PickersCalendarProps<TDate> & WithStyles<
                     ),
                     disableHighlightToday,
                     showDaysOutsideCurrentMonth,
-                    focusable:
-                      allowKeyboardControl &&
-                      Boolean(nowFocusedDay) &&
-                      utils.toJsDate(nowFocusedDay).getDate() === utils.toJsDate(day).getDate(),
                     onDayFocus: changeFocusedDay,
                     onDaySelect: handleDaySelect,
                   };
@@ -220,7 +201,9 @@ function PickersCalendar<TDate>(props: PickersCalendarProps<TDate> & WithStyles<
                   return renderDay ? (
                     renderDay(day, selectedDates, dayProps)
                   ) : (
-                    <PickersDay {...dayProps} />
+                    <div role="cell" key={dayProps.key}>
+                      <PickersDay {...dayProps} />
+                    </div>
                   );
                 })}
               </div>

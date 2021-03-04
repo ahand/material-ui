@@ -1,33 +1,26 @@
 import * as React from 'react';
 import { expect } from 'chai';
 import { spy } from 'sinon';
-import {
-  getClasses,
-  createMount,
-  describeConformance,
-  act,
-  createClientRender,
-  fireEvent,
-} from 'test/utils';
+import { createMount, describeConformanceV5, act, createClientRender, fireEvent } from 'test/utils';
 import Accordion from '../Accordion';
 import AccordionSummary from './AccordionSummary';
 import ButtonBase from '../ButtonBase';
+import classes from './accordionSummaryClasses';
 
 describe('<AccordionSummary />', () => {
-  const mount = createMount();
-  let classes;
   const render = createClientRender();
+  const mount = createMount();
 
-  before(() => {
-    classes = getClasses(<AccordionSummary />);
-  });
-
-  describeConformance(<AccordionSummary />, () => ({
+  describeConformanceV5(<AccordionSummary />, () => ({
     classes,
     inheritComponent: ButtonBase,
+    render,
     mount,
     refInstanceof: window.HTMLDivElement,
-    skip: ['componentProp'],
+    muiName: 'MuiAccordionSummary',
+    testVariantProps: { disabled: true },
+    testDeepOverrides: { slotName: 'content', slotClassName: classes.content },
+    skip: ['componentProp', 'componentsProp'],
   }));
 
   it('renders the children inside the .content element', () => {

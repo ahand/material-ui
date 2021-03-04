@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { SxProps } from '@material-ui/system';
+import { Theme } from '../styles';
 import { InternalStandardProps as StandardProps } from '..';
 import { FabProps } from '../Fab';
 import { TransitionHandlerProps, TransitionProps } from '../transitions';
@@ -23,13 +25,13 @@ export interface SpeedDialProps
     root?: string;
     /** Styles applied to the Fab component. */
     fab?: string;
-    /** Styles applied to the root if direction="up" */
+    /** Styles applied to the root element if direction="up" */
     directionUp?: string;
-    /** Styles applied to the root if direction="down" */
+    /** Styles applied to the root element if direction="down" */
     directionDown?: string;
-    /** Styles applied to the root if direction="left" */
+    /** Styles applied to the root element if direction="left" */
     directionLeft?: string;
-    /** Styles applied to the root if direction="right" */
+    /** Styles applied to the root element if direction="right" */
     directionRight?: string;
     /** Styles applied to the actions (`children` wrapper) element. */
     actions?: string;
@@ -76,13 +78,17 @@ export interface SpeedDialProps
    */
   onOpen?: (event: React.SyntheticEvent<{}>, reason: OpenReason) => void;
   /**
-   * If `true`, the SpeedDial is open.
+   * If `true`, the component is shown.
    */
   open?: boolean;
   /**
    * The icon to display in the SpeedDial Fab when the SpeedDial is open.
    */
   openIcon?: React.ReactNode;
+  /**
+   * The system prop that allows defining system overrides as well as additional CSS styles.
+   */
+  sx?: SxProps<Theme>;
   /**
    * The component used for the transition.
    * [Follow this guide](/components/transitions/#transitioncomponent-prop) to learn more about the requirements for this component.

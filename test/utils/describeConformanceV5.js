@@ -2,14 +2,14 @@
 import { expect } from 'chai';
 import * as React from 'react';
 import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-import { createClientRender } from './createClientRender';
 import {
+  testComponentProp,
   testClassName,
   testPropsSpread,
   describeRef,
-  testRootClass,
   findRootComponent,
   testReactTestRenderer,
+  testRootClass,
 } from './describeConformance';
 
 /**
@@ -19,7 +19,7 @@ import {
  * @param {() => ConformanceOptions} getOptions
  */
 function testComponentsProp(element, getOptions) {
-  describe('prop: components', () => {
+  describe('prop components:', () => {
     it('can render another root component with the `components` prop', () => {
       const { mount, testComponentsRootPropWith: component = 'em' } = getOptions();
 
@@ -31,17 +31,16 @@ function testComponentsProp(element, getOptions) {
 }
 
 /**
- * Material-UI theme has a components section that allows specifying default props, overrides and variants
+ * Material-UI theme has a components section that allows specifying default props.
  * Components from @inheritComponent
  * @param {React.ReactElement} element
  * @param {() => ConformanceOptions} getOptions
  */
-function testThemeComponents(element, getOptions) {
-  const render = createClientRender();
-
-  describe('theme: components', () => {
+function testThemeDefaultProps(element, getOptions) {
+  describe('theme default components:', () => {
     it("respect theme's defaultProps", () => {
-      const { muiName, testThemeComponentsDefaultPropName: testProp = 'id' } = getOptions();
+      const testProp = 'data-id';
+      const { muiName, render } = getOptions();
       const theme = createMuiTheme({
         components: {
           [muiName]: {
@@ -56,9 +55,26 @@ function testThemeComponents(element, getOptions) {
 
       expect(container.firstChild).to.have.attribute(testProp, 'testProp');
     });
+  });
+}
 
-    it("respect theme's styleOverrides", () => {
-      const { muiName, testDeepOverrides } = getOptions();
+/**
+ * Material-UI theme has a components section that allows specifying style overrides.
+ * Components from @inheritComponent
+ * @param {React.ReactElement} element
+ * @param {() => ConformanceOptions} getOptions
+ */
+function testThemeStyleOverrides(element, getOptions) {
+  describe('theme style overrides:', () => {
+    it("respect theme's styleOverrides custom state", function test() {
+      if (/jsdom/.test(window.navigator.userAgent)) {
+        this.skip();
+      }
+      const { muiName, testStateOverrides, render } = getOptions();
+
+      if (!testStateOverrides) {
+        return;
+      }
 
       const testStyle = {
         marginTop: '13px',
@@ -68,17 +84,54 @@ function testThemeComponents(element, getOptions) {
         components: {
           [muiName]: {
             styleOverrides: {
-              root: {
+              [testStateOverrides.styleKey]: testStyle,
+            },
+          },
+        },
+      });
+
+      const { container } = render(
+        <ThemeProvider theme={theme}>
+          {React.cloneElement(element, {
+            [testStateOverrides.prop]: testStateOverrides.value,
+          })}
+        </ThemeProvider>,
+      );
+
+      expect(container.firstChild).to.toHaveComputedStyle(testStyle);
+    });
+
+    it("respect theme's styleOverrides slots", function test() {
+      if (/jsdom/.test(window.navigator.userAgent)) {
+        this.skip();
+      }
+
+      const {
+        muiName,
+        testDeepOverrides,
+        testRootOverrides = { slotName: 'root' },
+        render,
+      } = getOptions();
+
+      const testStyle = {
+        mixBlendMode: 'darken',
+      };
+
+      const theme = createMuiTheme({
+        components: {
+          [muiName]: {
+            styleOverrides: {
+              [testRootOverrides.slotName]: {
                 ...testStyle,
                 ...(testDeepOverrides && {
                   [`& .${testDeepOverrides.slotClassName}`]: {
-                    marginBottom: '10px',
+                    fontVariantCaps: 'all-petite-caps',
                   },
                 }),
               },
               ...(testDeepOverrides && {
                 [testDeepOverrides.slotName]: {
-                  marginTop: '10px',
+                  mixBlendMode: 'darken',
                 },
               }),
             },
@@ -86,50 +139,65 @@ function testThemeComponents(element, getOptions) {
         },
       });
 
-      const { container } = render(<ThemeProvider theme={theme}>{element}</ThemeProvider>);
-
-      expect(container.firstChild).to.toHaveComputedStyle(testStyle);
-
-      if (testDeepOverrides) {
-        expect(
-          container.firstChild.getElementsByClassName(testDeepOverrides.slotClassName)[0],
-        ).to.toHaveComputedStyle({
-          marginBottom: '10px',
-          marginTop: '10px',
-        });
-      }
-
-      const themeWithoutRootOverrides = createMuiTheme({
-        components: {
-          [muiName]: {
-            styleOverrides: {
-              ...(testDeepOverrides && {
-                [testDeepOverrides.slotName]: {
-                  marginTop: '10px',
-                },
-              }),
-            },
-          },
-        },
-      });
-
-      const { container: containerWithoutRootOverrides } = render(
-        <ThemeProvider theme={themeWithoutRootOverrides}>{element}</ThemeProvider>,
+      const { container, setProps } = render(
+        <ThemeProvider theme={theme}>{element}</ThemeProvider>,
       );
 
+      if (testRootOverrides.slotClassName) {
+        expect(
+          document.querySelector(`.${testRootOverrides.slotClassName}`),
+        ).to.toHaveComputedStyle(testStyle);
+      } else {
+        expect(container.firstChild).to.toHaveComputedStyle(testStyle);
+      }
+
       if (testDeepOverrides) {
         expect(
-          containerWithoutRootOverrides.firstChild.getElementsByClassName(
-            testDeepOverrides.slotClassName,
-          )[0],
+          document.querySelector(`.${testDeepOverrides.slotClassName}`),
         ).to.toHaveComputedStyle({
-          marginTop: '10px',
+          fontVariantCaps: 'all-petite-caps',
+          mixBlendMode: 'darken',
         });
+
+        const themeWithoutRootOverrides = createMuiTheme({
+          components: {
+            [muiName]: {
+              styleOverrides: {
+                ...(testDeepOverrides && {
+                  [testDeepOverrides.slotName]: testStyle,
+                }),
+              },
+            },
+          },
+        });
+
+        setProps({ theme: themeWithoutRootOverrides });
+        expect(
+          document.querySelector(`.${testDeepOverrides.slotClassName}`),
+        ).to.toHaveComputedStyle(testStyle);
       }
     });
+  });
+}
 
-    it("respect theme's variants", () => {
-      const { muiName, testVariantProps = {} } = getOptions();
+/**
+ * Material-UI theme has a components section that allows specifying custom variants.
+ * Components from @inheritComponent
+ * @param {React.ReactElement} element
+ * @param {() => ConformanceOptions} getOptions
+ */
+function testThemeVariants(element, getOptions) {
+  describe('theme variants:', () => {
+    it("respect theme's variants", function test() {
+      if (/jsdom/.test(window.navigator.userAgent)) {
+        this.skip();
+      }
+
+      const { muiName, testVariantProps, render } = getOptions();
+
+      if (!testVariantProps) {
+        throw new Error('missing testVariantProps');
+      }
 
       const testStyle = {
         marginTop: '13px',
@@ -162,13 +230,16 @@ function testThemeComponents(element, getOptions) {
 }
 
 const fullSuite = {
+  componentProp: testComponentProp,
   componentsProp: testComponentsProp,
   mergeClassName: testClassName,
   propsSpread: testPropsSpread,
   refForwarding: describeRef,
   rootClass: testRootClass,
   reactTestRenderer: testReactTestRenderer,
-  themeComponents: testThemeComponents,
+  themeDefaultProps: testThemeDefaultProps,
+  themeStyleOverrides: testThemeStyleOverrides,
+  themeVariants: testThemeVariants,
 };
 
 /**
@@ -179,6 +250,7 @@ const fullSuite = {
  */
 export default function describeConformanceV5(minimalElement, getOptions) {
   const { after: runAfterHook = () => {}, only = Object.keys(fullSuite), skip = [] } = getOptions();
+
   describe('Material-UI component API', () => {
     after(runAfterHook);
 

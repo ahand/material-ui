@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import sortedUniqBy from 'lodash/sortedUniqBy';
 import MarkdownDocs from 'docs/src/modules/components/MarkdownDocs';
 import { prepareMarkdown } from 'docs/src/modules/utils/parseMarkdown';
@@ -27,8 +27,13 @@ async function getBranches() {
       Authorization: `Basic ${Buffer.from(githubAuthorizationToken).toString('base64')}`,
     },
   });
-  const branches = await result.json();
-  return branches;
+  const text = await result.text();
+
+  if (result.status !== 200) {
+    throw new Error(text);
+  }
+
+  return JSON.parse(text);
 }
 
 Page.getInitialProps = async () => {

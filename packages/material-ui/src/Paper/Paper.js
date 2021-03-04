@@ -1,60 +1,91 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
-import { useThemeVariants } from '@material-ui/styles';
-import withStyles from '../styles/withStyles';
+import { chainPropTypes, deepmerge } from '@material-ui/utils';
+import { unstable_composeClasses as composeClasses } from '@material-ui/unstyled';
+import experimentalStyled from '../styles/experimentalStyled';
+import useThemeProps from '../styles/useThemeProps';
 import useTheme from '../styles/useTheme';
+import { getPaperUtilityClass } from './paperClasses';
 
-export const styles = (theme) => {
-  const elevations = {};
-  theme.shadows.forEach((shadow, index) => {
-    elevations[`elevation${index}`] = {
-      boxShadow: shadow,
-    };
-  });
+const overridesResolver = (props, styles) => {
+  const { styleProps } = props;
 
-  return {
-    /* Styles applied to the root element. */
-    root: {
-      backgroundColor: theme.palette.background.paper,
-      color: theme.palette.text.primary,
-      transition: theme.transitions.create('box-shadow'),
+  return deepmerge(
+    {
+      ...styles[styleProps.variant],
+      ...(!styleProps.square && styles.rounded),
+      ...(styleProps.variant === 'elevation' && styles[`elevation${styleProps.elevation}`]),
     },
-    /* Styles applied to the root element unless `square={true}`. */
-    rounded: {
-      borderRadius: theme.shape.borderRadius,
-    },
-    /* Styles applied to the root element if `variant="outlined"`. */
-    outlined: {
-      border: `1px solid ${theme.palette.divider}`,
-    },
-    /* Styles applied to the root element if `variant="elevation"`. */
-    elevation: {},
-    ...elevations,
-  };
+    styles.root || {},
+  );
 };
 
-const Paper = React.forwardRef(function Paper(props, ref) {
+const useUtilityClasses = (styleProps) => {
+  const { square, elevation, variant, classes } = styleProps;
+
+  const slots = {
+    root: [
+      'root',
+      variant,
+      !square && 'rounded',
+      variant === 'elevation' && `elevation${elevation}`,
+    ],
+  };
+
+  return composeClasses(slots, getPaperUtilityClass, classes);
+};
+
+const PaperRoot = experimentalStyled(
+  'div',
+  {},
+  {
+    name: 'MuiPaper',
+    slot: 'Root',
+    overridesResolver,
+  },
+)(({ theme, styleProps }) => {
+  return {
+    /* Styles applied to the root element. */
+    backgroundColor: theme.palette.background.paper,
+    color: theme.palette.text.primary,
+    transition: theme.transitions.create('box-shadow'),
+    /* Styles applied to the root element unless `square={true}`. */
+    ...(!styleProps.square && {
+      borderRadius: theme.shape.borderRadius,
+    }),
+    /* Styles applied to the root element if `variant="outlined"`. */
+    ...(styleProps.variant === 'outlined' && {
+      border: `1px solid ${theme.palette.divider}`,
+    }),
+    /* Styles applied to the root element if `variant="elevation"`. */
+    ...(styleProps.variant === 'elevation' && {
+      boxShadow: theme.shadows[styleProps.elevation],
+    }),
+  };
+});
+
+const Paper = React.forwardRef(function Paper(inProps, ref) {
+  const props = useThemeProps({ props: inProps, name: 'MuiPaper' });
+
   const {
-    classes,
     className,
-    component: Component = 'div',
-    square = false,
+    component = 'div',
     elevation = 1,
+    square = false,
     variant = 'elevation',
     ...other
   } = props;
 
-  const themeVariantsClasses = useThemeVariants(
-    {
-      ...props,
-      component: Component,
-      square,
-      elevation,
-      variant,
-    },
-    'MuiPaper',
-  );
+  const styleProps = {
+    ...props,
+    component,
+    elevation,
+    square,
+    variant,
+  };
+
+  const classes = useUtilityClasses(styleProps);
 
   if (process.env.NODE_ENV !== 'production') {
     // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -70,17 +101,10 @@ const Paper = React.forwardRef(function Paper(props, ref) {
   }
 
   return (
-    <Component
-      className={clsx(
-        classes.root,
-        classes[variant],
-        {
-          [classes.rounded]: !square,
-          [classes[`elevation${elevation}`]]: variant === 'elevation',
-        },
-        themeVariantsClasses,
-        className,
-      )}
+    <PaperRoot
+      as={component}
+      styleProps={styleProps}
+      className={clsx(classes.root, className)}
       ref={ref}
       {...other}
     />
@@ -114,12 +138,25 @@ Paper.propTypes = {
    * It accepts values between 0 and 24 inclusive.
    * @default 1
    */
-  elevation: PropTypes.number,
+  elevation: chainPropTypes(PropTypes.number, (props) => {
+    const { elevation, variant } = props;
+    if (elevation > 0 && variant === 'outlined') {
+      return new Error(
+        `Material-UI: Combining \`elevation={${elevation}}\` with \`variant="${variant}"\` has no effect. Either use \`elevation={0}\` or use a different \`variant\`.`,
+      );
+    }
+
+    return null;
+  }),
   /**
    * If `true`, rounded corners are disabled.
    * @default false
    */
   square: PropTypes.bool,
+  /**
+   * The system prop that allows defining system overrides as well as additional CSS styles.
+   */
+  sx: PropTypes.object,
   /**
    * The variant to use.
    * @default 'elevation'
@@ -130,4 +167,4 @@ Paper.propTypes = {
   ]),
 };
 
-export default withStyles(styles, { name: 'MuiPaper' })(Paper);
+export default Paper;

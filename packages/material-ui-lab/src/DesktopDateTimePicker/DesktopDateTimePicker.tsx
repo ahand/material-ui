@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { makePickerWithStateAndWrapper } from '../internal/pickers/Picker/makePickerWithState';
+import { makePickerWithState } from '../internal/pickers/Picker/makePickerWithState';
 import {
   BaseDateTimePickerProps,
   dateTimePickerConfig,
@@ -8,10 +8,17 @@ import {
 import { DesktopWrapper } from '../internal/pickers/wrappers/Wrapper';
 
 /**
- * @ignore - do not document.
+ *
+ * Demos:
+ *
+ * - [Date Time Picker](https://material-ui.com/components/date-time-picker/)
+ *
+ * API:
+ *
+ * - [DesktopDateTimePicker API](https://material-ui.com/api/desktop-date-time-picker/)
  */
-/* @typescript-to-proptypes-generate */
-const DesktopDateTimePicker = makePickerWithStateAndWrapper<BaseDateTimePickerProps<unknown>>(
+// @typescript-to-proptypes-generate
+const DesktopDateTimePicker = makePickerWithState<BaseDateTimePickerProps<unknown>>(
   DesktopWrapper,
   {
     name: 'MuiDesktopDateTimePicker',
@@ -19,7 +26,11 @@ const DesktopDateTimePicker = makePickerWithStateAndWrapper<BaseDateTimePickerPr
   },
 ) as DateTimePickerGenericComponent<typeof DesktopWrapper>;
 
-(DesktopDateTimePicker as any).propTypes = {
+if (process.env.NODE_ENV !== 'production') {
+  (DesktopDateTimePicker as any).displayName = 'DesktopDateTimePicker';
+}
+
+DesktopDateTimePicker.propTypes = {
   // ----------------------------- Warning --------------------------------
   // | These PropTypes are generated from the TypeScript type definitions |
   // |     To update them edit TypeScript types and run "yarn proptypes"  |
@@ -31,7 +42,7 @@ const DesktopDateTimePicker = makePickerWithStateAndWrapper<BaseDateTimePickerPr
   acceptRegex: PropTypes.instanceOf(RegExp),
   /**
    * Enables keyboard listener for moving between days in calendar.
-   * @default currentWrapper !== 'static'
+   * Defaults to `true` unless the `ClockPicker` is used inside a `Static*` picker component.
    */
   allowKeyboardControl: PropTypes.bool,
   /**
@@ -41,7 +52,7 @@ const DesktopDateTimePicker = makePickerWithStateAndWrapper<BaseDateTimePickerPr
   allowSameDateSelection: PropTypes.bool,
   /**
    * 12h/24h view for hour selection clock.
-   * @default true
+   * @default false
    */
   ampm: PropTypes.bool,
   /**
@@ -49,6 +60,10 @@ const DesktopDateTimePicker = makePickerWithStateAndWrapper<BaseDateTimePickerPr
    * @default false
    */
   ampmInClock: PropTypes.bool,
+  /**
+   * @ignore
+   */
+  children: PropTypes.node,
   /**
    * className applied to the root component.
    */
@@ -72,19 +87,11 @@ const DesktopDateTimePicker = makePickerWithStateAndWrapper<BaseDateTimePickerPr
    */
   componentsProps: PropTypes.object,
   /**
-   * Allows to pass configured date-io adapter directly. More info [here](https://next.material-ui-pickers.dev/guides/date-adapter-passing)
-   * ```jsx
-   * dateAdapter={new AdapterDateFns({ locale: ruLocale })}
-   * ```
-   */
-  dateAdapter: PropTypes.object,
-  /**
    * Date tab icon.
    */
   dateRangeIcon: PropTypes.node,
   /**
    * Default calendar month displayed when `value={null}`.
-   * @default `new Date()`
    */
   defaultCalendarMonth: PropTypes.any,
   /**
@@ -97,7 +104,6 @@ const DesktopDateTimePicker = makePickerWithStateAndWrapper<BaseDateTimePickerPr
    */
   disabled: PropTypes.bool,
   /**
-   * Disable future dates.
    * @default false
    */
   disableFuture: PropTypes.bool,
@@ -122,13 +128,16 @@ const DesktopDateTimePicker = makePickerWithStateAndWrapper<BaseDateTimePickerPr
    */
   disableOpenPicker: PropTypes.bool,
   /**
-   * Disable past dates.
    * @default false
    */
   disablePast: PropTypes.bool,
   /**
    * Accessible text that helps user to understand which time and view is selected.
-   * @default (view, time) => `Select ${view}. Selected time is ${format(time, 'fullTime')}`
+   * @default <TDate extends any>(
+   *   view: 'hours' | 'minutes' | 'seconds',
+   *   time: TDate,
+   *   adapter: MuiPickersAdapter<TDate>,
+   * ) => `Select ${view}. Selected time is ${adapter.format(time, 'fullTime')}`
    */
   getClockLabelText: PropTypes.func,
   /**
@@ -179,7 +188,7 @@ const DesktopDateTimePicker = makePickerWithStateAndWrapper<BaseDateTimePickerPr
    */
   loading: PropTypes.bool,
   /**
-   * Custom mask. Can be used to override generate from format. (e.g. __/__/____ __:__ or __/__/____ __:__ _M)
+   * Custom mask. Can be used to override generate from format. (e.g. `__/__/____ __:__` or `__/__/____ __:__ _M`).
    */
   mask: PropTypes.string,
   /**
@@ -246,7 +255,7 @@ const DesktopDateTimePicker = makePickerWithStateAndWrapper<BaseDateTimePickerPr
    */
   onAccept: PropTypes.func,
   /**
-   * Callback fired when the value (the selected date) changes. @DateIOType.
+   * Callback fired when the value (the selected date) changes @DateIOType.
    */
   onChange: PropTypes.func.isRequired,
   /**
@@ -310,11 +319,11 @@ const DesktopDateTimePicker = makePickerWithStateAndWrapper<BaseDateTimePickerPr
   readOnly: PropTypes.bool,
   /**
    * Disable heavy animations.
-   * @default /(android)/i.test(window.navigator.userAgent).
+   * @default typeof navigator !== 'undefined' && /(android)/i.test(navigator.userAgent)
    */
   reduceAnimations: PropTypes.bool,
   /**
-   * Custom renderer for day. Check [DayComponentProps api](https://material-ui-pickers.dev/api/Day) @DateIOType.
+   * Custom renderer for day. Check the [PickersDay](https://material-ui.com/api/pickers-day/) component.
    */
   renderDay: PropTypes.func,
   /**
@@ -328,7 +337,7 @@ const DesktopDateTimePicker = makePickerWithStateAndWrapper<BaseDateTimePickerPr
   renderInput: PropTypes.func.isRequired,
   /**
    * Component displaying when passed `loading` true.
-   * @default () => "..."
+   * @default () => <span data-mui-test="loading-progress">...</span>
    */
   renderLoading: PropTypes.func,
   /**
@@ -350,7 +359,7 @@ const DesktopDateTimePicker = makePickerWithStateAndWrapper<BaseDateTimePickerPr
   shouldDisableTime: PropTypes.func,
   /**
    * Disable specific years dynamically.
-   * Works like `shouldDisableDate` but for year selection view. @DateIOType.
+   * Works like `shouldDisableDate` but for year selection view @DateIOType.
    */
   shouldDisableYear: PropTypes.func,
   /**
@@ -403,7 +412,7 @@ const DesktopDateTimePicker = makePickerWithStateAndWrapper<BaseDateTimePickerPr
   views: PropTypes.arrayOf(
     PropTypes.oneOf(['date', 'hours', 'minutes', 'month', 'year']).isRequired,
   ),
-};
+} as any;
 
 export type DesktopDateTimePickerProps = React.ComponentProps<typeof DesktopDateTimePicker>;
 

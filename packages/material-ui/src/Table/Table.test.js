@@ -1,29 +1,29 @@
 import * as React from 'react';
 import { expect } from 'chai';
-import { getClasses, createMount, createClientRender, describeConformance } from 'test/utils';
+import { createMount, createClientRender, describeConformanceV5 } from 'test/utils';
 import Table from './Table';
 import TableContext from './TableContext';
+import classes from './tableClasses';
 
 describe('<Table />', () => {
-  const mount = createMount();
   const render = createClientRender();
-  let classes;
+  const mount = createMount();
 
-  before(() => {
-    classes = getClasses(<Table>foo</Table>);
-  });
-
-  describeConformance(
+  describeConformanceV5(
     <Table>
       <tbody />
     </Table>,
     () => ({
       classes,
       inheritComponent: 'table',
+      render,
       mount,
+      muiName: 'MuiTable',
+      testVariantProps: { variant: 'foo' },
       refInstanceof: window.HTMLTableElement,
       // can't test another component with tbody as a child
       testComponentPropWith: 'table',
+      skip: ['componentsProp'],
     }),
   );
 

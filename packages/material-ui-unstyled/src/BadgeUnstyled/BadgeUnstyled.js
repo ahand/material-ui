@@ -3,33 +3,25 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { unstable_capitalize as capitalize, usePreviousProps } from '@material-ui/utils';
 import isHostComponent from '../utils/isHostComponent';
-import badgeUnstyledClasses, { getBadgeUtilityClass } from './badgeUnstyledClasses';
+import composeClasses from '../composeClasses';
+import { getBadgeUtilityClass } from './badgeUnstyledClasses';
 
 const useUtilityClasses = (styleProps) => {
-  const { variant, anchorOrigin, overlap, invisible, classes = {} } = styleProps;
+  const { variant, anchorOrigin, overlap, invisible, classes } = styleProps;
 
-  return {
-    root: clsx(badgeUnstyledClasses['root'], classes['root']),
-    badge: clsx(
-      badgeUnstyledClasses['badge'],
-      classes['badge'],
-      getBadgeUtilityClass(variant),
-      badgeUnstyledClasses[
-        `anchorOrigin${capitalize(anchorOrigin.vertical)}${capitalize(
-          anchorOrigin.horizontal,
-        )}${capitalize(overlap)}`
-      ],
-      classes[
-        `anchorOrigin${capitalize(anchorOrigin.vertical)}${capitalize(
-          anchorOrigin.horizontal,
-        )}${capitalize(overlap)}`
-      ],
-      {
-        [badgeUnstyledClasses['invisible']]: invisible,
-        [classes.invisible]: invisible,
-      },
-    ),
+  const slots = {
+    root: ['root'],
+    badge: [
+      'badge',
+      variant,
+      `anchorOrigin${capitalize(anchorOrigin.vertical)}${capitalize(
+        anchorOrigin.horizontal,
+      )}${capitalize(overlap)}`,
+      invisible && 'invisible',
+    ],
   };
+
+  return composeClasses(slots, getBadgeUtilityClass, classes);
 };
 
 const BadgeUnstyled = React.forwardRef(function BadgeUnstyled(props, ref) {
@@ -38,9 +30,9 @@ const BadgeUnstyled = React.forwardRef(function BadgeUnstyled(props, ref) {
       vertical: 'top',
       horizontal: 'right',
     },
-    classes: classesProp = {},
+    classes: classesProp,
     badgeContent: badgeContentProp,
-    component: Component = 'span',
+    component = 'span',
     children,
     className,
     components = {},
@@ -84,6 +76,7 @@ const BadgeUnstyled = React.forwardRef(function BadgeUnstyled(props, ref) {
     ...props,
     anchorOrigin,
     badgeContent,
+    classes: classesProp,
     invisible,
     max,
     overlap,
@@ -96,9 +89,9 @@ const BadgeUnstyled = React.forwardRef(function BadgeUnstyled(props, ref) {
     displayValue = badgeContent > max ? `${max}+` : badgeContent;
   }
 
-  const classes = useUtilityClasses({ ...styleProps, classes: classesProp });
+  const classes = useUtilityClasses(styleProps);
 
-  const Root = components.Root || Component;
+  const Root = components.Root || component;
   const rootProps = componentsProps.root || {};
 
   const Badge = components.Badge || 'span';
@@ -108,7 +101,7 @@ const BadgeUnstyled = React.forwardRef(function BadgeUnstyled(props, ref) {
     <Root
       {...rootProps}
       {...(!isHostComponent(Root) && {
-        as: Component,
+        as: component,
         styleProps: { ...styleProps, ...rootProps.styleProps },
         theme,
       })}
@@ -157,7 +150,6 @@ BadgeUnstyled.propTypes = {
   children: PropTypes.node,
   /**
    * Override or extend the styles applied to the component.
-   * @default {}
    */
   classes: PropTypes.object,
   /**
@@ -206,10 +198,7 @@ BadgeUnstyled.propTypes = {
    * The variant to use.
    * @default 'standard'
    */
-  variant: PropTypes /* @typescript-to-proptypes-ignore */.oneOfType([
-    PropTypes.oneOf(['dot', 'standard']),
-    PropTypes.string,
-  ]),
+  variant: PropTypes.string,
 };
 
 export default BadgeUnstyled;

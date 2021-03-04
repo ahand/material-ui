@@ -20,7 +20,7 @@ const LTR_ORIGIN = {
 };
 
 export const styles = {
-  /* Styles applied to the `Paper` component. */
+  /* Styles applied to the Paper component. */
   paper: {
     // specZ: The maximum height of a simple menu should be one or more rows less than the view
     // height. This ensures a tapable area outside of the simple menu with which to dismiss
@@ -29,7 +29,7 @@ export const styles = {
     // Add iOS momentum scrolling.
     WebkitOverflowScrolling: 'touch',
   },
-  /* Styles applied to the `List` component via `MenuList`. */
+  /* Styles applied to the List component via `MenuList`. */
   list: {
     // We disable the focus ring for mouse, touch and keyboard users.
     outline: 0,
@@ -169,7 +169,7 @@ Menu.propTypes = {
   // |     To update them edit the d.ts file and run "yarn proptypes"     |
   // ----------------------------------------------------------------------
   /**
-   * A HTML element, or a function that returns it.
+   * An HTML element, or a function that returns one.
    * It's used to set the position of the menu.
    */
   anchorEl: PropTypes /* @typescript-to-proptypes-ignore */.oneOfType([
@@ -213,7 +213,7 @@ Menu.propTypes = {
    */
   onClose: PropTypes.func,
   /**
-   * If `true`, the menu is visible.
+   * If `true`, the component is shown.
    */
   open: PropTypes.bool.isRequired,
   /**

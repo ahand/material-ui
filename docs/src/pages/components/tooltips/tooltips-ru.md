@@ -16,11 +16,11 @@ waiAria: 'https://www.w3.org/TR/wai-aria-practices/#tooltip'
 
 ## Простые подсказки
 
-{{"demo": "pages/components/tooltips/SimpleTooltips.js"}}
+{{"demo": "pages/components/tooltips/BasicTooltip.js"}}
 
 ## Positioned tooltips
 
-The `Tooltip` has 12 **placements** choice. They don’t have directional arrows; instead, they rely on motion emanating from the source to convey direction.
+The `Tooltip` has 12 **placements** choice. They don't have directional arrows; instead, they rely on motion emanating from the source to convey direction.
 
 {{"demo": "pages/components/tooltips/PositionedTooltips.js"}}
 
@@ -92,11 +92,9 @@ By default disabled elements like `<button>` do not trigger user interactions so
 ```jsx
 <Tooltip title="You don't have permission to do this">
   <span>
-    <button disabled={disabled} style={disabled ? { pointerEvents: 'none' } : {}}>
-      A disabled button
-    </button>
-  </span>
-</Tooltip>
+    <button disabled={disabled} style={disabled ? <Tooltip title="You don't have permission to do this">
+  <span>
+    <button disabled={disabled} style={disabled ?
 ```
 
 ## Переходы

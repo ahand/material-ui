@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { OverridableStringUnion } from '@material-ui/types';
+import { SxProps } from '@material-ui/system';
 import { InternalStandardProps as StandardProps } from '@material-ui/core';
+import { Theme } from '../styles';
 import { UsePaginationItem, UsePaginationProps } from '../usePagination/usePagination';
 
 export interface PaginationRenderItemParams extends UsePaginationItem {
@@ -63,10 +65,14 @@ export interface PaginationProps
    */
   shape?: 'circular' | 'rounded';
   /**
-   * The size of the pagination component.
+   * The size of the component.
    * @default 'medium'
    */
   size?: 'small' | 'medium' | 'large';
+  /**
+   * The system prop that allows defining system overrides as well as additional CSS styles.
+   */
+  sx?: SxProps<Theme>;
   /**
    * The variant to use.
    * @default 'text'

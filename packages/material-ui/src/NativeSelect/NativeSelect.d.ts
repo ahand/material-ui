@@ -48,7 +48,7 @@ export interface NativeSelectProps
    */
   input?: React.ReactElement<any, any>;
   /**
-   * Attributes applied to the `select` element.
+   * <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#Attributes">Attributes</a> applied to the `select` element.
    */
   inputProps?: NativeSelectInputProps;
   /**
@@ -72,6 +72,7 @@ export type NativeSelectClassKey = keyof NonNullable<NativeSelectProps['classes'
 
 /**
  * An alternative to `<Select native />` with a much smaller bundle size footprint.
+ *
  * Demos:
  *
  * - [Selects](https://material-ui.com/components/selects/)

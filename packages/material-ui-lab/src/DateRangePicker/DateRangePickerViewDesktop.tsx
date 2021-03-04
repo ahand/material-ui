@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { withStyles, WithStyles, createStyles, Theme } from '@material-ui/core/styles';
+import { MuiStyles, StyleRules, withStyles, WithStyles } from '@material-ui/core/styles';
 import { DateRange } from './RangeTypes';
 import { useUtils } from '../internal/pickers/hooks/useUtils';
 import { calculateRangePreview } from './date-range-manager';
 import PickersCalendar, { PickersCalendarProps } from '../DayPicker/PickersCalendar';
-import DateRangeDay, { DateRangePickerDayProps } from '../DateRangePickerDay';
+import DateRangePickerDay, { DateRangePickerDayProps } from '../DateRangePickerDay';
 import { defaultMinDate, defaultMaxDate } from '../internal/pickers/constants/prop-types';
 import PickersArrowSwitcher, {
   ExportedArrowSwitcherProps,
@@ -29,9 +29,9 @@ export interface ExportedDesktopDateRangeCalendarProps<TDate> {
   calendars?: 1 | 2 | 3;
   /**
    * Custom renderer for `<DateRangePicker />` days. @DateIOType
-   * @example (date, DateRangeDayProps) => <DateRangePickerDay {...DateRangeDayProps} />
+   * @example (date, DateRangePickerDayProps) => <DateRangePickerDay {...DateRangePickerDayProps} />
    */
-  renderDay?: (date: TDate, DateRangeDayProps: DateRangePickerDayProps<TDate>) => JSX.Element;
+  renderDay?: (date: TDate, DateRangePickerDayProps: DateRangePickerDayProps<TDate>) => JSX.Element;
 }
 
 interface DesktopDateRangeCalendarProps<TDate>
@@ -44,28 +44,35 @@ interface DesktopDateRangeCalendarProps<TDate>
   currentlySelectingRangeEnd: 'start' | 'end';
 }
 
-export const styles = (theme: Theme) =>
-  createStyles({
-    root: {
-      display: 'flex',
-      flexDirection: 'row',
+type DateRangePickerViewDesktopClassKey =
+  | 'root'
+  | 'rangeCalendarContainer'
+  | 'calendar'
+  | 'arrowSwitcher';
+
+export const styles: MuiStyles<DateRangePickerViewDesktopClassKey> = (
+  theme,
+): StyleRules<DateRangePickerViewDesktopClassKey> => ({
+  root: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
+  rangeCalendarContainer: {
+    '&:not(:last-child)': {
+      borderRight: `2px solid ${theme.palette.divider}`,
     },
-    rangeCalendarContainer: {
-      '&:not(:last-child)': {
-        borderRight: `2px solid ${theme.palette.divider}`,
-      },
-    },
-    calendar: {
-      minWidth: 312,
-      minHeight: 288,
-    },
-    arrowSwitcher: {
-      padding: '16px 16px 8px 16px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-    },
-  });
+  },
+  calendar: {
+    minWidth: 312,
+    minHeight: 288,
+  },
+  arrowSwitcher: {
+    padding: '16px 16px 8px 16px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+});
 
 function getCalendarsArray(calendars: ExportedDesktopDateRangeCalendarProps<unknown>['calendars']) {
   switch (calendars) {
@@ -102,7 +109,7 @@ function DateRangePickerViewDesktop<TDate>(
     maxDate: maxDateProp,
     minDate: minDateProp,
     onChange,
-    renderDay = (_, dateRangeProps) => <DateRangeDay {...dateRangeProps} />,
+    renderDay = (_, dateRangeProps) => <DateRangePickerDay {...dateRangeProps} />,
     rightArrowButtonText = 'Next month',
     ...other
   } = props;
@@ -205,6 +212,6 @@ function DateRangePickerViewDesktop<TDate>(
   );
 }
 
-export default withStyles(styles, { name: 'MuiPickersDesktopDateRangeCalendar' })(
+export default withStyles(styles, { name: 'MuiDateRangePickerViewDesktop' })(
   DateRangePickerViewDesktop,
 ) as <TDate>(props: DesktopDateRangeCalendarProps<TDate>) => JSX.Element;

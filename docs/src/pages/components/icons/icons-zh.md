@@ -179,7 +179,7 @@ FontAwesomeIcon 的 `fullWidth` 属性也可以用来应用近似正确的尺寸
 
 ## Icon (Font icons)
 
-对于支持连字的任何图标字体，`Icon` 组件能够将其显示为一个图标。 先决条件，你必须要在项目中包含 [Material icon font](https://google.github.io/material-design-icons/#icon-font-for-the-web)。 若想要使用图标，您只需把图标名（字体连字）和 `Icon` 组件包装到一起，例如：
+对于支持连字的任何图标字体，`Icon` 组件能够将其显示为一个图标。 对于支持连字的任何图标字体，`Icon` 组件能够将其显示为一个图标。 若想要使用图标，您只需把图标名（字体连字）和 `Icon` 组件包装到一起，例如：
 
 ```jsx
 import Icon from '@material-ui/core/Icon';
@@ -273,14 +273,14 @@ const theme = createMuiTheme({
 
 ## 无障碍设计
 
-图标可以传达各种有意义的信息，所以确保它们的无障碍设计是很重要的。 您可能会注意到这两个用例：
+Icons can convey all sorts of meaningful information, so it's important to ensure they are accessible where appropriate. There are two use cases you'll want to consider: There are two use cases you'll want to consider:
 
 - **装饰性图标** 仅用于增强视觉或强调品牌。 即使将它们从页面中移除，用户仍然可以理解并能够使用整个界面。
-- **语义图标** 是用来传达其中意义的，而不只是单纯地起装饰作用。 这包含了没有文字辅助说明的图标，这些图标一般被用作在交互式控件中 — 按钮、表单元素、切换按钮等。
+- **Semantic icons** are ones that you're using to convey meaning, rather than just pure decoration. 这包含了没有文字辅助说明的图标，这些图标一般被用作在交互式控件中 — 按钮、表单元素、切换按钮等。 这包含了没有文字辅助说明的图标，这些图标一般被用作在交互式控件中 — 按钮、表单元素、切换按钮等。
 
 ### 装饰性图标
 
-如果你的图标只是作为纯粹的装饰，那么你已经大功告成啦！ 而添加 `aria-hidden=true` 属性可以让你的图标变成正确的且可访问的（隐形的）。
+If your icons are purely decorative, you're already done! 而添加 `aria-hidden=true` 属性可以让你的图标变成正确的且可访问的（隐形的）。
 
 ### 语义图标
 

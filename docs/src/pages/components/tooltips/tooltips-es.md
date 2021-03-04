@@ -16,11 +16,11 @@ When activated, [Tooltips](https://material.io/design/components/tooltips.html) 
 
 ## Simple Tooltips
 
-{{"demo": "pages/components/tooltips/SimpleTooltips.js"}}
+{{"demo": "pages/components/tooltips/BasicTooltip.js"}}
 
 ## Positioned tooltips
 
-El `Tooltip` tiene 12 **posiciones** para elegir. No tienen flechas direccionales; en cambio, dependen del movimiento que emana de la fuente para transmitir la dirección.
+El `Tooltip` tiene 12 **posiciones** para elegir. They don't have directional arrows; instead, they rely on motion emanating from the source to convey direction.
 
 {{"demo": "pages/components/tooltips/PositionedTooltips.js"}}
 
@@ -75,7 +75,7 @@ El `Tooltip` envuelve texto largo por defecto para hacerlo legible.
 
 ## Explora
 
-Tooltips are interactive by default (to pass [WCAG 2.1 success criterion 1.4.13](https://www.w3.org/TR/WCAG21/#content-on-hover-or-focus)). No se cerrará cuando el usuario pase sobre el tooltip antes de que el `leaveDelay` expire. You can disable this behavior (thus failing the success criterion which is required to reach level AA) by passing `disableInteractive`.
+Tooltips are interactive by default (to pass [WCAG 2.1 success criterion 1.4.13](https://www.w3.org/TR/WCAG21/#content-on-hover-or-focus)). No se cerrará cuando el usuario pase sobre el tooltip antes de que el `leaveDelay` expire. No se cerrará cuando el usuario pase sobre el tooltip antes de que el `leaveDelay` expire.
 
 {{"demo": "pages/components/tooltips/NonInteractiveTooltips.js"}}
 

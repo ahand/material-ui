@@ -1,6 +1,6 @@
 # Material-UI System
 
-<p class="description">CSS utilities for rapidly creating custom design.</p>
+<p class="description">CSS utilities for rapidly laying out custom designs.</p>
 
 Material-UI comes with dozens of **ready-to-use** components in the core.
 These components are an incredible starting point but when it comes to making your site stand out with a custom design, it can be simpler to start from an unstyled state. Introducing the system:
@@ -330,7 +330,7 @@ export default function CustomBreakpoints() {
 If you are using TypeScript, you will also need to use [module augmentation](/guides/typescript/#customization-of-theme) for the theme to accept the above values.
 
 ```ts
-declare module '@material-ui/core/styles/createBreakpoints' {
+declare module '@material-ui/core/styles' {
   interface BreakpointOverrides {
     xs: false; // removes the `xs` breakpoint
     sm: false;

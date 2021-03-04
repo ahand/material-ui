@@ -58,9 +58,9 @@ const theme = createMuiTheme({
   typography: {
     fontFamily: 'Raleway, Arial',
   },
-  overrides: {
+  components: {
     MuiCssBaseline: {
-      '@global': {
+      styleOverrides: {
         '@font-face': [raleway],
       },
     },
@@ -141,7 +141,7 @@ To be done: [#15251](https://github.com/mui-org/material-ui/issues/15251).
 
 You might want to change the `<html>` element default font size. For instance, when using the [10px simplification](https://www.sitepoint.com/understanding-and-using-rem-units-in-css/).
 
-> ⚠️ Changing the font size can harm accessibility ♿️. ⚠️ Changing the font size can harm accessibility ♿️. For instance, someone with an impaired vision could have set their browser’s default font size to something larger.
+> ⚠️ Changing the font size can harm accessibility ♿️. ⚠️ Changing the font size can harm accessibility ♿️. For instance, someone with an impaired vision could have set their browser's default font size to something larger.
 
 An `htmlFontSize` theme property is provided for this use case, which tells Material-UI what the font-size on the `<html>` element is. This is used to adjust the `rem` value so the calculated font-size always match the specification.
 
@@ -225,6 +225,8 @@ const theme = createMuiTheme({
 > If you aren't using TypeScript you should skip this step.
 
 You need to make sure that the typings for the theme's `typography` variants and the `Typogrpahy`'s `variant` prop reflects the new set of variants.
+
+<!-- Tested with packages/material-ui/test/typescript/augmentation/typographyVariants.spec.ts -->
 
 ```ts
 declare module '@material-ui/core/styles/createTypography' {

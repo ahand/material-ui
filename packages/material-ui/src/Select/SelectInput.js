@@ -189,13 +189,18 @@ const SelectInput = React.forwardRef(function SelectInput(props, ref) {
       setValueState(newValue);
 
       if (onChange) {
-        event.persist();
-        // Preact support, target is read only property on a native event.
-        Object.defineProperty(event, 'target', {
+        // Redefine target to allow name and value to be read.
+        // This allows seamless integration with the most popular form libraries.
+        // https://github.com/mui-org/material-ui/issues/13485#issuecomment-676048492
+        // Clone the event to not override `target` of the original event.
+        const nativeEvent = event.nativeEvent || event;
+        const clonedEvent = new nativeEvent.constructor(nativeEvent.type, nativeEvent);
+
+        Object.defineProperty(clonedEvent, 'target', {
           writable: true,
           value: { value: newValue, name },
         });
-        onChange(event, child);
+        onChange(clonedEvent, child);
       }
     }
 
@@ -390,8 +395,9 @@ const SelectInput = React.forwardRef(function SelectInput(props, ref) {
       >
         {/* So the vertical align positioning algorithm kicks in. */}
         {isEmpty(display) ? (
+          // notranslate needed while Google Translate will not fix zero-width space issue
           // eslint-disable-next-line react/no-danger
-          <span dangerouslySetInnerHTML={{ __html: '&#8203;' }} />
+          <span className="notranslate" dangerouslySetInnerHTML={{ __html: '&#8203;' }} />
         ) : (
           display
         )}
@@ -473,7 +479,7 @@ SelectInput.propTypes = {
    */
   className: PropTypes.string,
   /**
-   * The default element value. Use when the component is not controlled.
+   * The default value. Use when the component is not controlled.
    */
   defaultValue: PropTypes.any,
   /**
@@ -541,7 +547,7 @@ SelectInput.propTypes = {
    */
   onOpen: PropTypes.func,
   /**
-   * Control `select` open state.
+   * If `true`, the component is shown.
    */
   open: PropTypes.bool,
   /**

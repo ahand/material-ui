@@ -1,15 +1,9 @@
-export interface TouchRippleUnstyledClasses {
-  root: string;
-  ripple: string;
-  rippleVisible: string;
-  ripplePulsate: string;
-  child: string;
-  childLeavinge: string;
-  childPulsate: string;
-}
+import { TouchRippleClassKey } from './TouchRipple';
 
-declare const touchRippleClasses: TouchRippleUnstyledClasses;
+export type TouchRippleClasses = Record<TouchRippleClassKey, string>;
 
-export function getTouchRippleUtilityClass(part: string): string;
+declare const touchRippleClasses: TouchRippleClasses;
+
+export function getTouchRippleUtilityClass(slot: string): string;
 
 export default touchRippleClasses;

@@ -1,23 +1,23 @@
 import * as React from 'react';
 import { expect } from 'chai';
-import { getClasses, createMount, describeConformance, createClientRender } from 'test/utils';
+import { createMount, describeConformanceV5, createClientRender } from 'test/utils';
 import Divider from './Divider';
+import classes from './dividerClasses';
 
 describe('<Divider />', () => {
-  const mount = createMount();
   const render = createClientRender();
-  let classes;
+  const mount = createMount();
 
-  before(() => {
-    classes = getClasses(<Divider />);
-  });
-
-  describeConformance(<Divider />, () => ({
+  describeConformanceV5(<Divider />, () => ({
     classes,
     inheritComponent: 'hr',
+    render,
     mount,
+    muiName: 'MuiDivider',
     refInstanceof: window.HTMLHRElement,
     testComponentPropWith: 'div',
+    testVariantProps: { orientation: 'vertical', flexItem: true, textAlign: 'left' },
+    skip: ['componentsProp'],
   }));
 
   it('should set the absolute class', () => {
@@ -90,8 +90,8 @@ describe('<Divider />', () => {
   describe('prop: variant', () => {
     it('should default to variant="fullWidth"', () => {
       const { container } = render(<Divider />);
-      expect(container.firstChild).to.not.have.class(classes.inset);
-      expect(container.firstChild).to.not.have.class(classes.middle);
+      expect(container.firstChild).not.to.have.class(classes.inset);
+      expect(container.firstChild).not.to.have.class(classes.middle);
     });
 
     describe('prop: variant="fullWidth" ', () => {
@@ -119,7 +119,7 @@ describe('<Divider />', () => {
   describe('role', () => {
     it('avoids adding implicit aria semantics', () => {
       const { container } = render(<Divider />);
-      expect(container.firstChild).to.not.have.attribute('role');
+      expect(container.firstChild).not.to.have.attribute('role');
     });
 
     it('adds a proper role if none is specified', () => {

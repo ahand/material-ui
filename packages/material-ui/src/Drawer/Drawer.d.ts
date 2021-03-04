@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { InternalStandardProps as StandardProps } from '..';
+import { SxProps } from '@material-ui/system';
+import { InternalStandardProps as StandardProps, Theme } from '..';
 import { ModalProps } from '../Modal';
 import { SlideProps } from '../Slide';
 import { PaperProps } from '../Paper';
@@ -13,7 +14,7 @@ export interface DrawerProps
    */
   anchor?: 'left' | 'top' | 'right' | 'bottom';
   /**
-   * The contents of the drawer.
+   * The content of the component.
    */
   children?: React.ReactNode;
   /**
@@ -24,25 +25,25 @@ export interface DrawerProps
     root?: string;
     /** Styles applied to the root element if `variant="permanent or persistent"`. */
     docked?: string;
-    /** Styles applied to the `Paper` component. */
+    /** Styles applied to the Paper component. */
     paper?: string;
-    /** Styles applied to the `Paper` component if `anchor="left"`. */
+    /** Styles applied to the Paper component if `anchor="left"`. */
     paperAnchorLeft?: string;
-    /** Styles applied to the `Paper` component if `anchor="right"`. */
+    /** Styles applied to the Paper component if `anchor="right"`. */
     paperAnchorRight?: string;
-    /** Styles applied to the `Paper` component if `anchor="top"`. */
+    /** Styles applied to the Paper component if `anchor="top"`. */
     paperAnchorTop?: string;
-    /** Styles applied to the `Paper` component if `anchor="bottom"`. */
+    /** Styles applied to the Paper component if `anchor="bottom"`. */
     paperAnchorBottom?: string;
-    /** Styles applied to the `Paper` component if `anchor="left"` and `variant` is not "temporary". */
+    /** Styles applied to the Paper component if `anchor="left"` and `variant` is not "temporary". */
     paperAnchorDockedLeft?: string;
-    /** Styles applied to the `Paper` component if `anchor="top"` and `variant` is not "temporary". */
+    /** Styles applied to the Paper component if `anchor="top"` and `variant` is not "temporary". */
     paperAnchorDockedTop?: string;
-    /** Styles applied to the `Paper` component if `anchor="right"` and `variant` is not "temporary". */
+    /** Styles applied to the Paper component if `anchor="right"` and `variant` is not "temporary". */
     paperAnchorDockedRight?: string;
-    /** Styles applied to the `Paper` component if `anchor="bottom"` and `variant` is not "temporary". */
+    /** Styles applied to the Paper component if `anchor="bottom"` and `variant` is not "temporary". */
     paperAnchorDockedBottom?: string;
-    /** Styles applied to the `Modal` component. */
+    /** Styles applied to the Modal component. */
     modal?: string;
   };
   /**
@@ -62,7 +63,7 @@ export interface DrawerProps
    */
   onClose?: ModalProps['onClose'];
   /**
-   * If `true`, the drawer is open.
+   * If `true`, the component is shown.
    * @default false
    */
   open?: boolean;
@@ -75,6 +76,10 @@ export interface DrawerProps
    * Props applied to the [`Slide`](/api/slide/) element.
    */
   SlideProps?: Partial<SlideProps>;
+  /**
+   * The system prop that allows defining system overrides as well as additional CSS styles.
+   */
+  sx?: SxProps<Theme>;
   /**
    * The duration for the transition, in milliseconds.
    * You may specify a single timeout for all transitions, or individually with an object.
@@ -93,6 +98,7 @@ export type DrawerClassKey = keyof NonNullable<DrawerProps['classes']>;
 /**
  * The props of the [Modal](https://material-ui.com/api/modal/) component are available
  * when `variant="temporary"` is set.
+ *
  * Demos:
  *
  * - [Drawers](https://material-ui.com/components/drawers/)

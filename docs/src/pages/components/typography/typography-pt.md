@@ -58,15 +58,16 @@ Em algumas situações, talvez você não consiga usar o componente `Typography`
 
 ## Alterando o elemento semântico
 
-O componente de Tipografia (Typography) usa a propriedade `variantMapping` para associar a variação da UI com um elemento semântico. É importante ressaltar que o estilo de uma tipografia é independente do elemento semântico por baixo dela.
+O componente de Tipografia (Typography) usa a propriedade `variantMapping` para associar a variação da UI com um elemento semântico. It's important to realize that the style of a typography component is independent from the semantic underlying element.
 
 - Você pode alterar o elemento subjacente para uma ocasião única com a propriedade `component`:
 
 ```jsx
 {/ * Já existe um h1 na página, não vamos duplicá-lo. */}
 <Typography variant="h1" component="h2">
-  h1. Título
-</Typography>
+  h1. */}
+<Typography variant="h1" component="h2">
+  h1.
 ```
 
 - Você pode alterar o mapeamento [globalmente usando o tema](/customization/theme-components/#default-props):

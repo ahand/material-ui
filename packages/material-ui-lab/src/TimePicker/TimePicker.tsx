@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import PropTypes from 'prop-types';
 import ClockIcon from '../internal/svg-icons/Clock';
 import { ParsableDate } from '../internal/pickers/constants/prop-types';
@@ -17,7 +17,7 @@ import {
 import { SomeWrapper } from '../internal/pickers/wrappers/Wrapper';
 import {
   SharedPickerProps,
-  makePickerWithStateAndWrapper,
+  makePickerWithState,
 } from '../internal/pickers/Picker/makePickerWithState';
 
 export interface BaseTimePickerProps<TDate = unknown>
@@ -74,20 +74,27 @@ export const timePickerConfig = {
   DefaultToolbarComponent: TimePickerToolbar,
 };
 
-export type TimePickerGenericComponent<TWrapper extends SomeWrapper> = <TDate>(
+export type TimePickerGenericComponent<TWrapper extends SomeWrapper> = (<TDate>(
   props: BaseTimePickerProps<TDate> & SharedPickerProps<TDate, TWrapper>,
-) => JSX.Element;
+) => JSX.Element) & { propTypes?: any };
 
 /**
- * @ignore - do not document.
+ *
+ * Demos:
+ *
+ * - [Time Picker](https://material-ui.com/components/time-picker/)
+ *
+ * API:
+ *
+ * - [TimePicker API](https://material-ui.com/api/time-picker/)
  */
-/* @typescript-to-proptypes-generate */
-const TimePicker = makePickerWithStateAndWrapper<BaseTimePickerProps>(ResponsiveWrapper, {
+// @typescript-to-proptypes-generate
+const TimePicker = makePickerWithState<BaseTimePickerProps>(ResponsiveWrapper, {
   name: 'MuiTimePicker',
   ...timePickerConfig,
 }) as TimePickerGenericComponent<typeof ResponsiveWrapper>;
 
-(TimePicker as any).propTypes = {
+TimePicker.propTypes = {
   // ----------------------------- Warning --------------------------------
   // | These PropTypes are generated from the TypeScript type definitions |
   // |     To update them edit TypeScript types and run "yarn proptypes"  |
@@ -99,12 +106,12 @@ const TimePicker = makePickerWithStateAndWrapper<BaseTimePickerProps>(Responsive
   acceptRegex: PropTypes.instanceOf(RegExp),
   /**
    * Enables keyboard listener for moving between days in calendar.
-   * @default currentWrapper !== 'static'
+   * Defaults to `true` unless the `ClockPicker` is used inside a `Static*` picker component.
    */
   allowKeyboardControl: PropTypes.bool,
   /**
    * 12h/24h view for hour selection clock.
-   * @default true
+   * @default false
    */
   ampm: PropTypes.bool,
   /**
@@ -113,10 +120,14 @@ const TimePicker = makePickerWithStateAndWrapper<BaseTimePickerProps>(Responsive
    */
   ampmInClock: PropTypes.bool,
   /**
-   * Cancel text message
+   * Cancel text message.
    * @default "CANCEL"
    */
   cancelText: PropTypes.node,
+  /**
+   * @ignore
+   */
+  children: PropTypes.node,
   /**
    * className applied to the root component.
    */
@@ -127,17 +138,10 @@ const TimePicker = makePickerWithStateAndWrapper<BaseTimePickerProps>(Responsive
    */
   clearable: PropTypes.bool,
   /**
-   * Clear text message
+   * Clear text message.
    * @default "CLEAR"
    */
   clearText: PropTypes.node,
-  /**
-   * Allows to pass configured date-io adapter directly. More info [here](https://next.material-ui-pickers.dev/guides/date-adapter-passing)
-   * ```jsx
-   * dateAdapter={new AdapterDateFns({ locale: ruLocale })}
-   * ```
-   */
-  dateAdapter: PropTypes.object,
   /**
    * CSS media query when `Mobile` mode will be changed to `Desktop`.
    * @default "@media (pointer: fine)"
@@ -174,7 +178,11 @@ const TimePicker = makePickerWithStateAndWrapper<BaseTimePickerProps>(Responsive
   disableOpenPicker: PropTypes.bool,
   /**
    * Accessible text that helps user to understand which time and view is selected.
-   * @default (view, time) => `Select ${view}. Selected time is ${format(time, 'fullTime')}`
+   * @default <TDate extends any>(
+   *   view: 'hours' | 'minutes' | 'seconds',
+   *   time: TDate,
+   *   adapter: MuiPickersAdapter<TDate>,
+   * ) => `Select ${view}. Selected time is ${adapter.format(time, 'fullTime')}`
    */
   getClockLabelText: PropTypes.func,
   /**
@@ -207,7 +215,7 @@ const TimePicker = makePickerWithStateAndWrapper<BaseTimePickerProps>(Responsive
    */
   label: PropTypes.node,
   /**
-   * Custom mask. Can be used to override generate from format. (e.g. __/__/____ __:__ or __/__/____ __:__ _M)
+   * Custom mask. Can be used to override generate from format. (e.g. `__/__/____ __:__` or `__/__/____ __:__ _M`).
    */
   mask: PropTypes.string,
   /**
@@ -243,7 +251,7 @@ const TimePicker = makePickerWithStateAndWrapper<BaseTimePickerProps>(Responsive
    */
   onAccept: PropTypes.func,
   /**
-   * Callback fired when the value (the selected date) changes. @DateIOType.
+   * Callback fired when the value (the selected date) changes @DateIOType.
    */
   onChange: PropTypes.func.isRequired,
   /**
@@ -321,7 +329,7 @@ const TimePicker = makePickerWithStateAndWrapper<BaseTimePickerProps>(Responsive
    */
   showToolbar: PropTypes.bool,
   /**
-   * Today text message
+   * Today text message.
    * @default "TODAY"
    */
   todayText: PropTypes.node,
@@ -360,7 +368,7 @@ const TimePicker = makePickerWithStateAndWrapper<BaseTimePickerProps>(Responsive
    * Array of views to show.
    */
   views: PropTypes.arrayOf(PropTypes.oneOf(['hours', 'minutes', 'seconds']).isRequired),
-};
+} as any;
 
 export type TimePickerProps = React.ComponentProps<typeof TimePicker>;
 

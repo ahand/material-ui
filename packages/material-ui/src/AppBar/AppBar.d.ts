@@ -1,5 +1,9 @@
-import { PropTypes, InternalStandardProps as StandardProps } from '..';
+import { SxProps } from '@material-ui/system';
+import { OverridableStringUnion } from '@material-ui/types';
+import { PropTypes, InternalStandardProps as StandardProps, Theme } from '..';
 import { PaperProps } from '../Paper';
+
+export interface AppBarPropsColorOverrides {}
 
 export interface AppBarProps extends StandardProps<PaperProps> {
   /**
@@ -33,7 +37,10 @@ export interface AppBarProps extends StandardProps<PaperProps> {
    * The color of the component. It supports those theme colors that make sense for this component.
    * @default 'primary'
    */
-  color?: PropTypes.Color | 'transparent';
+  color?: OverridableStringUnion<
+    Record<PropTypes.Color | 'transparent', true>,
+    AppBarPropsColorOverrides
+  >;
   /**
    * The positioning type. The behavior of the different options is described
    * [in the MDN web docs](https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Positioning).
@@ -41,6 +48,10 @@ export interface AppBarProps extends StandardProps<PaperProps> {
    * @default 'fixed'
    */
   position?: 'fixed' | 'absolute' | 'sticky' | 'static' | 'relative';
+  /**
+   * The system prop that allows defining system overrides as well as additional CSS styles.
+   */
+  sx?: SxProps<Theme>;
 }
 
 export type AppBarClassKey = keyof NonNullable<AppBarProps['classes']>;

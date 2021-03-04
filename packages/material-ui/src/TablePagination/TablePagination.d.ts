@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Omit } from '@material-ui/types';
 import { OverridableComponent, OverrideProps } from '../OverridableComponent';
 import { TablePaginationActionsProps } from './TablePaginationActions';
 import { TableCellProps } from '../TableCell';
@@ -36,18 +35,20 @@ export interface TablePaginationTypeMap<P, D extends React.ElementType> {
         toolbar?: string;
         /** Styles applied to the spacer element. */
         spacer?: string;
-        /** Styles applied to the caption Typography components if `variant="caption"`. */
-        caption?: string;
+        /** Styles applied to the select label Typography element. */
+        selectLabel?: string;
         /** Styles applied to the Select component root element. */
         selectRoot?: string;
         /** Styles applied to the Select component `select` class. */
         select?: string;
         /** Styles applied to the Select component `icon` class. */
         selectIcon?: string;
-        /** Styles applied to the `InputBase` component. */
+        /** Styles applied to the InputBase component. */
         input?: string;
         /** Styles applied to the MenuItem component. */
         menuItem?: string;
+        /** Styles applied to the displayed rows Typography element. */
+        displayedRows?: string;
         /** Styles applied to the internal `TablePaginationActions` component. */
         actions?: string;
       };
@@ -140,6 +141,7 @@ export interface TablePaginationTypeMap<P, D extends React.ElementType> {
 
 /**
  * A `TableCell` based component for placing inside `TableFooter` for pagination.
+ *
  * Demos:
  *
  * - [Tables](https://material-ui.com/components/tables/)

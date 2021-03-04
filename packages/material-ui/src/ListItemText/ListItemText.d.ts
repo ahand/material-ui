@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { InternalStandardProps as StandardProps } from '..';
+import { SxProps } from '@material-ui/system';
+import { InternalStandardProps as StandardProps, Theme } from '..';
 import { TypographyProps } from '../Typography';
 
 export interface ListItemTextProps<
@@ -16,9 +17,9 @@ export interface ListItemTextProps<
   classes?: {
     /** Styles applied to the root element. */
     root?: string;
-    /** Styles applied to the `Typography` components if primary and secondary are set. */
+    /** Styles applied to the Typography component if primary and secondary are set. */
     multiline?: string;
-    /** Styles applied to the `Typography` components if dense. */
+    /** Styles applied to the Typography component if dense. */
     dense?: string;
     /** Styles applied to the root element if `inset={true}`. */
     inset?: string;
@@ -65,6 +66,10 @@ export interface ListItemTextProps<
     SecondaryTypographyComponent,
     { component?: SecondaryTypographyComponent }
   >;
+  /**
+   * The system prop that allows defining system overrides as well as additional CSS styles.
+   */
+  sx?: SxProps<Theme>;
 }
 
 export type ListItemTextClassKey = keyof NonNullable<ListItemTextProps['classes']>;

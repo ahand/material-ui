@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { InternalStandardProps as StandardProps } from '@material-ui/core';
+import { InternalStandardProps as StandardProps, Theme } from '@material-ui/core';
 import { ChipProps, ChipTypeMap } from '@material-ui/core/Chip';
 import { PopperProps } from '@material-ui/core/Popper';
+import { SxProps } from '@material-ui/system';
 import useAutocomplete, {
   AutocompleteChangeDetails,
   AutocompleteChangeReason,
@@ -19,12 +20,23 @@ export {
   createFilterOptions,
 };
 
+export type AutocompleteRenderGetTagProps = ({
+  index,
+}: {
+  index: number;
+}) => {
+  key: number;
+  className: string;
+  disabled: boolean;
+  'data-tag-index': number;
+  tabIndex: -1;
+  onDelete: (event: any) => void;
+};
+
 export interface AutocompleteRenderOptionState {
   inputValue: string;
   selected: boolean;
 }
-
-export type AutocompleteGetTagProps = ({ index }: { index: number }) => {};
 
 export interface AutocompleteRenderGroupParams {
   key: string;
@@ -73,6 +85,8 @@ export interface AutocompleteProps<
     tag?: string;
     /** Styles applied to the tag elements, e.g. the chips if `size="small"`. */
     tagSizeSmall?: string;
+    /** Styles applied to the tag elements, e.g. the chips if `size="medium"`. */
+    tagSizeMedium?: string;
     /** Styles applied when the popup icon is rendered. */
     hasPopupIcon?: string;
     /** Styles applied when the clear icon is rendered. */
@@ -95,9 +109,9 @@ export interface AutocompleteProps<
     popper?: string;
     /** Styles applied to the popper element if `disablePortal={true}`. */
     popperDisablePortal?: string;
-    /** Styles applied to the `Paper` component. */
+    /** Styles applied to the Paper component. */
     paper?: string;
-    /** Styles applied to the `listbox` component. */
+    /** Styles applied to the listbox component. */
     listbox?: string;
     /** Styles applied to the loading wrapper. */
     loading?: string;
@@ -130,12 +144,12 @@ export interface AutocompleteProps<
    */
   closeText?: string;
   /**
-   * If `true`, the input is disabled.
+   * If `true`, the component is disabled.
    * @default false
    */
   disabled?: boolean;
   /**
-   * The `Popper` content will be inside the DOM hierarchy of the parent component.
+   * If `true`, the `Popper` content will be under the DOM hierarchy of the parent component.
    * @default false
    */
   disablePortal?: boolean;
@@ -247,12 +261,16 @@ export interface AutocompleteProps<
    * @param {function} getTagProps A tag props getter.
    * @returns {ReactNode}
    */
-  renderTags?: (value: T[], getTagProps: AutocompleteGetTagProps) => React.ReactNode;
+  renderTags?: (value: T[], getTagProps: AutocompleteRenderGetTagProps) => React.ReactNode;
   /**
-   * The size of the autocomplete.
+   * The size of the component.
    * @default 'medium'
    */
   size?: 'small' | 'medium';
+  /**
+   * The system prop that allows defining system overrides as well as additional CSS styles.
+   */
+  sx?: SxProps<Theme>;
 }
 
 export type AutocompleteClassKey = keyof NonNullable<

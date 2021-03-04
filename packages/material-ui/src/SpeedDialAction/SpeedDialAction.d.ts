@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { SxProps } from '@material-ui/system';
+import { Theme } from '../styles';
 import { InternalStandardProps as StandardProps } from '..';
 import { FabProps } from '../Fab';
 import { TooltipProps } from '../Tooltip';
@@ -18,9 +20,9 @@ export interface SpeedDialActionProps extends StandardProps<Partial<TooltipProps
     staticTooltipClosed?: string;
     /** Styles applied to the static tooltip label if `tooltipOpen={true}`. */
     staticTooltipLabel?: string;
-    /** Styles applied to the root if `tooltipOpen={true}` and `tooltipPlacement="left"`` */
+    /** Styles applied to the root element if `tooltipOpen={true}` and `tooltipPlacement="left"`` */
     tooltipPlacementLeft?: string;
-    /** Styles applied to the root if `tooltipOpen={true}` and `tooltipPlacement="right"`` */
+    /** Styles applied to the root element if `tooltipOpen={true}` and `tooltipPlacement="right"`` */
     tooltipPlacementRight?: string;
   };
   /**
@@ -34,9 +36,13 @@ export interface SpeedDialActionProps extends StandardProps<Partial<TooltipProps
    */
   delay?: number;
   /**
-   * The Icon to display in the SpeedDial Fab.
+   * The icon to display in the SpeedDial Fab.
    */
   icon?: React.ReactNode;
+  /**
+   * The system prop that allows defining system overrides as well as additional CSS styles.
+   */
+  sx?: SxProps<Theme>;
   /**
    * `classes` prop applied to the [`Tooltip`](/api/tooltip/) element.
    */

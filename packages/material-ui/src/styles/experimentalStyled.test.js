@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { expect } from 'chai';
 import { createClientRender, screen } from 'test/utils';
 import createMuiTheme from './createMuiTheme';
@@ -189,6 +189,28 @@ describe('experimentalStyled', () => {
       )({
         width: '200px',
         height: '300px',
+      });
+    });
+
+    it('should support override as long as a resolver is provided', () => {
+      const CustomTest = styled(
+        'div',
+        {},
+        { name: 'MuiTest', slot: 'Rect', overridesResolver: (props, styles) => styles.rect },
+      )({
+        width: '200px',
+        height: '300px',
+      });
+
+      const { container } = render(
+        <ThemeProvider theme={theme}>
+          <CustomTest>Test</CustomTest>
+        </ThemeProvider>,
+      );
+
+      expect(container.firstChild).toHaveComputedStyle({
+        width: '200px',
+        height: '250px',
       });
     });
 

@@ -3,11 +3,12 @@
     "aria-label": { "type": { "name": "custom", "description": "string" } },
     "aria-labelledby": { "type": { "name": "string" } },
     "aria-valuetext": { "type": { "name": "custom", "description": "string" } },
-    "classes": { "type": { "name": "object" }, "default": "{}" },
+    "classes": { "type": { "name": "object" } },
     "color": {
       "type": { "name": "enum", "description": "'primary'<br>&#124;&nbsp;'secondary'" },
       "default": "'primary'"
     },
+    "component": { "type": { "name": "elementType" } },
     "components": {
       "type": {
         "name": "shape",
@@ -59,8 +60,7 @@
     "valueLabelFormat": {
       "type": { "name": "union", "description": "func<br>&#124;&nbsp;string" },
       "default": "(x) => x"
-    },
-    "component": { "type": { "name": "elementType" } }
+    }
   },
   "name": "Slider",
   "styles": {
@@ -69,6 +69,7 @@
       "marked",
       "vertical",
       "disabled",
+      "dragging",
       "rail",
       "track",
       "trackFalse",
@@ -77,6 +78,9 @@
       "active",
       "focusVisible",
       "valueLabel",
+      "valueLabelOpen",
+      "valueLabelCircle",
+      "valueLabelLabel",
       "mark",
       "markActive",
       "markLabel",
@@ -94,5 +98,6 @@
   "filename": "/packages/material-ui/src/Slider/Slider.js",
   "inheritance": { "component": "SliderUnstyled", "pathname": "/api/slider-unstyled/" },
   "demos": "<ul><li><a href=\"/components/slider/\">Slider</a></li></ul>",
-  "styledComponent": true
+  "styledComponent": true,
+  "cssComponent": false
 }

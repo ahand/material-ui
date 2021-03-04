@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { InternalStandardProps as StandardProps } from '..';
+import { SxProps } from '@material-ui/system';
+import { Theme, InternalStandardProps as StandardProps } from '..';
 
 export interface FormControlLabelProps
   extends StandardProps<React.LabelHTMLAttributes<HTMLLabelElement>, 'children' | 'onChange'> {
@@ -54,6 +55,10 @@ export interface FormControlLabelProps
    */
   onChange?: (event: React.SyntheticEvent, checked: boolean) => void;
   /**
+   * The system prop that allows defining system overrides as well as additional CSS styles.
+   */
+  sx?: SxProps<Theme>;
+  /**
    * The value of the component.
    */
   value?: unknown;
@@ -64,6 +69,7 @@ export type FormControlLabelClassKey = keyof NonNullable<FormControlLabelProps['
 /**
  * Drop-in replacement of the `Radio`, `Switch` and `Checkbox` component.
  * Use this component if you want to display an extra label.
+ *
  * Demos:
  *
  * - [Checkboxes](https://material-ui.com/components/checkboxes/)

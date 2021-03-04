@@ -5,21 +5,25 @@ import {
   BaseDatePickerProps,
 } from '../DatePicker/DatePicker';
 import { DesktopWrapper } from '../internal/pickers/wrappers/Wrapper';
-import { makePickerWithStateAndWrapper } from '../internal/pickers/Picker/makePickerWithState';
+import { makePickerWithState } from '../internal/pickers/Picker/makePickerWithState';
 
 /**
- * @ignore - do not document.
+ *
+ * API:
+ *
+ * - [DesktopDatePicker API](https://material-ui.com/api/desktop-date-picker/)
  */
-/* @typescript-to-proptypes-generate */
-const DesktopDatePicker = makePickerWithStateAndWrapper<BaseDatePickerProps<unknown>>(
-  DesktopWrapper,
-  {
-    name: 'MuiDesktopDatePicker',
-    ...datePickerConfig,
-  },
-) as DatePickerGenericComponent<typeof DesktopWrapper>;
+// @typescript-to-proptypes-generate
+const DesktopDatePicker = makePickerWithState<BaseDatePickerProps<unknown>>(DesktopWrapper, {
+  name: 'MuiDesktopDatePicker',
+  ...datePickerConfig,
+}) as DatePickerGenericComponent<typeof DesktopWrapper>;
 
-(DesktopDatePicker as any).propTypes = {
+if (process.env.NODE_ENV !== 'production') {
+  (DesktopDatePicker as any).displayName = 'DesktopDatePicker';
+}
+
+DesktopDatePicker.propTypes = {
   // ----------------------------- Warning --------------------------------
   // | These PropTypes are generated from the TypeScript type definitions |
   // |     To update them edit TypeScript types and run "yarn proptypes"  |
@@ -30,16 +34,13 @@ const DesktopDatePicker = makePickerWithStateAndWrapper<BaseDatePickerProps<unkn
    */
   acceptRegex: PropTypes.instanceOf(RegExp),
   /**
+   * @ignore
+   */
+  children: PropTypes.node,
+  /**
    * className applied to the root component.
    */
   className: PropTypes.string,
-  /**
-   * Allows to pass configured date-io adapter directly. More info [here](https://next.material-ui-pickers.dev/guides/date-adapter-passing)
-   * ```jsx
-   * dateAdapter={new AdapterDateFns({ locale: ruLocale })}
-   * ```
-   */
-  dateAdapter: PropTypes.object,
   /**
    * If `true` the popup or dialog will immediately close after submitting full date.
    * @default `true` for Desktop, `false` for Mobile (based on the chosen wrapper and `desktopModeMediaQuery` prop).
@@ -89,7 +90,7 @@ const DesktopDatePicker = makePickerWithStateAndWrapper<BaseDatePickerProps<unkn
    */
   label: PropTypes.node,
   /**
-   * Custom mask. Can be used to override generate from format. (e.g. __/__/____ __:__ or __/__/____ __:__ _M)
+   * Custom mask. Can be used to override generate from format. (e.g. `__/__/____ __:__` or `__/__/____ __:__ _M`).
    */
   mask: PropTypes.string,
   /**
@@ -115,7 +116,7 @@ const DesktopDatePicker = makePickerWithStateAndWrapper<BaseDatePickerProps<unkn
    */
   onAccept: PropTypes.func,
   /**
-   * Callback fired when the value (the selected date) changes. @DateIOType.
+   * Callback fired when the value (the selected date) changes @DateIOType.
    */
   onChange: PropTypes.func.isRequired,
   /**
@@ -209,7 +210,7 @@ const DesktopDatePicker = makePickerWithStateAndWrapper<BaseDatePickerProps<unkn
     PropTypes.number,
     PropTypes.string,
   ]),
-};
+} as any;
 
 export type DesktopDatePickerProps = React.ComponentProps<typeof DesktopDatePicker>;
 

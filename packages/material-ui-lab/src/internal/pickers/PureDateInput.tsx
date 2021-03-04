@@ -8,7 +8,7 @@ import { ParsableDate } from './constants/prop-types';
 import { useUtils, MuiPickersAdapter } from './hooks/useUtils';
 import { getDisplayDate, getTextFieldAriaText } from './text-field-helper';
 
-// make `variant` optional
+// make `variant` optional.
 export type MuiTextFieldProps = MuiTextFieldPropsType | Omit<MuiTextFieldPropsType, 'variant'>;
 
 export interface DateInputProps<TInputValue = ParsableDate, TDateValue = unknown> {
@@ -25,7 +25,7 @@ export interface DateInputProps<TInputValue = ParsableDate, TDateValue = unknown
   TextFieldProps?: Partial<MuiTextFieldProps>;
   // lib/src/wrappers/DesktopPopperWrapper.tsx:87
   onBlur?: () => void;
-  // ?? TODO when it will be possible to display "empty" date in datepicker use it instead of ignoring invalid inputs
+  // ?? TODO when it will be possible to display "empty" date in datepicker use it instead of ignoring invalid inputs.
   ignoreInvalidInputs?: boolean;
   /**
    * The `renderInput` prop allows you to customize the rendered input.
@@ -41,7 +41,7 @@ export interface DateInputProps<TInputValue = ParsableDate, TDateValue = unknown
    */
   openPickerIcon?: React.ReactNode;
   /**
-   * Custom mask. Can be used to override generate from format. (e.g. __/__/____ __:__ or __/__/____ __:__ _M)
+   * Custom mask. Can be used to override generate from format. (e.g. `__/__/____ __:__` or `__/__/____ __:__ _M`).
    */
   mask?: string;
   /**
@@ -76,6 +76,7 @@ export interface DateInputProps<TInputValue = ParsableDate, TDateValue = unknown
    * @default (value, utils) => `Choose date, selected date is ${utils.format(utils.date(value), 'fullDate')}`
    */
   getOpenDialogAriaText?: (value: ParsableDate, utils: MuiPickersAdapter) => string;
+  ref?: React.Ref<HTMLInputElement>;
 }
 
 export type ExportedDateInputProps<TInputValue, TDateValue> = Omit<
@@ -86,7 +87,6 @@ export type ExportedDateInputProps<TInputValue, TDateValue> = Omit<
   | 'inputFormat'
   | 'validationError'
   | 'rawValue'
-  | 'forwardedRef'
   | 'open'
   | 'TextFieldProps'
   | 'onBlur'
@@ -95,23 +95,27 @@ export type ExportedDateInputProps<TInputValue, TDateValue> = Omit<
 export interface DateInputRefs {
   inputRef?: React.Ref<HTMLInputElement>;
   containerRef?: React.Ref<HTMLDivElement>;
-  forwardedRef?: React.Ref<HTMLInputElement>;
 }
 
-export const PureDateInput: React.FC<DateInputProps & DateInputRefs> = ({
-  containerRef,
-  disabled,
-  forwardedRef,
-  getOpenDialogAriaText = getTextFieldAriaText,
-  inputFormat,
-  InputProps,
-  label,
-  openPicker: onOpen,
-  rawValue,
-  renderInput,
-  TextFieldProps = {},
-  validationError,
-}) => {
+// TODO: why is this called "Pure*" when it's not memoized? Does "Pure" mean "readonly"?
+export const PureDateInput = React.forwardRef(function PureDateInput(
+  props: DateInputProps & DateInputRefs,
+  ref: React.Ref<HTMLInputElement>,
+) {
+  const {
+    containerRef,
+    disabled,
+    getOpenDialogAriaText = getTextFieldAriaText,
+    inputFormat,
+    InputProps,
+    label,
+    openPicker: onOpen,
+    rawValue,
+    renderInput,
+    TextFieldProps = {},
+    validationError,
+  } = props;
+
   const utils = useUtils();
   const PureDateInputProps = React.useMemo(
     () => ({
@@ -127,7 +131,7 @@ export const PureDateInput: React.FC<DateInputProps & DateInputRefs> = ({
     label,
     disabled,
     ref: containerRef,
-    inputRef: forwardedRef,
+    inputRef: ref,
     error: validationError,
     InputProps: PureDateInputProps,
     inputProps: {
@@ -141,14 +145,9 @@ export const PureDateInput: React.FC<DateInputProps & DateInputRefs> = ({
     },
     ...TextFieldProps,
   });
-};
+});
 
 PureDateInput.propTypes = {
-  acceptRegex: PropTypes.instanceOf(RegExp),
   getOpenDialogAriaText: PropTypes.func,
-  mask: PropTypes.string,
-  OpenPickerButtonProps: PropTypes.object,
-  openPickerIcon: PropTypes.node,
   renderInput: PropTypes.func.isRequired,
-  rifmFormatter: PropTypes.func,
 };

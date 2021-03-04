@@ -56,7 +56,18 @@ Luego, usted podrá lo necesario en el cambiar el tema para usar la nueva fuente
 ```jsx
 const theme = createMuiTheme({
   typography: {
-    // Tell Material-UI what's the font-size on the html element is.
+    fontFamily: 'Raleway, Arial',
+  },
+  components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        '@font-face': [raleway],
+      },
+    },
+  },
+});
+
+// ...
 return (
   <ThemeProvider theme={theme}>
     <CssBaseline />
@@ -130,7 +141,7 @@ To be done: [#15251](https://github.com/mui-org/material-ui/issues/15251).
 
 You might want to change the `<html>` element default font size. For instance, when using the [10px simplification](https://www.sitepoint.com/understanding-and-using-rem-units-in-css/).
 
-> ⚠️ Changing the font size can harm accessibility ♿️. La mayoría de los navegadores concuerdan en el tamaño por defecto de 16px, pero el usuario puede cambiarlo. For instance, someone with an impaired vision could have set their browser’s default font size to something larger.
+> ⚠️ Changing the font size can harm accessibility ♿️. La mayoría de los navegadores concuerdan en el tamaño por defecto de 16px, pero el usuario puede cambiarlo. For instance, someone with an impaired vision could have set their browser's default font size to something larger.
 
 La propiedad `theme.typography.htmlFontSize` puede ser utilizada en estos casos, le informa a Material-UI cual es el tamaño de la fuente en el elemento `<html>`. This is used to adjust the `rem` value so the calculated font-size always match the specification.
 
@@ -215,15 +226,17 @@ const theme = createMuiTheme({
 
 You need to make sure that the typings for the theme's `typography` variants and the `Typogrpahy`'s `variant` prop reflects the new set of variants.
 
+<!-- Tested with packages/material-ui/test/typescript/augmentation/typographyVariants.spec.ts -->
+
 ```ts
 declare module '@material-ui/core/styles/createTypography' {
   interface Typography {
-    poster: React.CSSProperties;
+    poster: React. CSSProperties;
   }
 
   // allow configuration using `createMuiTheme`
   interface TypographyOptions {
-    poster?: React.CSSProperties;
+    poster?: React. CSSProperties;
   }
 }
 

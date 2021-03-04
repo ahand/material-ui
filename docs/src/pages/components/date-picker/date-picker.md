@@ -37,7 +37,7 @@ function App() {
 
 ## Basic usage
 
-The date picker will be rendered as a modal dialog on mobile, and a textfield with a popover on desktop.
+The date picker is rendered as a modal dialog on mobile, and a textbox with a popup on desktop.
 
 {{"demo": "pages/components/date-picker/BasicDatePicker.js"}}
 
@@ -67,32 +67,32 @@ It's possible to combine `year`, `month`, and `date` selection views. Views will
 
 ## Static mode
 
-It's possible to render any picker without the modal/popover and text field. This can be helpful when building custom popover/modal containers.
+It's possible to render any date picker without the modal/popover and text field. This can be helpful when building custom popover/modal containers.
 
 {{"demo": "pages/components/date-picker/StaticDatePickerDemo.js", "bg": true}}
 
 ## Landscape orientation
 
-For ease of use the date picker will automatically change the layout between portrait and landscape by subscription to the `window.orientation` change. You can force a specific layout using the `orientation` prop.
+For ease of use, the date picker will automatically change the layout between portrait and landscape by subscription to the `window.orientation` change. You can force a specific layout using the `orientation` prop.
 
 {{"demo": "pages/components/date-picker/StaticDatePickerLandscape.js", "bg": true}}
 
 ## Sub-components
 
-Some lower level sub-components (`DayPicker`, `MonthPicker` and `YearPicker`) are also exported. These are rendered without a wrapper or outer logic (masked input, date values parsing and validation, etc.).
+Some lower-level sub-components (`DayPicker`, `MonthPicker`, and `YearPicker`) are also exported. These are rendered without a wrapper or outer logic (masked input, date values parsing and validation, etc.).
 
-{{"demo": "pages/components/date-picker/InternalPickers.js"}}
+{{"demo": "pages/components/date-picker/SubComponentsPickers.js"}}
 
 ## Custom input component
 
-You can customize rendering of the input with the `renderInput` prop. Make sure to spread `ref` and `inputProps` correctly to the custom input component.
+You can customize the rendering of the input with the `renderInput` prop. Make sure to spread `ref` and `inputProps` correctly to the custom input component.
 
 {{"demo": "pages/components/date-picker/CustomInput.js"}}
 
 ## Customized day rendering
 
 The displayed days are customizable with the `renderDay` function prop.
-You can take advantage of the internal [PickersDay](/api/pickers-day) component.
+You can take advantage of the internal [PickersDay](/api/pickers-day/) component.
 
 {{"demo": "pages/components/date-picker/CustomDay.js"}}
 

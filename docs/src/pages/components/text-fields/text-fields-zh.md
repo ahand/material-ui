@@ -25,7 +25,7 @@ materialDesign: https://material.io/components/text-fields
 
 ## Form props 表单的属性
 
-`TextField` 是由一些较小的组件组成的 ( [`FormControl`](/api/form-control/)， [`Input`](/api/input/)， [`FilledInput`](/api/filled-input/)， [`InputLabel`](/api/input-label/)， [`OutlinedInput`](/api/outlined-input/)， and [`FormHelperText`](/api/form-helper-text/) ) ，而你可以直接使用这些小的组件，来自定制你的表单域输入框。
+Standard form attributes are supported e.g. `required`, `disabled`, `type`, etc. as well as a `helperText` which is used to give context about a field's input, such as how the input will be used.
 
 {{"demo": "pages/components/text-fields/FormPropsTextFields.js"}}
 
@@ -141,7 +141,7 @@ materialDesign: https://material.io/components/text-fields
 
 type="number" 的输入存在潜在的可用性问题：
 
-- 这将允许某些非数字字符（'e', '+', '-', '.'） 并且丢失其他字符 并且丢失其他字符
+- 这将允许某些非数字字符（'e', '+', '-', '.'） 并且丢失其他字符 并且丢失其他字符 并且丢失其他字符
 - 滚动增加/减少数字的功能可能会导致意外和难以察觉的变化。
 
 有关该话题的更多信息 - 请参阅 GOV.UK 设计系统团队的 [这篇文章](https://technology.blog.gov.uk/2020/02/24/why-the-gov-uk-design-system-team-changed-the-input-type-for-numbers/)，来了解更详细的解释。

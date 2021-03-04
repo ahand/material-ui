@@ -1,15 +1,9 @@
-export interface AvatarClasses {
-  root: string;
-  colorDefault: string;
-  circular: string;
-  rounded: string;
-  square: string;
-  img: string;
-  fallback: string;
-}
+import { AvatarClassKey } from './Avatar';
 
-declare const AvatarClasses: AvatarClasses;
+export type AvatarClasses = Record<AvatarClassKey, string>;
 
-export function getAvatarUtilityClass(part: string): string;
+declare const avatarClasses: AvatarClasses;
 
-export default AvatarClasses;
+export function getAvatarUtilityClass(slot: string): string;
+
+export default avatarClasses;

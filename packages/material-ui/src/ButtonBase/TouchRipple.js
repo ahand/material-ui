@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { TransitionGroup } from 'react-transition-group';
 import clsx from 'clsx';
 import { keyframes } from '@material-ui/styled-engine';
-import experimentalStyled from '../styles/experimentalStyled';
+import experimentalStyled, { shouldForwardProp } from '../styles/experimentalStyled';
 import useThemeProps from '../styles/useThemeProps';
 import Ripple from './Ripple';
 import touchRippleClasses from './touchRippleClasses';
@@ -12,35 +12,39 @@ const DURATION = 550;
 export const DELAY_RIPPLE = 80;
 
 const enterKeyframe = keyframes`
-0% {
-  transform: scale(0);
-  opacity: 0.1;
-}
-100% {
-  transform: scale(1);
-  opacity: 0.3;
-}
+  0% {
+    transform: scale(0);
+    opacity: 0.1;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
 `;
 
 const exitKeyframe = keyframes`
-0% {
-  opacity: 1;
-}
-100% {
-  opacity: 0;
-}
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
 `;
 
 const pulsateKeyframe = keyframes`
-0% {
-  transform: scale(1);
-}
-50% {
-  transform: scale(0.92);
-}
-100% {
-  transform: scale(1);
-}
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(0.92);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 `;
 
 export const TouchRippleRoot = experimentalStyled(
@@ -63,7 +67,7 @@ export const TouchRippleRoot = experimentalStyled(
 // in string templates. Do not convert these styles in JS object as it will break.
 export const TouchRippleRipple = experimentalStyled(
   Ripple,
-  {},
+  { shouldForwardProp: (prop) => shouldForwardProp(prop) || prop === 'classes' },
   { name: 'MuiTouchRipple', slot: 'Ripple' },
 )`
   opacity: 0;

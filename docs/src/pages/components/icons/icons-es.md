@@ -179,7 +179,7 @@ Nota: [mdi-material-ui](https://github.com/TeamWertarbyte/mdi-material-ui) ya ha
 
 ## Icono (iconos de fuente)
 
-El componente `Icon` mostrará iconos de cualquier fuente compatible con ligaduras. As a prerequisite, you must include one, such as the [Material icon font](https://google.github.io/material-design-icons/#icon-font-for-the-web) in your project. Para usar un icono, simplemente se envuelve el nombre del icono (ligadura de la fuente) con el componente `Icono`, por ejemplo:
+El componente `Icon` mostrará iconos de cualquier fuente compatible con ligaduras. El componente `Icon` mostrará iconos de cualquier fuente compatible con ligaduras. Para usar un icono, simplemente se envuelve el nombre del icono (ligadura de la fuente) con el componente `Icono`, por ejemplo:
 
 ```jsx
 import Icon from '@material-ui/core/Icon';
@@ -273,14 +273,14 @@ For more details, take a look at [why GitHub migrated from font icons to SVG ico
 
 ## Accesibilidad
 
-Icons can convey all sorts of meaningful information, so it’s important to ensure they are accessible where appropriate. Hay dos casos de uso que querrás considerar:
+Icons can convey all sorts of meaningful information, so it's important to ensure they are accessible where appropriate. There are two use cases you'll want to consider:
 
 - **Decorative icons** that are only being used for visual or branding reinforcement. Si se eliminaran de la página, los usuarios aún entenderían y podrían usar su página.
-- **Semantic icons** are ones that you’re using to convey meaning, rather than just pure decoration. This includes icons without text next to them that are used as interactive controls — buttons, form elements, toggles, etc.
+- **Semantic icons** are ones that you're using to convey meaning, rather than just pure decoration. This includes icons without text next to them that are used as interactive controls — buttons, form elements, toggles, etc.
 
 ### Decorative icons
 
-Si tus iconos son puramente decorativos, ya está hecho! El atributo `aria-hidden=true` se agrega para que sus iconos sean correctamente accesibles (invisibles).
+If your icons are purely decorative, you're already done! El atributo `aria-hidden=true` se agrega para que sus iconos sean correctamente accesibles (invisibles).
 
 ### Semantic icons
 

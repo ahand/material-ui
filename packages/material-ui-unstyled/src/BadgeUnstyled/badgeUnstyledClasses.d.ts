@@ -1,18 +1,8 @@
-export interface BadgeUnstyledClasses {
-  root: string;
-  badge: string;
-  anchorOriginTopLeftCircular: string;
-  anchorOriginTopLeftRectangular: string;
-  anchorOriginTopRightCircular: string;
-  anchorOriginTopRightRectangular: string;
-  anchorOriginBottomLeftCircular: string;
-  anchorOriginBottomLeftRectangular: string;
-  anchorOriginBottomRightCircular: string;
-  anchorOriginBottomRightRectangular: string;
-  invisible: string;
-}
+import { BadgeUnstyledClassKey } from './BadgeUnstyled';
 
-export function getBadgeUtilityClass(part: string): string;
+export type BadgeUnstyledClasses = Record<BadgeUnstyledClassKey, string>;
+
+export function getBadgeUtilityClass(slot: string): string;
 
 declare const badgeUnstyledClasses: BadgeUnstyledClasses;
 

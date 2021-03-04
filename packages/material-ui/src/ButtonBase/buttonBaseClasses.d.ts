@@ -1,11 +1,9 @@
-export interface ButtonBaseClasses {
-  root: string;
-  disabled: string;
-  focusVisible: string;
-}
+import { ButtonBaseClassKey } from './ButtonBase';
+
+export type ButtonBaseClasses = Record<ButtonBaseClassKey, string>;
 
 declare const buttonBaseClasses: ButtonBaseClasses;
 
-export function getButtonBaseUtilityClass(part: string): string;
+export function getButtonBaseUtilityClass(slot: string): string;
 
 export default buttonBaseClasses;

@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import TextField from '@material-ui/core/TextField';
 import AdapterDateFns from '@material-ui/lab/AdapterDateFns';
 import LocalizationProvider from '@material-ui/lab/LocalizationProvider';
@@ -18,9 +18,7 @@ export default function ResponsiveDatePickers() {
           onChange={(newValue) => {
             setValue(newValue);
           }}
-          renderInput={(params) => (
-            <TextField {...params} margin="normal" variant="standard" />
-          )}
+          renderInput={(params) => <TextField {...params} margin="normal" />}
         />
         <DesktopDatePicker
           label="For desktop"
@@ -29,9 +27,7 @@ export default function ResponsiveDatePickers() {
           onChange={(newValue) => {
             setValue(newValue);
           }}
-          renderInput={(params) => (
-            <TextField {...params} margin="normal" variant="standard" />
-          )}
+          renderInput={(params) => <TextField {...params} margin="normal" />}
         />
         <DatePicker
           disableFuture
@@ -42,9 +38,7 @@ export default function ResponsiveDatePickers() {
           onChange={(newValue) => {
             setValue(newValue);
           }}
-          renderInput={(params) => (
-            <TextField {...params} margin="normal" variant="standard" />
-          )}
+          renderInput={(params) => <TextField {...params} margin="normal" />}
         />
       </div>
     </LocalizationProvider>

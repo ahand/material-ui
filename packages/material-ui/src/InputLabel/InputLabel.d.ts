@@ -1,10 +1,12 @@
 import * as React from 'react';
+import { SxProps } from '@material-ui/system';
 import { InternalStandardProps as StandardProps } from '..';
 import { FormLabelProps } from '../FormLabel';
+import { Theme } from '../styles';
 
 export interface InputLabelProps extends StandardProps<FormLabelProps> {
   /**
-   * The contents of the `InputLabel`.
+   * The content of the component.
    */
   children?: React.ReactNode;
   /**
@@ -27,9 +29,9 @@ export interface InputLabelProps extends StandardProps<FormLabelProps> {
     formControl?: string;
     /** Styles applied to the root element if `size="small"`. */
     sizeSmall?: string;
-    /** Styles applied to the `input` element if `shrink={true}`. */
+    /** Styles applied to the input element if `shrink={true}`. */
     shrink?: string;
-    /** Styles applied to the `input` element unless `disableAnimation={true}`. */
+    /** Styles applied to the input element unless `disableAnimation={true}`. */
     animated?: string;
     /** Styles applied to the root element if `variant="filled"`. */
     filled?: string;
@@ -43,7 +45,7 @@ export interface InputLabelProps extends StandardProps<FormLabelProps> {
    */
   disableAnimation?: boolean;
   /**
-   * If `true`, apply disabled class.
+   * If `true`, the component is disabled.
    */
   disabled?: boolean;
   /**
@@ -67,6 +69,10 @@ export interface InputLabelProps extends StandardProps<FormLabelProps> {
    * If `true`, the label is shrunk.
    */
   shrink?: boolean;
+  /**
+   * The system prop that allows defining system overrides as well as additional CSS styles.
+   */
+  sx?: SxProps<Theme>;
   /**
    * The variant to use.
    */

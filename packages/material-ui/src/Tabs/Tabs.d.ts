@@ -62,16 +62,16 @@ export interface TabsTypeMap<P = {}, D extends React.ElementType = typeof Button
       scrollableY?: string;
       /** Styles applied to the tablist element if `variant="scrollable"` and `visibleScrollbar={false}`. */
       hideScrollbar?: string;
-      /** Styles applied to the `ScrollButtonComponent` component. */
+      /** Styles applied to the ScrollButtonComponent component. */
       scrollButtons?: string;
-      /** Styles applied to the `ScrollButtonComponent` component if `allowScrollButtonsMobile={true}`. */
+      /** Styles applied to the ScrollButtonComponent component if `allowScrollButtonsMobile={true}`. */
       scrollButtonsHideMobile?: string;
-      /** Styles applied to the `TabIndicator` component. */
+      /** Styles applied to the TabIndicator component. */
       indicator?: string;
     };
     /**
      * Determines the color of the indicator.
-     * @default 'secondary'
+     * @default 'primary'
      */
     indicatorColor?: 'secondary' | 'primary';
     /**
@@ -82,7 +82,7 @@ export interface TabsTypeMap<P = {}, D extends React.ElementType = typeof Button
      */
     onChange?: (event: React.SyntheticEvent, value: any) => void;
     /**
-     * The tabs orientation (layout flow direction).
+     * The component orientation (layout flow direction).
      * @default 'horizontal'
      */
     orientation?: 'horizontal' | 'vertical';
@@ -119,7 +119,7 @@ export interface TabsTypeMap<P = {}, D extends React.ElementType = typeof Button
     TabScrollButtonProps?: Partial<TabScrollButtonProps>;
     /**
      * Determines the color of the `Tab`.
-     * @default 'inherit'
+     * @default 'primary'
      */
     textColor?: 'secondary' | 'primary' | 'inherit';
     /**

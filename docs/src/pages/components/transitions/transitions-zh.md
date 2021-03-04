@@ -72,19 +72,19 @@ export default Main() {
 
 ## TransitionGroup
 
-To animate a component when it is mounted or unmounted, you can use the [`TransitionGroup`](https://reactcommunity.org/react-transition-group/transition-group) component from _react-transition-group_. As components are added or removed, the `in` prop is toggled automatically by `TransitionGroup`.
+To animate a component when it is mounted or unmounted, you can use the [`TransitionGroup`](https://reactcommunity.org/react-transition-group/transition-group) component from _react-transition-group_. As components are added or removed, the `in` prop is toggled automatically by `TransitionGroup`. As components are added or removed, the `in` prop is toggled automatically by `TransitionGroup`.
 
 {{"demo": "pages/components/transitions/TransitionGroupExample.js"}}
 
 ## TransitionComponent 属性
 
-也写 Material-UI 组件在内部也在使用这些过渡动画。 它们接受一个 `TransitionComponent` 属性来定制默认的动画。 您可以使用上述的任何组件或者是您自己的组件。 它应遵守以下条件：
+有些 Material-UI 组件在内部也在使用这些过渡动画。 它们接受一个 `TransitionComponent` 属性来定制默认的动画。 您可以使用上述的任何组件或者是您自己的组件。 它应遵守以下条件：
 
 - 接受一个 `in` 属性。 这对应于打开/关闭的状态。
 - 当进入过渡时调用 `onEnter` 回调属性。
 - 当退出过渡完成后应该调用 `onExited` 回调属性。 这两个回调属性保证了当在一个关闭的状态并展示完过渡动画时，才会移除子内容。
 
-For more information on creating a custom transition, visit the _react-transition-group_ [`Transition` documentation](http://reactcommunity.org/react-transition-group/transition). 你还可以访问一些组件的专用部分：
+For more information on creating a custom transition, visit the _react-transition-group_ [`Transition` documentation](http://reactcommunity.org/react-transition-group/transition). 你还可以访问一些组件的专用部分： 你还可以访问一些组件的专用部分：
 
 - [Modal](/components/modal/#transitions)
 - [Dialog](/components/dialogs/#transitions)

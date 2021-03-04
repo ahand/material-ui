@@ -65,7 +65,7 @@ const inHouseAds = [
     name: 'scaffoldhub',
     link: 'https://scaffoldhub.io/?partner=1',
     img: '/static/ads-in-house/scaffoldhub.png',
-    description: '<b>Scaffold</b>. Automate building your full-stack Material-UI web-app.',
+    description: '<b>ScaffoldHub</b>. Automate building your full-stack Material-UI web-app.',
   },
   {
     name: 'templates',
@@ -108,11 +108,11 @@ const inHouseAds = [
       '<b>For Figma</b>. A large UI kit with over 600 handcrafted Material-UI components 🎨.',
   },
   {
-    name: 'shuffledev',
-    link: 'https://mui.dev/?ref=mui',
-    img: '/static/ads-in-house/shuffledev.jpg',
+    name: 'divjoy',
+    link: 'https://divjoy.com?via=material-ui',
+    img: '/static/ads-in-house/divjoy.png',
     description:
-      '<b>Create Material-UI websites in minutes</b>. An online editor for Material-UI with a simple, intuitive drag & drop interface and ready-made React components.',
+      '<b>Divjoy</b>. Create your Material-UI app in minutes. You’ll get a nice template, authentication, database integration, subscription payments, and more.',
   },
 ];
 

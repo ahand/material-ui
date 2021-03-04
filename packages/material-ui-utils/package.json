@@ -1,9 +1,9 @@
 {
   "name": "@material-ui/utils",
-  "version": "5.0.0-alpha.20",
+  "version": "5.0.0-alpha.26",
   "private": false,
   "author": "Material-UI Team",
-  "description": "Material-UI Utils - Utility functions for Material-UI.",
+  "description": "Utility functions for React components.",
   "main": "./src/index.ts",
   "keywords": [
     "react",
@@ -28,7 +28,7 @@
     "build:node": "node ../../scripts/build node",
     "build:stable": "node ../../scripts/build stable",
     "build:copy-files": "node ../../scripts/copy-files.js",
-    "build:types": "tsc -p tsconfig.build.json",
+    "build:types": "node ../../scripts/buildTypes",
     "prebuild": "rimraf build",
     "release": "yarn build && npm publish build --tag next",
     "test": "cd ../../ && cross-env NODE_ENV=test mocha 'packages/material-ui-utils/**/*.test.{js,ts,tsx}'",

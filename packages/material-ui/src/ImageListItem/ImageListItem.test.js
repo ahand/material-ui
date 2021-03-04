@@ -1,24 +1,24 @@
-import * as React from 'react';
 import { expect } from 'chai';
-import { createClientRender, getClasses, createMount, describeConformance } from 'test/utils';
+import * as React from 'react';
+import { createClientRender, createMount, describeConformanceV5 } from 'test/utils';
 import ImageList from '../ImageList';
 import ImageListItem from './ImageListItem';
+import classes from './imageListItemClasses';
 
 describe('<ImageListItem />', () => {
-  let classes;
-  const mount = createMount();
   const render = createClientRender();
+  const mount = createMount();
 
-  before(() => {
-    classes = getClasses(<ImageListItem />);
-  });
-
-  describeConformance(<ImageListItem />, () => ({
+  describeConformanceV5(<ImageListItem />, () => ({
     classes,
     inheritComponent: 'li',
+    render,
     mount,
     refInstanceof: window.HTMLLIElement,
     testComponentPropWith: 'div',
+    muiName: 'MuiImageListItem',
+    testVariantProps: { variant: 'masonry' },
+    skip: ['componentProp', 'componentsProp'],
   }));
 
   const itemData = {
@@ -106,7 +106,7 @@ describe('<ImageListItem />', () => {
         </ImageListItem>,
       );
 
-      expect(getByTestId('test-children')).to.not.have.class(classes.img);
+      expect(getByTestId('test-children')).not.to.have.class(classes.img);
     });
   });
 });

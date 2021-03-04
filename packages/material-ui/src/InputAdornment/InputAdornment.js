@@ -5,7 +5,7 @@ import Typography from '../Typography';
 import withStyles from '../styles/withStyles';
 import FormControlContext, { useFormControl } from '../FormControl/FormControlContext';
 
-export const styles = {
+export const styles = (theme) => ({
   /* Styles applied to the root element. */
   root: {
     display: 'flex',
@@ -13,6 +13,7 @@ export const styles = {
     maxHeight: '2em',
     alignItems: 'center',
     whiteSpace: 'nowrap',
+    color: theme.palette.action.active,
   },
   /* Styles applied to the root element if `variant="filled"`. */
   filled: {
@@ -28,7 +29,7 @@ export const styles = {
   positionEnd: {
     marginLeft: 8,
   },
-  /* Styles applied to the root element if `disablePointerEvents=true`. */
+  /* Styles applied to the root element if `disablePointerEvents={true}`. */
   disablePointerEvents: {
     pointerEvents: 'none',
   },
@@ -36,7 +37,7 @@ export const styles = {
   hiddenLabel: {},
   /* Styles applied if the adornment is used inside <FormControl size="small" />. */
   sizeSmall: {},
-};
+});
 
 const InputAdornment = React.forwardRef(function InputAdornment(props, ref) {
   const {
@@ -90,7 +91,15 @@ const InputAdornment = React.forwardRef(function InputAdornment(props, ref) {
         {typeof children === 'string' && !disableTypography ? (
           <Typography color="textSecondary">{children}</Typography>
         ) : (
-          children
+          <React.Fragment>
+            {/* To have the correct vertical alignment baseline */}
+            {position === 'start' ? (
+              /* notranslate needed while Google Translate will not fix zero-width space issue */
+              /* eslint-disable-next-line react/no-danger */
+              <span className="notranslate" dangerouslySetInnerHTML={{ __html: '&#8203;' }} />
+            ) : null}
+            {children}
+          </React.Fragment>
         )}
       </Component>
     </FormControlContext.Provider>

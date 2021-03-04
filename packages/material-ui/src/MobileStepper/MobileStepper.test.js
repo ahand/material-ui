@@ -9,7 +9,7 @@ import {
 } from 'test/utils';
 import KeyboardArrowLeft from '../internal/svg-icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '../internal/svg-icons/KeyboardArrowRight';
-import Paper from '../Paper';
+import Paper, { paperClasses } from '../Paper';
 import Button from '../Button/Button';
 import MobileStepper from './MobileStepper';
 
@@ -47,7 +47,6 @@ describe('<MobileStepper />', () => {
 
   it('should render a Paper with 0 elevation', () => {
     const { container } = render(<MobileStepper {...defaultProps} />);
-    const paperClasses = getClasses(<Paper elevation={0} />);
     expect(container.firstChild).to.have.class(paperClasses.elevation0);
   });
 
@@ -69,15 +68,15 @@ describe('<MobileStepper />', () => {
   it('should render the back button', () => {
     const { queryByTestId, getByRole } = render(<MobileStepper {...defaultProps} />);
     const backButton = getByRole('button', { name: 'back' });
-    expect(backButton).to.not.equal(null);
-    expect(queryByTestId('KeyboardArrowLeftIcon')).to.not.equal(null);
+    expect(backButton).not.to.equal(null);
+    expect(queryByTestId('KeyboardArrowLeftIcon')).not.to.equal(null);
   });
 
   it('should render next button', () => {
     const { getByRole, queryByTestId } = render(<MobileStepper {...defaultProps} />);
     const nextButton = getByRole('button', { name: 'next' });
-    expect(nextButton).to.not.equal(null);
-    expect(queryByTestId('KeyboardArrowRightIcon')).to.not.equal(null);
+    expect(nextButton).not.to.equal(null);
+    expect(queryByTestId('KeyboardArrowRightIcon')).not.to.equal(null);
   });
 
   it('should render two buttons and text displaying progress when supplied with variant text', () => {
@@ -109,7 +108,7 @@ describe('<MobileStepper />', () => {
 
   it('should render a <LinearProgress /> when supplied with variant progress', () => {
     render(<MobileStepper {...defaultProps} variant="progress" />);
-    expect(screen.queryByRole('progressbar')).to.not.equal(null);
+    expect(screen.queryByRole('progressbar')).not.to.equal(null);
   });
 
   it('should calculate the <LinearProgress /> value correctly', () => {

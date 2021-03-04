@@ -2,52 +2,54 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { usePreviousProps, deepmerge } from '@material-ui/utils';
-import {
-  BadgeUnstyled,
+import { generateUtilityClasses, isHostComponent } from '@material-ui/unstyled';
+import BadgeUnstyled, {
   badgeUnstyledClasses,
   getBadgeUtilityClass,
-  generateUtilityClasses,
-  isHostComponent,
-} from '@material-ui/unstyled';
+} from '@material-ui/unstyled/BadgeUnstyled';
 import styled from '../styles/experimentalStyled';
 import useThemeProps from '../styles/useThemeProps';
 import capitalize from '../utils/capitalize';
 
-const badgeClasses = {
+export const badgeClasses = {
   ...badgeUnstyledClasses,
   ...generateUtilityClasses('MuiBadge', ['colorError', 'colorPrimary', 'colorSecondary']),
 };
-
-export { badgeClasses };
 
 const RADIUS_STANDARD = 10;
 const RADIUS_DOT = 4;
 
 const overridesResolver = (props, styles) => {
-  const {
-    color = 'default',
-    variant = 'standard',
-    anchorOrigin = {
-      vertical: 'top',
-      horizontal: 'right',
-    },
-    invisible,
-    overlap = 'rectangular',
-  } = props;
+  const { styleProps } = props;
 
-  return deepmerge(styles.root || {}, {
-    [`& .${badgeClasses.badge}`]: {
-      ...styles.badge,
-      ...styles[variant],
-      ...styles[
-        `anchorOrigin${capitalize(anchorOrigin.vertical)}${capitalize(
-          anchorOrigin.horizontal,
-        )}${capitalize(overlap)}`
-      ],
-      ...(color !== 'default' && styles[`color${capitalize(color)}`]),
-      ...(invisible && styles.invisible),
+  return deepmerge(
+    {
+      [`& .${badgeClasses.badge}`]: {
+        ...styles.badge,
+        ...styles[styleProps.variant],
+        ...styles[
+          `anchorOrigin${capitalize(styleProps.anchorOrigin.vertical)}${capitalize(
+            styleProps.anchorOrigin.horizontal,
+          )}${capitalize(styleProps.overlap)}`
+        ],
+        ...(styleProps.color !== 'default' && styles[`color${capitalize(styleProps.color)}`]),
+        ...(styleProps.invisible && styles.invisible),
+      },
     },
-  });
+    styles.root || {},
+  );
+};
+
+const extendUtilityClasses = (styleProps) => {
+  const { color, classes = {} } = styleProps;
+
+  return {
+    ...classes,
+    badge: clsx(classes.badge, {
+      [getBadgeUtilityClass(`color${capitalize(color)}`)]: color !== 'default',
+      [classes[`color${capitalize(color)}`]]: color !== 'default',
+    }),
+  };
 };
 
 const BadgeRoot = styled(
@@ -194,20 +196,8 @@ const BadgeBadge = styled(
   }),
 }));
 
-const extendUtilityClasses = (styleProps) => {
-  const { color, classes = {} } = styleProps;
-
-  return {
-    ...classes,
-    badge: clsx(classes.badge, {
-      [getBadgeUtilityClass(`color${capitalize(color)}`)]: color !== 'default',
-      [classes[`color${capitalize(color)}`]]: color !== 'default',
-    }),
-  };
-};
-
-const Badge = React.forwardRef(function Badge(inputProps, ref) {
-  const { isRtl, ...props } = useThemeProps({ props: inputProps, name: 'MuiBadge' });
+const Badge = React.forwardRef(function Badge(inProps, ref) {
+  const { isRtl, ...props } = useThemeProps({ props: inProps, name: 'MuiBadge' });
   const {
     components = {},
     componentsProps = {},
@@ -295,14 +285,16 @@ Badge.propTypes = {
   children: PropTypes.node,
   /**
    * Override or extend the styles applied to the component.
-   * @default {}
    */
   classes: PropTypes.object,
   /**
    * The color of the component. It supports those theme colors that make sense for this component.
    * @default 'default'
    */
-  color: PropTypes.oneOf(['default', 'error', 'primary', 'secondary']),
+  color: PropTypes /* @typescript-to-proptypes-ignore */.oneOfType([
+    PropTypes.oneOf(['default', 'error', 'primary', 'secondary']),
+    PropTypes.string,
+  ]),
   /**
    * The components used for each slot inside the Badge.
    * Either a string to use a HTML element or a component.

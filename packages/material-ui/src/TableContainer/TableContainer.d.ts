@@ -1,10 +1,12 @@
 import * as React from 'react';
+import { SxProps } from '@material-ui/system';
+import { Theme } from '..';
 import { OverridableComponent, OverrideProps } from '../OverridableComponent';
 
 export interface TableContainerTypeMap<P = {}, D extends React.ElementType = 'div'> {
   props: P & {
     /**
-     * The table itself, normally `<Table />`.
+     * The content of the component, normally `Table`.
      */
     children?: React.ReactNode;
     /**
@@ -14,6 +16,10 @@ export interface TableContainerTypeMap<P = {}, D extends React.ElementType = 'di
       /** Styles applied to the root element. */
       root?: string;
     };
+    /**
+     * The system prop that allows defining system overrides as well as additional CSS styles.
+     */
+    sx?: SxProps<Theme>;
   };
   defaultComponent: D;
 }

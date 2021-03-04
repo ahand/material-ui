@@ -61,9 +61,7 @@ const theme = createMuiTheme({
   components: {
     MuiCssBaseline: {
       styleOverrides: {
-        '@global': {
-          '@font-face': [raleway],
-        },
+        '@font-face': [raleway],
       },
     },
   },
@@ -143,7 +141,7 @@ theme = responsiveFontSizes(theme);
 
 您可能想要更改 `<html>` 元素的默认字体大小。 例如，当您使用 [10px 简化](https://www.sitepoint.com/understanding-and-using-rem-units-in-css/) 时。
 
-> ⚠️  更改字体的大小会对无障碍设计造成影响 ♿️。 ⚠️  更改字体的大小会对无障碍设计造成影响 ♿️。 譬如，一个视力受损的客户可以将浏览器的默认字体值设置的更大一些。
+> ⚠️  更改字体的大小会对无障碍设计造成影响 ♿️。 ⚠️  更改字体的大小会对无障碍设计造成影响 ♿️。 For instance, someone with an impaired vision could have set their browser's default font size to something larger.
 
 `theme.typography.htmlFontSize` 属性是为这个用例提供的，它将会告诉 Material-UI `<html>` 元素的字体大小是多少。 这可以用于调整  `rem`  值，如此一来计算后的 font-size 总是与规范相符合。
 
@@ -208,7 +206,7 @@ const theme = createMuiTheme({
 
 In addition to using the default typography variants, you can add custom ones, or disable any you don't need. Here is what you need to do:
 
-**Step 1. Update the theme's typography object**
+**Step 1. Step 1. Update the theme's typography object**
 
 ```js
 const theme = createMuiTheme({
@@ -222,11 +220,13 @@ const theme = createMuiTheme({
 });
 ```
 
-**Step 2. Update the necessary typings (if you are using TypeScript)**
+**Step 2. Step 2. Update the necessary typings (if you are using TypeScript)**
 
 > If you aren't using TypeScript you should skip this step.
 
 You need to make sure that the typings for the theme's `typography` variants and the `Typogrpahy`'s `variant` prop reflects the new set of variants.
+
+<!-- Tested with packages/material-ui/test/typescript/augmentation/typographyVariants.spec.ts -->
 
 ```ts
 declare module '@material-ui/core/styles/createTypography' {
@@ -249,7 +249,7 @@ declare module '@material-ui/core/Typography/Typography' {
 }
 ```
 
-**Step 3. You can now use the new variant**
+**Step 3. Step 3. You can now use the new variant**
 
 {{"demo": "pages/customization/typography/TypographyCustomVariant.js", "hideToolbar": true}}
 

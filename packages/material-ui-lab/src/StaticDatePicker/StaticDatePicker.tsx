@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { makePickerWithStateAndWrapper } from '../internal/pickers/Picker/makePickerWithState';
+import { makePickerWithState } from '../internal/pickers/Picker/makePickerWithState';
 import {
   BaseDatePickerProps,
   datePickerConfig,
@@ -8,18 +8,22 @@ import {
 import { StaticWrapper } from '../internal/pickers/wrappers/Wrapper';
 
 /**
- * @ignore - do not document.
+ *
+ * API:
+ *
+ * - [StaticDatePicker API](https://material-ui.com/api/static-date-picker/)
  */
-/* @typescript-to-proptypes-generate */
-const StaticDatePicker = makePickerWithStateAndWrapper<BaseDatePickerProps<unknown>>(
-  StaticWrapper,
-  {
-    name: 'MuiStaticDatePicker',
-    ...datePickerConfig,
-  },
-) as DatePickerGenericComponent<typeof StaticWrapper>;
+// @typescript-to-proptypes-generate
+const StaticDatePicker = makePickerWithState<BaseDatePickerProps<unknown>>(StaticWrapper, {
+  name: 'MuiStaticDatePicker',
+  ...datePickerConfig,
+}) as DatePickerGenericComponent<typeof StaticWrapper>;
 
-(StaticDatePicker as any).propTypes = {
+if (process.env.NODE_ENV !== 'production') {
+  (StaticDatePicker as any).displayName = 'StaticDatePicker';
+}
+
+StaticDatePicker.propTypes = {
   // ----------------------------- Warning --------------------------------
   // | These PropTypes are generated from the TypeScript type definitions |
   // |     To update them edit TypeScript types and run "yarn proptypes"  |
@@ -30,16 +34,13 @@ const StaticDatePicker = makePickerWithStateAndWrapper<BaseDatePickerProps<unkno
    */
   acceptRegex: PropTypes.instanceOf(RegExp),
   /**
+   * @ignore
+   */
+  children: PropTypes.node,
+  /**
    * className applied to the root component.
    */
   className: PropTypes.string,
-  /**
-   * Allows to pass configured date-io adapter directly. More info [here](https://next.material-ui-pickers.dev/guides/date-adapter-passing)
-   * ```jsx
-   * dateAdapter={new AdapterDateFns({ locale: ruLocale })}
-   * ```
-   */
-  dateAdapter: PropTypes.object,
   /**
    * If `true` the popup or dialog will immediately close after submitting full date.
    * @default `true` for Desktop, `false` for Mobile (based on the chosen wrapper and `desktopModeMediaQuery` prop).
@@ -60,7 +61,7 @@ const StaticDatePicker = makePickerWithStateAndWrapper<BaseDatePickerProps<unkno
    */
   disableOpenPicker: PropTypes.bool,
   /**
-   * Force static wrapper inner components to be rendered in mobile or desktop mode
+   * Force static wrapper inner components to be rendered in mobile or desktop mode.
    * @default "static"
    */
   displayStaticWrapperAs: PropTypes.oneOf(['desktop', 'mobile']),
@@ -94,7 +95,7 @@ const StaticDatePicker = makePickerWithStateAndWrapper<BaseDatePickerProps<unkno
    */
   label: PropTypes.node,
   /**
-   * Custom mask. Can be used to override generate from format. (e.g. __/__/____ __:__ or __/__/____ __:__ _M)
+   * Custom mask. Can be used to override generate from format. (e.g. `__/__/____ __:__` or `__/__/____ __:__ _M`).
    */
   mask: PropTypes.string,
   /**
@@ -120,7 +121,7 @@ const StaticDatePicker = makePickerWithStateAndWrapper<BaseDatePickerProps<unkno
    */
   onAccept: PropTypes.func,
   /**
-   * Callback fired when the value (the selected date) changes. @DateIOType.
+   * Callback fired when the value (the selected date) changes @DateIOType.
    */
   onChange: PropTypes.func.isRequired,
   /**
@@ -206,7 +207,7 @@ const StaticDatePicker = makePickerWithStateAndWrapper<BaseDatePickerProps<unkno
     PropTypes.number,
     PropTypes.string,
   ]),
-};
+} as any;
 
 export type StaticDatePickerProps = React.ComponentProps<typeof StaticDatePicker>;
 

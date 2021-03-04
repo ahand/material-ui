@@ -1,22 +1,32 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
-import { deepmerge, elementTypeAcceptingRef, refType } from '@material-ui/utils';
+import { elementTypeAcceptingRef, refType } from '@material-ui/utils';
+import { unstable_composeClasses as composeClasses } from '@material-ui/unstyled';
 import experimentalStyled from '../styles/experimentalStyled';
 import useThemeProps from '../styles/useThemeProps';
 import useForkRef from '../utils/useForkRef';
 import useEventCallback from '../utils/useEventCallback';
 import useIsFocusVisible from '../utils/useIsFocusVisible';
 import TouchRipple from './TouchRipple';
-import buttonBaseClasses from './buttonBaseClasses';
+import { getButtonBaseUtilityClass } from './buttonBaseClasses';
 
-const overridesResolver = (props, styles) => {
-  const { disabled, focusVisible } = props;
+const overridesResolver = (props, styles) => styles.root || {};
 
-  return deepmerge(styles.root || {}, {
-    ...(disabled && styles.disabled),
-    ...(focusVisible && styles.focusVisible),
-  });
+const useUtilityClasses = (styleProps) => {
+  const { disabled, focusVisible, focusVisibleClassName, classes } = styleProps;
+
+  const slots = {
+    root: ['root', disabled && 'disabled', focusVisible && 'focusVisible'],
+  };
+
+  const composedClasses = composeClasses(slots, getButtonBaseUtilityClass, classes);
+
+  if (focusVisible && focusVisibleClassName) {
+    composedClasses.root += ` ${focusVisibleClassName}`;
+  }
+
+  return composedClasses;
 };
 
 export const ButtonBaseRoot = experimentalStyled(
@@ -57,20 +67,6 @@ export const ButtonBaseRoot = experimentalStyled(
   },
 });
 
-const useUtilityClasses = (styleProps) => {
-  const { disabled, focusVisible, focusVisibleClassName, classes = {} } = styleProps;
-
-  return {
-    root: clsx(buttonBaseClasses['root'], classes['root'], {
-      [buttonBaseClasses['disabled']]: disabled,
-      [classes['disabled']]: disabled,
-      [buttonBaseClasses['focusVisible']]: focusVisible,
-      [classes['focusVisible']]: focusVisible,
-      [focusVisibleClassName]: focusVisible,
-    }),
-  };
-};
-
 /**
  * `ButtonBase` contains as few styles as possible.
  * It aims to be a simple building block for creating a button.
@@ -78,7 +74,6 @@ const useUtilityClasses = (styleProps) => {
  */
 const ButtonBase = React.forwardRef(function ButtonBase(inProps, ref) {
   const props = useThemeProps({ props: inProps, name: 'MuiButtonBase' });
-
   const {
     action,
     buttonRef: buttonRefProp,
@@ -93,6 +88,7 @@ const ButtonBase = React.forwardRef(function ButtonBase(inProps, ref) {
     focusVisibleClassName,
     onBlur,
     onClick,
+    onContextMenu,
     onFocus,
     onFocusVisible,
     onKeyDown,
@@ -160,6 +156,7 @@ const ButtonBase = React.forwardRef(function ButtonBase(inProps, ref) {
   }
 
   const handleMouseDown = useRippleHandler('start', onMouseDown);
+  const handleContextMenu = useRippleHandler('stop', onContextMenu);
   const handleDragLeave = useRippleHandler('stop', onDragLeave);
   const handleMouseUp = useRippleHandler('stop', onMouseUp);
   const handleMouseLeave = useRippleHandler('stop', (event) => {
@@ -351,6 +348,7 @@ const ButtonBase = React.forwardRef(function ButtonBase(inProps, ref) {
       styleProps={styleProps}
       onBlur={handleBlur}
       onClick={onClick}
+      onContextMenu={handleContextMenu}
       onFocus={handleFocus}
       onKeyDown={handleKeyDown}
       onKeyUp={handleKeyUp}
@@ -416,7 +414,7 @@ ButtonBase.propTypes = {
    */
   component: elementTypeAcceptingRef,
   /**
-   * If `true`, the base button is disabled.
+   * If `true`, the component is disabled.
    * @default false
    */
   disabled: PropTypes.bool,
@@ -424,7 +422,7 @@ ButtonBase.propTypes = {
    * If `true`, the ripple effect is disabled.
    *
    * ⚠️ Without a ripple there is no styling for :focus-visible by default. Be sure
-   * to highlight the element by applying separate styles with the `focusVisibleClassName`.
+   * to highlight the element by applying separate styles with the `.Mui-focusedVisible` class.
    * @default false
    */
   disableRipple: PropTypes.bool,
@@ -459,6 +457,10 @@ ButtonBase.propTypes = {
    * @ignore
    */
   onClick: PropTypes.func,
+  /**
+   * @ignore
+   */
+  onContextMenu: PropTypes.func,
   /**
    * @ignore
    */
@@ -504,6 +506,10 @@ ButtonBase.propTypes = {
    * @ignore
    */
   onTouchStart: PropTypes.func,
+  /**
+   * The system prop that allows defining system overrides as well as additional CSS styles.
+   */
+  sx: PropTypes.object,
   /**
    * @default 0
    */

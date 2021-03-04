@@ -41,6 +41,7 @@ describe('<ButtonBase />', () => {
   describeConformanceV5(<ButtonBase />, () => ({
     classes,
     inheritComponent: 'button',
+    render,
     mount,
     refInstanceof: window.HTMLButtonElement,
     testComponentPropWith: 'a',
@@ -66,7 +67,7 @@ describe('<ButtonBase />', () => {
 
     it('should not apply role="button" if type="button"', () => {
       const { getByText } = render(<ButtonBase type="button">Hello</ButtonBase>);
-      expect(getByText('Hello')).to.not.have.attribute('role');
+      expect(getByText('Hello')).not.to.have.attribute('role');
     });
 
     it('should change the button type to span and set role="button"', () => {
@@ -74,7 +75,7 @@ describe('<ButtonBase />', () => {
       const button = getByRole('button');
 
       expect(button).to.have.property('nodeName', 'SPAN');
-      expect(button).to.not.have.attribute('type');
+      expect(button).not.to.have.attribute('type');
     });
 
     it('should automatically change the button to an anchor element when href is provided', () => {
@@ -118,6 +119,7 @@ describe('<ButtonBase />', () => {
       const onMouseDown = spy();
       const onMouseLeave = spy();
       const onMouseUp = spy();
+      const onContextMenu = spy();
       const onDragEnd = spy();
       const onTouchStart = spy();
       const onTouchEnd = spy();
@@ -132,6 +134,7 @@ describe('<ButtonBase />', () => {
           onMouseDown={onMouseDown}
           onMouseLeave={onMouseLeave}
           onMouseUp={onMouseUp}
+          onContextMenu={onContextMenu}
           onDragEnd={onDragEnd}
           onTouchEnd={onTouchEnd}
           onTouchStart={onTouchStart}
@@ -162,6 +165,9 @@ describe('<ButtonBase />', () => {
 
       fireEvent.mouseUp(button);
       expect(onMouseUp.callCount).to.equal(1);
+
+      fireEvent.contextMenu(button);
+      expect(onContextMenu.callCount).to.equal(1);
 
       fireEvent.click(button);
       expect(onClick.callCount).to.equal(1);
@@ -374,6 +380,34 @@ describe('<ButtonBase />', () => {
         ).to.have.lengthOf(0);
       });
 
+      it('should stop the ripple when the context menu opens', () => {
+        const { getByRole } = render(
+          <ButtonBase
+            TouchRippleProps={{
+              classes: {
+                rippleVisible: 'ripple-visible',
+                child: 'child',
+                childLeaving: 'child-leaving',
+              },
+            }}
+          />,
+        );
+        const button = getByRole('button');
+        fireEvent.mouseDown(button);
+
+        expect(button.querySelectorAll('.ripple-visible .child-leaving')).to.have.lengthOf(0);
+        expect(
+          button.querySelectorAll('.ripple-visible .child:not(.child-leaving)'),
+        ).to.have.lengthOf(1);
+
+        fireEvent.contextMenu(button);
+
+        expect(button.querySelectorAll('.ripple-visible .child-leaving')).to.have.lengthOf(1);
+        expect(
+          button.querySelectorAll('.ripple-visible .child:not(.child-leaving)'),
+        ).to.have.lengthOf(0);
+      });
+
       it('should not crash when changes enableRipple from false to true', () => {
         function App() {
           /** @type {React.MutableRefObject<import('./ButtonBase').ButtonBaseActions | null>} */
@@ -444,7 +478,7 @@ describe('<ButtonBase />', () => {
       }));
       fireEvent.mouseDown(getByRole('button'), { clientX: 10, clientY: 10 });
       const rippleRipple = container.querySelector('.touch-ripple-ripple');
-      expect(rippleRipple).to.not.equal(null);
+      expect(rippleRipple).not.to.equal(null);
       // @ts-ignore
       const rippleSyle = window.getComputedStyle(rippleRipple);
       expect(rippleSyle).to.have.property('height', '101px');
@@ -469,11 +503,11 @@ describe('<ButtonBase />', () => {
       }));
       fireEvent.mouseDown(getByRole('button'), { clientX: 10, clientY: 10 });
       const rippleRipple = container.querySelector('.touch-ripple-ripple');
-      expect(rippleRipple).to.not.equal(null);
+      expect(rippleRipple).not.to.equal(null);
       // @ts-ignore
       const rippleSyle = window.getComputedStyle(rippleRipple);
-      expect(rippleSyle).to.not.have.property('height', '101px');
-      expect(rippleSyle).to.not.have.property('width', '101px');
+      expect(rippleSyle).not.to.have.property('height', '101px');
+      expect(rippleSyle).not.to.have.property('width', '101px');
     });
   });
 

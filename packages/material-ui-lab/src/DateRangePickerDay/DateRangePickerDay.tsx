@@ -1,17 +1,35 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
-import { withStyles, WithStyles, alpha, createStyles, Theme } from '@material-ui/core/styles';
+import { MuiStyles, withStyles, WithStyles, alpha, StyleRules } from '@material-ui/core/styles';
 import { DAY_MARGIN } from '../internal/pickers/constants/dimensions';
 import { useUtils } from '../internal/pickers/hooks/useUtils';
 import PickersDay, { PickersDayProps, areDayPropsEqual } from '../PickersDay/PickersDay';
 
 export interface DateRangePickerDayProps<TDate> extends PickersDayProps<TDate> {
+  /**
+   * Set to `true` if the `day` is in a highlighted date range.
+   */
   isHighlighting: boolean;
+  /**
+   * Set to `true` if the `day` is the end of a highlighted date range.
+   */
   isEndOfHighlighting: boolean;
+  /**
+   * Set to `true` if the `day` is the start of a highlighted date range.
+   */
   isStartOfHighlighting: boolean;
+  /**
+   * Set to `true` if the `day` is in a preview date range.
+   */
   isPreviewing: boolean;
+  /**
+   * Set to `true` if the `day` is the start of a highlighted date range.
+   */
   isEndOfPreviewing: boolean;
+  /**
+   * Set to `true` if the `day` is the end of a highlighted date range.
+   */
   isStartOfPreviewing: boolean;
 }
 
@@ -25,78 +43,90 @@ const startBorderStyle = {
   borderBottomLeftRadius: '50%',
 };
 
-const styles = (theme: Theme) =>
-  createStyles({
-    root: {
-      '&:first-child $rangeIntervalDayPreview': {
-        ...startBorderStyle,
-        borderLeftColor: theme.palette.divider,
-      },
-      '&:last-child $rangeIntervalDayPreview': {
-        ...endBorderStyle,
-        borderRightColor: theme.palette.divider,
-      },
-    },
-    rangeIntervalDayHighlight: {
-      borderRadius: 0,
-      color: theme.palette.primary.contrastText,
-      backgroundColor: alpha(theme.palette.primary.light, 0.6),
-      '&:first-child': startBorderStyle,
-      '&:last-child': endBorderStyle,
-    },
-    rangeIntervalDayHighlightStart: {
-      ...startBorderStyle,
-      paddingLeft: 0,
-      marginLeft: DAY_MARGIN / 2,
-    },
-    rangeIntervalDayHighlightEnd: {
-      ...endBorderStyle,
-      paddingRight: 0,
-      marginRight: DAY_MARGIN / 2,
-    },
-    day: {
-      // Required to overlap preview border
-      transform: 'scale(1.1)',
-      '& > *': {
-        transform: 'scale(0.9)',
-      },
-    },
-    dayOutsideRangeInterval: {
-      '&:hover': {
-        border: `1px solid ${theme.palette.grey[500]}`,
-      },
-    },
-    dayInsideRangeInterval: {
-      color: theme.palette.getContrastText(alpha(theme.palette.primary.light, 0.6)),
-    },
-    notSelectedDate: {
-      backgroundColor: 'transparent',
-    },
-    rangeIntervalPreview: {
-      // replace default day component margin with transparent border to avoid jumping on preview
-      border: '2px solid transparent',
-    },
-    rangeIntervalDayPreview: {
-      borderRadius: 0,
-      border: `2px dashed ${theme.palette.divider}`,
-      borderLeftColor: 'transparent',
-      borderRightColor: 'transparent',
-      '&$rangeIntervalDayPreviewStart': {
-        borderLeftColor: theme.palette.divider,
-        ...startBorderStyle,
-      },
-      '&$rangeIntervalDayPreviewEnd': {
-        borderRightColor: theme.palette.divider,
-        ...endBorderStyle,
-      },
-    },
-    rangeIntervalDayPreviewStart: {},
-    rangeIntervalDayPreviewEnd: {},
-  });
+type DateRangePickerDayClassKey =
+  | 'root'
+  | 'rangeIntervalDayHighlight'
+  | 'rangeIntervalDayHighlightStart'
+  | 'rangeIntervalDayHighlightEnd'
+  | 'day'
+  | 'dayOutsideRangeInterval'
+  | 'dayInsideRangeInterval'
+  | 'notSelectedDate'
+  | 'rangeIntervalPreview'
+  | 'rangeIntervalDayPreview'
+  | 'rangeIntervalDayPreviewStart'
+  | 'rangeIntervalDayPreviewEnd';
 
-/**
- * @ignore - do not document.
- */
+const styles: MuiStyles<DateRangePickerDayClassKey> = (
+  theme,
+): StyleRules<DateRangePickerDayClassKey> => ({
+  root: {
+    '&:first-child $rangeIntervalDayPreview': {
+      ...startBorderStyle,
+      borderLeftColor: theme.palette.divider,
+    },
+    '&:last-child $rangeIntervalDayPreview': {
+      ...endBorderStyle,
+      borderRightColor: theme.palette.divider,
+    },
+  },
+  rangeIntervalDayHighlight: {
+    borderRadius: 0,
+    color: theme.palette.primary.contrastText,
+    backgroundColor: alpha(theme.palette.primary.light, 0.6),
+    '&:first-child': startBorderStyle,
+    '&:last-child': endBorderStyle,
+  },
+  rangeIntervalDayHighlightStart: {
+    ...startBorderStyle,
+    paddingLeft: 0,
+    marginLeft: DAY_MARGIN / 2,
+  },
+  rangeIntervalDayHighlightEnd: {
+    ...endBorderStyle,
+    paddingRight: 0,
+    marginRight: DAY_MARGIN / 2,
+  },
+  day: {
+    // Required to overlap preview border
+    transform: 'scale(1.1)',
+    '& > *': {
+      transform: 'scale(0.9)',
+    },
+  },
+  dayOutsideRangeInterval: {
+    '&:hover': {
+      border: `1px solid ${theme.palette.grey[500]}`,
+    },
+  },
+  dayInsideRangeInterval: {
+    color: theme.palette.getContrastText(alpha(theme.palette.primary.light, 0.6)),
+  },
+  notSelectedDate: {
+    backgroundColor: 'transparent',
+  },
+  rangeIntervalPreview: {
+    // replace default day component margin with transparent border to avoid jumping on preview
+    border: '2px solid transparent',
+  },
+  rangeIntervalDayPreview: {
+    borderRadius: 0,
+    border: `2px dashed ${theme.palette.divider}`,
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
+    '&$rangeIntervalDayPreviewStart': {
+      borderLeftColor: theme.palette.divider,
+      ...startBorderStyle,
+    },
+    '&$rangeIntervalDayPreviewEnd': {
+      borderRightColor: theme.palette.divider,
+      ...endBorderStyle,
+    },
+  },
+  rangeIntervalDayPreviewStart: {},
+  rangeIntervalDayPreviewEnd: {},
+});
+
 const DateRangePickerDay = React.forwardRef(function DateRangePickerDay<TDate>(
   props: DateRangePickerDayProps<TDate> & WithStyles<typeof styles>,
   ref: React.Ref<HTMLButtonElement>,
@@ -112,7 +142,7 @@ const DateRangePickerDay = React.forwardRef(function DateRangePickerDay<TDate>(
     isPreviewing,
     isStartOfHighlighting,
     isStartOfPreviewing,
-    selected,
+    selected = false,
     ...other
   } = props;
   const utils = useUtils<TDate>();
@@ -133,6 +163,7 @@ const DateRangePickerDay = React.forwardRef(function DateRangePickerDay<TDate>(
       })}
     >
       <div
+        role="cell"
         data-mui-test={shouldRenderPreview ? 'DateRangePreview' : undefined}
         className={clsx(classes.rangeIntervalPreview, {
           [classes.rangeIntervalDayPreview]: shouldRenderPreview,
@@ -149,7 +180,7 @@ const DateRangePickerDay = React.forwardRef(function DateRangePickerDay<TDate>(
           day={day}
           selected={selected}
           outsideCurrentMonth={outsideCurrentMonth}
-          data-mui-test="DateRangeDay"
+          data-mui-test="DateRangePickerDay"
           className={clsx(classes.day, {
             [classes.notSelectedDate]: !selected,
             [classes.dayOutsideRangeInterval]: !isHighlighting,
@@ -161,7 +192,7 @@ const DateRangePickerDay = React.forwardRef(function DateRangePickerDay<TDate>(
   );
 });
 
-(DateRangePickerDay as any).propTypes = {
+DateRangePickerDay.propTypes = {
   // ----------------------------- Warning --------------------------------
   // | These PropTypes are generated from the TypeScript type definitions |
   // |     To update them edit TypeScript types and run "yarn proptypes"  |
@@ -183,27 +214,27 @@ const DateRangePickerDay = React.forwardRef(function DateRangePickerDay<TDate>(
    */
   day: PropTypes.any.isRequired,
   /**
-   * @ignore
+   * Set to `true` if the `day` is the end of a highlighted date range.
    */
   isEndOfHighlighting: PropTypes.bool.isRequired,
   /**
-   * @ignore
+   * Set to `true` if the `day` is the start of a highlighted date range.
    */
   isEndOfPreviewing: PropTypes.bool.isRequired,
   /**
-   * @ignore
+   * Set to `true` if the `day` is in a highlighted date range.
    */
   isHighlighting: PropTypes.bool.isRequired,
   /**
-   * @ignore
+   * Set to `true` if the `day` is in a preview date range.
    */
   isPreviewing: PropTypes.bool.isRequired,
   /**
-   * @ignore
+   * Set to `true` if the `day` is the start of a highlighted date range.
    */
   isStartOfHighlighting: PropTypes.bool.isRequired,
   /**
-   * @ignore
+   * Set to `true` if the `day` is the end of a highlighted date range.
    */
   isStartOfPreviewing: PropTypes.bool.isRequired,
   /**
@@ -212,9 +243,10 @@ const DateRangePickerDay = React.forwardRef(function DateRangePickerDay<TDate>(
   outsideCurrentMonth: PropTypes.bool.isRequired,
   /**
    * If `true`, renders as selected.
+   * @default false
    */
   selected: PropTypes.bool,
-};
+} as any;
 
 /**
  *

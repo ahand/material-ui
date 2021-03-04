@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { InternalStandardProps as StandardProps } from '..';
+import { SxProps } from '@material-ui/system';
+import { InternalStandardProps as StandardProps, Theme } from '..';
 import { InputBaseProps } from '../InputBase';
 
 export interface OutlinedInputProps extends StandardProps<InputBaseProps> {
@@ -21,21 +22,21 @@ export interface OutlinedInputProps extends StandardProps<InputBaseProps> {
     adornedEnd?: string;
     /** Pseudo-class applied to the root element if `error={true}`. */
     error?: string;
-    /** Styles applied to the `input` element if `size="small"`. */
+    /** Styles applied to the input element if `size="small"`. */
     sizeSmall?: string;
     /** Styles applied to the root element if `multiline={true}`. */
     multiline?: string;
-    /** Styles applied to the `NotchedOutline` element. */
+    /** Styles applied to the NotchedOutline element. */
     notchedOutline?: string;
-    /** Styles applied to the `input` element. */
+    /** Styles applied to the input element. */
     input?: string;
-    /** Styles applied to the `input` element if `size="small"`. */
+    /** Styles applied to the input element if `size="small"`. */
     inputSizeSmall?: string;
-    /** Styles applied to the `input` element if `multiline={true}`. */
+    /** Styles applied to the input element if `multiline={true}`. */
     inputMultiline?: string;
-    /** Styles applied to the `input` element if `startAdornment` is provided. */
+    /** Styles applied to the input element if `startAdornment` is provided. */
     inputAdornedStart?: string;
-    /** Styles applied to the `input` element if `endAdornment` is provided. */
+    /** Styles applied to the input element if `endAdornment` is provided. */
     inputAdornedEnd?: string;
   };
   /**
@@ -53,6 +54,10 @@ export interface OutlinedInputProps extends StandardProps<InputBaseProps> {
    * If `true`, the outline is notched to accommodate the label.
    */
   notched?: boolean;
+  /**
+   * The system prop that allows defining system overrides as well as additional CSS styles.
+   */
+  sx?: SxProps<Theme>;
 }
 
 export type OutlinedInputClassKey = keyof NonNullable<OutlinedInputProps['classes']>;

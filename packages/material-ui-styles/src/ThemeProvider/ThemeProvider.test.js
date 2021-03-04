@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { expect } from 'chai';
 import { createClientRender } from 'test/utils';
 import makeStyles from '../makeStyles';
@@ -124,8 +124,9 @@ describe('ThemeProvider', () => {
         );
       }).toErrorDev([
         'However, no outer theme is present.',
-        // strict mode renders twice
-        'However, no outer theme is present.',
+        React.version.startsWith('16') &&
+          // strict mode renders twice
+          'However, no outer theme is present.',
       ]);
     });
 
@@ -141,8 +142,9 @@ describe('ThemeProvider', () => {
         );
       }).toErrorDev([
         'Material-UI: You should return an object from your theme function',
-        // strict mode renders twice
-        'Material-UI: You should return an object from your theme function',
+        React.version.startsWith('16') &&
+          // strict mode renders twice
+          'Material-UI: You should return an object from your theme function',
       ]);
     });
   });

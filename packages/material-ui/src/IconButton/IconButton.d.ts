@@ -1,4 +1,6 @@
-import { PropTypes } from '..';
+import * as React from 'react';
+import { SxProps } from '@material-ui/system';
+import { PropTypes, Theme } from '..';
 import { ExtendButtonBase, ExtendButtonBaseTypeMap } from '../ButtonBase';
 import { OverrideProps } from '../OverridableComponent';
 
@@ -8,7 +10,7 @@ export type IconButtonTypeMap<
 > = ExtendButtonBaseTypeMap<{
   props: P & {
     /**
-     * The icon element.
+     * The icon to display.
      */
     children?: React.ReactNode;
     /**
@@ -40,7 +42,7 @@ export type IconButtonTypeMap<
      */
     color?: PropTypes.Color;
     /**
-     * If `true`, the button is disabled.
+     * If `true`, the component is disabled.
      * @default false
      */
     disabled?: boolean;
@@ -58,11 +60,15 @@ export type IconButtonTypeMap<
      */
     edge?: 'start' | 'end' | false;
     /**
-     * The size of the button.
+     * The size of the component.
      * `small` is equivalent to the dense button styling.
      * @default 'medium'
      */
     size?: 'small' | 'medium';
+    /**
+     * The system prop that allows defining system overrides as well as additional CSS styles.
+     */
+    sx?: SxProps<Theme>;
   };
   defaultComponent: D;
 }>;
@@ -70,6 +76,7 @@ export type IconButtonTypeMap<
 /**
  * Refer to the [Icons](https://material-ui.com/components/icons/) section of the documentation
  * regarding the available icon options.
+ *
  * Demos:
  *
  * - [Buttons](https://material-ui.com/components/buttons/)

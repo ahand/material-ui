@@ -1,9 +1,9 @@
 {
   "name": "@material-ui/lab",
-  "version": "5.0.0-alpha.20",
+  "version": "5.0.0-alpha.26",
   "private": false,
   "author": "Material-UI Team",
-  "description": "Material-UI Lab - Incubator for Material-UI React components.",
+  "description": "Laboratory for new Material-UI modules.",
   "main": "./src/index.js",
   "keywords": [
     "react",
@@ -29,7 +29,7 @@
     "build:node": "node ../../scripts/build node",
     "build:stable": "node ../../scripts/build stable",
     "build:copy-files": "node ../../scripts/copy-files.js",
-    "build:types": "tsc -p tsconfig.build.json",
+    "build:types": "node ../../scripts/buildTypes",
     "prebuild": "rimraf build",
     "release": "yarn build && npm publish build --tag next",
     "test": "cd ../../ && cross-env NODE_ENV=test mocha 'packages/material-ui-lab/**/*.test.{js,ts,tsx}'",
@@ -67,8 +67,8 @@
     "@date-io/dayjs": "^2.10.6",
     "@date-io/luxon": "^2.10.6",
     "@date-io/moment": "^2.10.6",
-    "@material-ui/system": "5.0.0-alpha.20",
-    "@material-ui/utils": "5.0.0-alpha.20",
+    "@material-ui/system": "5.0.0-alpha.26",
+    "@material-ui/utils": "5.0.0-alpha.26",
     "clsx": "^1.0.4",
     "prop-types": "^15.7.2",
     "react-is": "^16.8.0 || ^17.0.0",
@@ -76,7 +76,7 @@
     "rifm": "^0.12.0"
   },
   "devDependencies": {
-    "@material-ui/types": "5.1.2",
+    "@material-ui/types": "5.1.7",
     "@types/luxon": "^1.25.0",
     "date-fns": "^2.0.0",
     "dayjs": "^1.8.17",
